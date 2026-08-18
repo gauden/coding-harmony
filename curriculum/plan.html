@@ -168,6 +168,11 @@
   .phase .bar i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .2s; }
 
   .decision { border: 1px solid var(--line); border-radius: 11px; padding: 14px 16px; margin: 0 0 13px; }
+  .settled { border: 1px solid #cfe3d6; background: #f4faf6; border-radius: 11px; padding: 14px 16px; margin: 0 0 13px; }
+  .settled h3 { margin-top: 0; display: flex; align-items: baseline; gap: 9px; }
+  .settled .badge { font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ok); border: 1px solid #b8d8c4; background: white; border-radius: 999px; padding: 2px 8px; font-weight: 600; }
+  .settled ul { margin-bottom: 10px; }
+  .settled p:last-child { margin-bottom: 0; }
   .decision h3 { margin-top: 0; }
   .opts { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
   .opt {
@@ -236,7 +241,7 @@
     <div class="meta">
       <span class="pill">12 sections</span>
       <span class="pill">5 phases</span>
-      <span class="pill">4 open decisions</span>
+      <span class="pill">3 open decisions</span>
       <span class="pill">Working plan, not a contract</span>
     </div>
   </div>
@@ -629,20 +634,19 @@ filters:
   </section>
 
   <!-- 11 -->
-  <section class="sec" id="s11" data-title="Decisions still open" data-keywords="licence diagrams lilypond interactive solutions choices open questions">
+  <section class="sec" id="s11" data-title="Decisions still open" data-keywords="licence mit cc by-nc-sa think python downey diagrams lilypond interactive solutions choices open questions">
     <div class="sec-head"><span class="sec-num">11</span><h2>Decisions still open</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
     <div class="sec-body">
-      <p>Pick an option to record your choice. Selections export with your notes.</p>
+      <p>Three left. Pick an option to record your choice. Selections export with your notes.</p>
 
-      <div class="decision" data-decision="licence">
-        <h3>Licence</h3>
-        <p>CC BY-NC-SA on the site with the book sold separately is the usual arrangement and it works. Decide before the first public commit, because changing it later needs everyone's agreement, and there will only ever be one contributor if you get it right.</p>
-        <div class="opts">
-          <span class="opt" data-value="CC BY-NC-SA site, book sold separately">CC BY-NC-SA + paid book</span>
-          <span class="opt" data-value="CC BY-SA everything">CC BY-SA everything</span>
-          <span class="opt" data-value="All rights reserved, site free to read">All rights reserved</span>
-          <span class="opt" data-value="Undecided">Undecided</span>
-        </div>
+      <div class="settled">
+        <h3>Licence <span class="badge">settled</span></h3>
+        <p>Dual licence, following <a href="https://github.com/AllenDowney/ThinkPython" target="_blank" rel="noopener">Allen Downey's arrangement for <em>Think Python</em></a>. Code under MIT, text under CC BY-NC-SA 4.0. Recorded in <code>LICENSE.md</code> at the repo root.</p>
+        <ul>
+          <li><strong>Code</strong>, meaning Sonic Pi examples, scripts, filters, and build config: MIT. A reader can lift any snippet into work they sell.</li>
+          <li><strong>Text</strong>, meaning lesson prose, curriculum, diagrams, and audio: CC BY-NC-SA 4.0. Share and adapt non-commercially, with attribution, under the same terms.</li>
+        </ul>
+        <p class="rejected">The non-commercial term binds others, not the copyright holder. Selling the book stays open to you.</p>
       </div>
 
       <div class="decision" data-decision="diagrams">
