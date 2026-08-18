@@ -1,0 +1,942 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build Plan: Website and Book</title>
+<style>
+  :root {
+    --bg: #f7f7f4;
+    --paper: #ffffff;
+    --ink: #1f2328;
+    --muted: #667085;
+    --line: #d9dde3;
+    --accent: #5b3f8c;
+    --soft: #f0ecf8;
+    --code: #18181b;
+    --code-ink: #f4f4f5;
+    --ok: #2d6a4f;
+    --warn: #8a5a1a;
+    --warnbg: #fbf3e6;
+    --danger: #9b2c2c;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 24px; }
+
+  header {
+    background: linear-gradient(135deg, #2d2240 0%, #5b3f8c 100%);
+    color: white;
+    padding: 46px 0 36px;
+  }
+  header .wrap { padding-top: 0; padding-bottom: 0; }
+  h1 { font-size: clamp(1.8rem, 4.5vw, 3rem); line-height: 1.06; margin: 0 0 12px; max-width: 900px; }
+  .subtitle { font-size: 1.08rem; max-width: 780px; opacity: .92; margin: 0; }
+  .meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  .pill {
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 999px; padding: 6px 11px; font-size: .88rem;
+    background: rgba(255,255,255,.08);
+  }
+
+  .toolbar {
+    position: sticky; top: 0; z-index: 30;
+    background: rgba(247,247,244,.97);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .toolbar .wrap {
+    display: flex; gap: 8px; align-items: center;
+    padding-top: 10px; padding-bottom: 10px; flex-wrap: wrap;
+  }
+  input[type="search"] {
+    flex: 1 1 260px; padding: 9px 12px; border: 1px solid var(--line);
+    border-radius: 9px; font: inherit; background: white;
+  }
+  button {
+    border: 1px solid var(--line); background: white; color: var(--ink);
+    padding: 8px 12px; border-radius: 9px; cursor: pointer; font: inherit;
+  }
+  button:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); color: white; border-color: var(--accent); }
+  button.primary:hover { background: #4a3273; }
+  .counter {
+    font-size: .88rem; color: var(--muted); padding-left: 4px;
+  }
+  .counter strong { color: var(--accent); }
+  .counter .nostore { color: var(--danger); font-weight: 600; }
+
+  .layout { display: grid; grid-template-columns: 232px minmax(0,1fr); gap: 30px; align-items: start; padding-top: 26px; padding-bottom: 70px; }
+
+  nav.toc { position: sticky; top: 66px; }
+  nav.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: sec; }
+  nav.toc li { counter-increment: sec; }
+  nav.toc a {
+    display: block; text-decoration: none; color: var(--muted);
+    padding: 5px 9px 5px 30px; border-left: 2px solid transparent;
+    font-size: .9rem; border-radius: 0 6px 6px 0; position: relative;
+  }
+  nav.toc a::before {
+    content: counter(sec); position: absolute; left: 9px;
+    font-variant-numeric: tabular-nums; opacity: .55;
+  }
+  nav.toc a:hover { background: var(--soft); color: var(--ink); }
+  nav.toc a.active { color: var(--accent); border-left-color: var(--accent); background: var(--soft); font-weight: 600; }
+  nav.toc a .dot {
+    display: none; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--warn); position: absolute; right: 8px; top: 12px;
+  }
+  nav.toc a.has-comment .dot { display: block; }
+
+  section.sec {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 14px; margin-bottom: 16px; scroll-margin-top: 66px;
+  }
+  section.sec.hidden { display: none; }
+  .sec-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 15px 18px; cursor: pointer; user-select: none;
+  }
+  .sec-head:hover { background: #fcfbfe; }
+  .sec-num {
+    flex: 0 0 auto; width: 27px; height: 27px; border-radius: 8px;
+    background: var(--soft); color: var(--accent); font-weight: 700;
+    font-size: .85rem; display: grid; place-items: center;
+  }
+  .sec-head h2 { margin: 0; font-size: 1.18rem; flex: 1 1 auto; }
+  .sec-head .chev { color: var(--muted); transition: transform .15s; font-size: .85rem; }
+  section.sec.open .sec-head .chev { transform: rotate(90deg); }
+  .sec-flag {
+    font-size: .72rem; background: var(--warnbg); color: var(--warn);
+    border: 1px solid #e6d4b4; border-radius: 999px; padding: 2px 8px; display: none;
+  }
+  section.sec.commented .sec-flag { display: inline-block; }
+  .sec-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--line); }
+  section.sec.open .sec-body { display: block; }
+  .sec-body > *:first-child { margin-top: 16px; }
+
+  h3 { font-size: 1.02rem; margin: 22px 0 8px; }
+  h4 { font-size: .93rem; margin: 18px 0 6px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  p { margin: 0 0 12px; }
+  ul, ol { margin: 0 0 12px; padding-left: 22px; }
+  li { margin: 5px 0; }
+  .lead { font-size: 1.03rem; }
+
+  pre {
+    background: var(--code); color: var(--code-ink); overflow-x: auto;
+    padding: 13px 14px; border-radius: 10px; font-size: .83rem; line-height: 1.5;
+    margin: 0 0 14px;
+  }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  p code, li code, td code { background: #f0f0ee; border: 1px solid var(--line); border-radius: 5px; padding: 0 4px; font-size: .87em; }
+
+  table { border-collapse: collapse; width: 100%; font-size: .93rem; margin: 0 0 14px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+
+  .note {
+    background: var(--soft); border-left: 3px solid var(--accent);
+    padding: 11px 13px; margin: 0 0 14px; font-size: .94rem;
+  }
+  .note p:last-child { margin-bottom: 0; }
+  .warnbox {
+    background: var(--warnbg); border-left: 3px solid var(--warn);
+    padding: 11px 13px; margin: 0 0 14px; font-size: .94rem;
+  }
+  .warnbox p:last-child { margin-bottom: 0; }
+  .rejected { color: var(--muted); font-size: .93rem; }
+
+  .tasks { list-style: none; padding-left: 0; }
+  .tasks li { display: grid; grid-template-columns: auto 1fr; gap: 9px; align-items: start; margin: 7px 0; }
+  input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--accent); margin-top: 3px; }
+  .tasks li.done > span { text-decoration: line-through; color: var(--muted); }
+
+  .phase {
+    border: 1px solid var(--line); border-radius: 11px; padding: 14px 16px; margin: 0 0 13px;
+  }
+  .phase h3 { margin-top: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .phase .phase-when { font-size: .8rem; color: var(--muted); font-weight: 400; white-space: nowrap; }
+  .phase .bar { height: 4px; background: var(--line); border-radius: 99px; overflow: hidden; margin: 4px 0 10px; }
+  .phase .bar i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .2s; }
+
+  .decision { border: 1px solid var(--line); border-radius: 11px; padding: 14px 16px; margin: 0 0 13px; }
+  .decision h3 { margin-top: 0; }
+  .opts { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+  .opt {
+    border: 1px solid var(--line); background: white; border-radius: 999px;
+    padding: 6px 13px; cursor: pointer; font-size: .89rem;
+  }
+  .opt:hover { border-color: var(--accent); }
+  .opt.sel { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .risk { border-left: 3px solid var(--danger); background: #fdf3f3; padding: 11px 13px; margin: 0 0 12px; font-size: .94rem; }
+  .risk strong { color: var(--danger); }
+  .risk p:last-child { margin-bottom: 0; }
+
+  .cbox { margin-top: 18px; border-top: 1px dashed var(--line); padding-top: 13px; }
+  .cbox label { display: block; font-size: .8rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+  .cbox textarea {
+    width: 100%; min-height: 74px; padding: 10px 12px; font: inherit; font-size: .94rem;
+    border: 1px solid var(--line); border-radius: 9px; background: #fffdf8; resize: vertical;
+  }
+  .cbox textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; background: white; }
+  .cbox .saved { font-size: .8rem; color: var(--ok); opacity: 0; transition: opacity .3s; }
+  .cbox .saved.show { opacity: 1; }
+
+  .modal-bg {
+    display: none; position: fixed; inset: 0; background: rgba(20,16,30,.55);
+    z-index: 100; padding: 40px 20px; overflow: auto;
+  }
+  .modal-bg.show { display: block; }
+  .modal {
+    background: var(--paper); max-width: 780px; margin: 0 auto; border-radius: 14px;
+    padding: 22px; box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  }
+  .modal h2 { margin-top: 0; }
+  .modal textarea {
+    width: 100%; min-height: 380px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .82rem; line-height: 1.5; padding: 12px; border: 1px solid var(--line); border-radius: 9px;
+  }
+  .modal-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+
+  footer { color: var(--muted); font-size: .86rem; padding: 0 0 44px; }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.toc { position: static; order: -1; }
+    nav.toc ol { display: flex; flex-wrap: wrap; gap: 4px; }
+    nav.toc a { border-left: none; border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px 5px 26px; }
+  }
+  @media print {
+    .toolbar, nav.toc, .cbox textarea:placeholder-shown { display: none; }
+    body { background: white; }
+    .layout { grid-template-columns: 1fr; }
+    section.sec .sec-body { display: block !important; }
+    section.sec { break-inside: avoid; border: none; border-bottom: 1px solid #ccc; border-radius: 0; }
+    header { background: white; color: black; border-bottom: 2px solid black; padding: 24px 0; }
+    .pill { border: 1px solid #aaa; background: white; }
+    a { color: black; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Build Plan: Website and Book</h1>
+    <p class="subtitle">How <em>Music Theory Through Sonic Pi</em> gets built, tested, and published. One Markdown source, two outputs: a GitHub Pages site and a printable book.</p>
+    <div class="meta">
+      <span class="pill">12 sections</span>
+      <span class="pill">5 phases</span>
+      <span class="pill">4 open decisions</span>
+      <span class="pill">Working plan, not a contract</span>
+    </div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap">
+    <input id="search" type="search" placeholder="Filter sections: quarto, audio, style, phase, risk">
+    <button onclick="openAll()">Expand all</button>
+    <button onclick="closeAll()">Collapse all</button>
+    <button class="primary" onclick="showExport()">Export notes</button>
+    <button onclick="window.print()">Print</button>
+    <button onclick="resetAll()">Reset</button>
+    <span class="counter" id="counter"></span>
+  </div>
+</div>
+
+<div class="wrap layout">
+
+<nav class="toc">
+  <ol id="toc"></ol>
+</nav>
+
+<main id="content">
+
+  <!-- 1 -->
+  <section class="sec open" id="s1" data-title="What we are building" data-keywords="artifacts outputs website book pdf epub cadence">
+    <div class="sec-head"><span class="sec-num">1</span><h2>What we are building</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
+    <div class="sec-body">
+      <table>
+        <tr><th>Artifact</th><th>Format</th><th>Audience</th><th>Cadence</th></tr>
+        <tr><td><strong>Website</strong></td><td>Static HTML on GitHub Pages</td><td>Anyone, free</td><td>Deploys on every push to <code>main</code></td></tr>
+        <tr><td><strong>Book</strong></td><td>PDF and EPUB</td><td>Buyers, print-on-demand</td><td>Tagged releases</td></tr>
+        <tr><td><strong>Course map</strong></td><td>The existing HTML tracker</td><td>You, during drafting</td><td>Manual edits</td></tr>
+      </table>
+      <p>The same 58 Markdown files produce all three. No content lives in two places.</p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="sec" id="s2" data-title="Toolchain" data-keywords="quarto pandoc tinytex mdbook astro jupyter install prerequisites lua">
+    <div class="sec-head"><span class="sec-num">2</span><h2>Toolchain</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
+    <div class="sec-body">
+      <p class="lead"><strong>Quarto.</strong> A book-and-website generator built on Pandoc. One project renders an HTML site with sidebar navigation and search, plus PDF and EPUB, from plain <code>.qmd</code> files that are Markdown with a YAML header.</p>
+      <h4>Why it wins here</h4>
+      <ul>
+        <li>Lessons are Markdown. You can edit them in any editor while sitting at Sonic Pi.</li>
+        <li><code>format: html</code>, <code>pdf</code>, and <code>epub</code> in one config. <code>quarto render</code> produces all three.</li>
+        <li>Callouts, cross-references, footnotes, and an index are built in, so the print book gets real book features without hand-rolling them.</li>
+        <li>Lua filters let us add one custom thing, an audio player next to code blocks, without forking anything.</li>
+        <li>No computation engine needed. Sonic Pi code is displayed, not executed, so there is no Jupyter or Knitr dependency and rendering stays fast.</li>
+      </ul>
+      <p class="rejected"><strong>Rejected alternatives.</strong> mdBook makes a good site and a poor PDF. Jupyter Book is heavier and aimed at executable Python. Astro Starlight makes an excellent site and has no book path. Plain Pandoc plus a Makefile is what Quarto already is, minus the navigation and search.</p>
+
+      <h3>Prerequisites on this machine</h3>
+      <p>Already present: <code>pandoc</code> 3.10, <code>ffmpeg</code> 8.1, <code>git</code>, <code>gh</code>, Sonic&nbsp;Pi.app.</p>
+      <ul class="tasks" data-tasks="prereq">
+        <li><input type="checkbox" data-task="p-git"><span><code>git init</code> and create the GitHub repo. Nothing else works until this exists.</span></li>
+        <li><input type="checkbox" data-task="p-quarto"><span><code>brew install --cask quarto</code></span></li>
+        <li><input type="checkbox" data-task="p-tex"><span><code>quarto install tinytex</code> for PDF output. Around 100&nbsp;MB, self-contained.</span></li>
+        <li><input type="checkbox" data-task="p-qr"><span><code>brew install qrencode</code> for audio QR codes in the print book.</span></li>
+      </ul>
+      <div class="note"><p>Ruby 2.6 is on the system. Sonic Pi ships its own Ruby, so the system version only matters for helper scripts. Write those in POSIX shell or Python 3 and the question never comes up.</p></div>
+      <div class="cbox"><label>Your notes on this section</label><textarea data-comment="s2" placeholder="Disagree with Quarto? Something else you have used?"></textarea><span class="saved">saved</span></div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="sec" id="s3" data-title="Repository layout" data-keywords="directory structure files folders scripts assets filters">
+    <div class="sec-head"><span class="sec-num">3</span><h2>Repository layout</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
+    <div class="sec-body">
+<pre><code>coding-harmony/
+├── _quarto.yml              # project config, chapter list, all three formats
+├── index.qmd                # preface: who this is for, how to use it
+├── setup.qmd                # install Sonic Pi, check it works, first sound
+├── parts/
+│   ├── 00-getting-a-sound-out/
+│   │   ├── 01-hello-sound.qmd
+│   │   ├── 02-notes-are-integers.qmd
+│   │   └── 03-time-is-beats.qmd
+│   ├── 01-why-sound-has-structure/
+│   │   └── ...
+│   └── ...                  # one directory per part, one .qmd per lesson
+├── appendix/
+│   ├── ruby-for-non-rubyists.qmd
+│   ├── sonic-pi-cheatsheet.qmd
+│   ├── glossary.qmd
+│   └── sources.qmd          # public-domain score sources and licensing
+├── code/
+│   └── L07/                 # extracted snippets, one .rb per example
+├── assets/
+│   ├── audio/               # L07-2.mp3 etc., one per playable example
+│   ├── img/                 # staff diagrams, keyboard diagrams
+│   └── theme/
+│       ├── custom.scss      # site styling
+│       └── book.tex         # print styling
+├── filters/
+│   └── audio.lua            # turns code blocks into code + player
+├── scripts/
+│   ├── extract-code.sh      # .qmd -> code/*.rb for syntax checking
+│   ├── check-code.sh        # runs extracted snippets past Sonic Pi
+│   ├── make-audio.sh        # wav -> mp3, normalised, named by convention
+│   └── new-lesson.sh        # scaffolds a lesson from the template
+├── notes/
+│   └── field-notes.md       # what broke when you actually tried the lesson
+├── STYLE.md                 # the writing rules, enforced by reading
+├── curriculum/              # the syllabus tracker and this plan
+└── .github/workflows/
+    └── publish.yml          # render and deploy on push to main</code></pre>
+      <p>The <code>curriculum/</code> folder stays where it is. The HTML tracker is the planning dashboard during drafting, and later becomes the site's Course map page.</p>
+      <div class="cbox"><label>Your notes on this section</label><textarea data-comment="s3" placeholder="Naming, nesting, anything missing?"></textarea><span class="saved">saved</span></div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="sec" id="s4" data-title="Lesson file format" data-keywords="template qmd yaml frontmatter status callout conventions structure">
+    <div class="sec-head"><span class="sec-num">4</span><h2>Lesson file format</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
+    <div class="sec-body">
+      <p>Every lesson uses the same skeleton. Consistency is what lets a reader skim.</p>
+<pre><code>---
+title: "7. The envelope is the instrument"
+subtitle: "25 minutes"
+part: "Why sound has structure"
+concepts: [envelope, attack, release, articulation]
+sonic-pi: [play, use_synth, attack:, release:]
+status: draft        # draft | tested | final
+---
+
+## The idea
+
+Two or three paragraphs. What the musical concept is and what it does to
+sound. No history unless the history explains the sound.
+
+## Run this
+
+```{.ruby audio="L07-1.mp3"}
+# Same pitch, same synth, four envelopes.
+...
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for. The reader edits and runs; they do not read a transcript of
+someone else editing and running.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. No solution given.
+
+## Ear drill
+
+Present only in lessons that add a drill to drills.rb.</code></pre>
+      <p>The <code>status</code> field drives a build-time badge on the site, so readers know which lessons you have tested and which are fresh.</p>
+      <h3>Conventions</h3>
+      <ul>
+        <li>Code blocks are <code>ruby</code> for highlighting. Sonic Pi is Ruby with a DSL on top.</li>
+        <li>Every example that produces sound gets an <code>audio=</code> attribute. No exceptions.</li>
+        <li>Anything using randomness starts with <code>use_random_seed 42</code> so the printed output, the recorded audio, and the reader's run all agree.</li>
+        <li>Comments in code carry the teaching. If a comment only restates the line, cut it.</li>
+        <li>Ruby idioms get a callout the first time and never again. Three sentences maximum. Blocks, symbols, ranges, <code>each</code> versus <code>map</code>, keyword arguments, and rings are the whole list.</li>
+      </ul>
+      <div class="cbox"><label>Your notes on this section</label><textarea data-comment="s4" placeholder="Section headings, front matter fields, anything you would add or drop?"></textarea><span class="saved">saved</span></div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="sec" id="s5" data-title="Audio on the website" data-keywords="audio recording ffmpeg lua filter qr sonic-pi-tool osc mp3 normalise">
+    <div class="sec-head"><span class="sec-num">5</span><h2>Audio on the website</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
+    <div class="sec-body">
+      <p class="lead">A music book whose examples are silent is a reference manual. Every runnable example gets a recording next to it.</p>
+      <h3>Primary workflow, manual and reliable</h3>
+      <ol>
+        <li>Paste the snippet into Sonic Pi, press Rec, press Run, press Rec again.</li>
+        <li>Save as <code>L07-1.wav</code> into <code>assets/audio/</code>.</li>
+        <li><code>scripts/make-audio.sh</code> converts to mp3, trims leading silence, and normalises loudness so no example is twice as loud as its neighbour.</li>
+      </ol>
+<pre><code>ffmpeg -i "$1.wav" \
+       -af "silenceremove=1:0:-50dB,loudnorm=I=-16:TP=-1.5" \
+       -codec:a libmp3lame -q:a 4 "$1.mp3"</code></pre>
+      <h3>The Lua filter</h3>
+      <p>It turns this:</p>
+<pre><code>```{.ruby audio="L07-1.mp3"}
+play :c4
+```</code></pre>
+      <p>into a highlighted code block followed by an <code>&lt;audio controls&gt;</code> element in HTML, and into a code block followed by a QR code and short URL in PDF. One <code>filters/audio.lua</code>, roughly forty lines, checks <code>quarto.doc.is_format("html")</code> and branches.</p>
+      <div class="warnbox">
+        <p><strong>Possible automation, to evaluate in Phase 2.</strong> Sonic Pi exposes an OSC interface that <code>sonic-pi-tool</code> can drive to evaluate a file and trigger a recording, which would let <code>make-audio.sh</code> regenerate every clip unattended. The port and authentication token changed between Sonic Pi 3 and 4 and are written into <code>~/.sonic-pi/log/</code>.</p>
+        <p>Treat this as an optimisation. If it takes more than an afternoon, keep pressing Rec by hand. There are fewer than 150 clips and each takes under a minute.</p>
+      </div>
+      <div class="cbox"><label>Your notes on this section</label><textarea data-comment="s5" placeholder="Worth automating? Audio format? Player styling?"></textarea><span class="saved">saved</span></div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="sec" id="s6" data-title="Keeping the code correct" data-keywords="testing extraction ruby -c ci syntax check snippets rot">
+    <div class="sec-head"><span class="sec-num">6</span><h2>Keeping the code correct</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
+    <div class="sec-body">
+      <p>Snippets that do not run are the fastest way to lose a reader.</p>
+      <ul>
+        <li><code>scripts/extract-code.sh</code> walks every <code>.qmd</code>, pulls each fenced <code>ruby</code> block, and writes it to <code>code/L07/01.rb</code> with a header comment naming its source file and line. Pure text processing, no Quarto involvement.</li>
+        <li><code>scripts/check-code.sh</code> runs each extracted file. Two tiers: <code>ruby -c</code> catches syntax errors and needs nothing installed, and evaluation through <code>sonic-pi-tool</code> catches undefined methods and bad arguments but needs Sonic Pi running. Tier one goes in CI. Tier two runs on your machine before a release.</li>
+        <li>Long examples get a <code># ...continued from above</code> marker so extraction can join them into one runnable file.</li>
+      </ul>
+      <div class="note"><p>The point is not test coverage. The point is that after you rewrite a lesson at week nine, you find out the same day that you broke the snippet in week three.</p></div>
+      <div class="cbox"><label>Your notes on this section</label><textarea data-comment="s6" placeholder=""></textarea><span class="saved">saved</span></div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="sec" id="s7" data-title="Build and deploy" data-keywords="quarto.yml config github actions pages ci release domain cname">
+    <div class="sec-head"><span class="sec-num">7</span><h2>Build and deploy</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
+    <div class="sec-body">
+      <h4><code>_quarto.yml</code>, in outline</h4>
+<pre><code>project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "Music Theory Through Sonic Pi"
+  subtitle: "For programmers who cannot read a note"
+  author: "Gauden Galea"
+  date: last-modified
+  repo-url: https://github.com/USER/coding-harmony
+  repo-actions: [edit, issue]
+  sidebar:
+    style: docked
+  chapters:
+    - index.qmd
+    - setup.qmd
+    - part: "Getting a sound out"
+      chapters:
+        - parts/00-getting-a-sound-out/01-hello-sound.qmd
+        # ...
+  appendices:
+    - appendix/ruby-for-non-rubyists.qmd
+    - appendix/glossary.qmd
+
+format:
+  html:
+    theme: [cosmo, assets/theme/custom.scss]
+    code-copy: true
+    code-overflow: wrap
+    toc-depth: 2
+  pdf:
+    documentclass: scrbook
+    include-in-header: assets/theme/book.tex
+    keep-tex: true
+  epub:
+    cover-image: assets/img/cover.png
+
+filters:
+  - filters/audio.lua</code></pre>
+      <h4>Deployment on push to <code>main</code></h4>
+<pre><code>- uses: quarto-dev/quarto-actions/setup@v2
+- run: quarto render --to html
+- uses: peaceiris/actions-gh-pages@v4
+  with:
+    github_token: ${{ secrets.GITHUB_TOKEN }}
+    publish_dir: ./_book</code></pre>
+      <p>PDF and EPUB are built locally and attached to a tagged release rather than on every push, because TinyTeX in CI is slow and the print book only needs regenerating when you decide it does.</p>
+      <p><strong>Domain.</strong> GitHub Pages gives <code>USER.github.io/coding-harmony</code>. A custom domain via <code>CNAME</code> is a five-minute change whenever you want it.</p>
+      <div class="cbox"><label>Your notes on this section</label><textarea data-comment="s7" placeholder="Repo name, theme, domain?"></textarea><span class="saved">saved</span></div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="sec" id="s8" data-title="Writing standard" data-keywords="style zinsser prose rules banned words voice lint">
+    <div class="sec-head"><span class="sec-num">8</span><h2>Writing standard</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
+    <div class="sec-body">
+      <p><code>STYLE.md</code> lives in the repo root, so it is visible while you write and while I edit.</p>
+      <ul>
+        <li>Zinsser's rule first: cut every word that carries no weight. Write the sentence, then remove a quarter of it.</li>
+        <li>Vary sentence length. A short sentence after two long ones is the only punctuation trick that always works.</li>
+        <li>No "not X, but Y". No rhetorical triplets unless the third item is genuinely needed. No em dashes where a full stop or a comma does the job.</li>
+        <li>Banned vocabulary: delve, matters, crucial, journey, unlock, harness (as verb), leverage (as verb), robust, seamless, powerful, elegant (as praise), simply, just, of course, obviously.</li>
+        <li>No encouragement. The reader is an adult who chose to be here. Do not tell them something is exciting; write it so that it is.</li>
+        <li>Second person, present tense, active voice.</li>
+        <li>Musical terms in italics at first use, then plain. Define on first use in the sentence itself, not in a parenthesis.</li>
+        <li>Prefer the concrete instance to the general claim. "Play 220&nbsp;Hz against 330&nbsp;Hz" beats "consider a perfect fifth".</li>
+        <li>Read every lesson aloud before marking it <code>tested</code>. Anything you stumble over gets rewritten.</li>
+      </ul>
+      <div class="note"><p>Add <code>scripts/lint-prose.sh</code> that greps for the banned words and reports file and line. Cheap, and it catches drift.</p></div>
+      <div class="cbox"><label>Your notes on this section</label><textarea data-comment="s8" placeholder="Words to add to the ban list?"></textarea><span class="saved">saved</span></div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="sec" id="s9" data-title="The drafting loop" data-keywords="process workflow field notes testing rewrite cadence self-study">
+    <div class="sec-head"><span class="sec-num">9</span><h2>The drafting loop</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
+    <div class="sec-body">
+      <p class="lead">You are the first student, and that is the main advantage this book has.</p>
+      <p>For each lesson:</p>
+      <ol>
+        <li><strong>Draft</strong> from the syllabus entry. Aim for a rough version, not a good one.</li>
+        <li><strong>Sit at Sonic Pi and do the lesson</strong> as written, from a cold start. Time it.</li>
+        <li><strong>Write field notes immediately</strong> in <code>notes/field-notes.md</code>: what confused you, what took longer than the stated duration, what you wanted to try that the lesson did not offer, what sounded worse than promised.</li>
+        <li><strong>Rewrite</strong> from the notes. This is where the book actually gets written.</li>
+        <li><strong>Record the audio</strong>, set <code>status: tested</code>, commit.</li>
+      </ol>
+      <p>Keep field notes even when a lesson goes well. "This took 12 minutes not 25" is as useful as a complaint.</p>
+      <div class="warnbox">
+        <p>Two rules that keep the loop honest. Never fix a lesson while doing it, because the confusion is the data. Never draft more than four lessons ahead of what you have tested, because you will build on assumptions the testing would have disproved.</p>
+      </div>
+      <div class="cbox"><label>Your notes on this section</label><textarea data-comment="s9" placeholder=""></textarea><span class="saved">saved</span></div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="sec" id="s10" data-title="Phases" data-keywords="phases schedule scaffold sequence milestones lilypond publish leanpub">
+    <div class="sec-head"><span class="sec-num">10</span><h2>Phases</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
+    <div class="sec-body">
+      <p>Tick items as you go. Progress is stored in this browser.</p>
+
+      <div class="phase" data-phase="0">
+        <h3>Phase 0. Scaffold <span class="phase-when">one evening</span></h3>
+        <div class="bar"><i></i></div>
+        <ul class="tasks">
+          <li><input type="checkbox" data-task="ph0-a"><span>Install Quarto and TinyTeX.</span></li>
+          <li><input type="checkbox" data-task="ph0-b"><span><code>quarto create project book</code>.</span></li>
+          <li><input type="checkbox" data-task="ph0-c"><span>Generate all 58 chapter stubs into <code>_quarto.yml</code> with a script driven from the syllabus.</span></li>
+          <li><input type="checkbox" data-task="ph0-d"><span>Write <code>STYLE.md</code> and the lesson template.</span></li>
+          <li><input type="checkbox" data-task="ph0-e"><span>Empty book renders to HTML, PDF, and EPUB, and deploys to Pages.</span></li>
+        </ul>
+        <p class="rejected">Do this before writing a word of content, so that publishing is never the thing standing between you and a finished lesson.</p>
+      </div>
+
+      <div class="phase" data-phase="1">
+        <h3>Phase 1. Parts 0 to 3 <span class="phase-when">lessons 1&ndash;17</span></h3>
+        <div class="bar"><i></i></div>
+        <ul class="tasks">
+          <li><input type="checkbox" data-task="ph1-a"><span>Draft and test lessons 1 to 17.</span></li>
+          <li><input type="checkbox" data-task="ph1-b"><span>Build <code>filters/audio.lua</code> and <code>scripts/make-audio.sh</code> during Lesson 4, the first lesson that genuinely needs sound on the page.</span></li>
+          <li><input type="checkbox" data-task="ph1-c"><span>Settle the visual language: callout styling, ear-drill marking, how long a lesson feels.</span></li>
+        </ul>
+        <p class="rejected">The foundation, and the part most likely to need rewriting.</p>
+      </div>
+
+      <div class="phase" data-phase="2">
+        <h3>Phase 2. Parts 4 to 7 <span class="phase-when">lessons 18&ndash;37</span></h3>
+        <div class="bar"><i></i></div>
+        <ul class="tasks">
+          <li><input type="checkbox" data-task="ph2-a"><span>Draft and test lessons 18 to 37, the theory core.</span></li>
+          <li><input type="checkbox" data-task="ph2-b"><span>Add <code>scripts/extract-code.sh</code> and CI syntax checking. Snippets are now long enough to break silently.</span></li>
+          <li><input type="checkbox" data-task="ph2-c"><span>Decide the audio automation question.</span></li>
+        </ul>
+      </div>
+
+      <div class="phase" data-phase="3">
+        <h3>Phase 3. Parts 8 to 11 <span class="phase-when">lessons 38&ndash;54</span></h3>
+        <div class="bar"><i></i></div>
+        <ul class="tasks">
+          <li><input type="checkbox" data-task="ph3-a"><span>Draft and test lessons 38 to 54.</span></li>
+          <li><input type="checkbox" data-task="ph3-b"><span>Generate notation diagrams with LilyPond to SVG rather than drawing them, so they are regenerable and consistent.</span></li>
+          <li><input type="checkbox" data-task="ph3-c"><span>Build <code>appendix/glossary.qmd</code> as you go rather than at the end.</span></li>
+        </ul>
+      </div>
+
+      <div class="phase" data-phase="4">
+        <h3>Phase 4. Part 12 and the book pass <span class="phase-when">lessons 55&ndash;58</span></h3>
+        <div class="bar"><i></i></div>
+        <ul class="tasks">
+          <li><input type="checkbox" data-task="ph4-a"><span>Write the four capstones. Short to write, long to do.</span></li>
+          <li><input type="checkbox" data-task="ph4-b"><span>Whole-book pass: consistent terminology, cross-references both directions, index, glossary.</span></li>
+          <li><input type="checkbox" data-task="ph4-c"><span>Read every lesson aloud.</span></li>
+          <li><input type="checkbox" data-task="ph4-d"><span>Design the PDF properly. Make or commission a cover.</span></li>
+        </ul>
+      </div>
+
+      <div class="phase" data-phase="5">
+        <h3>Phase 5. Publish <span class="phase-when">tag v1.0</span></h3>
+        <div class="bar"><i></i></div>
+        <ul class="tasks">
+          <li><input type="checkbox" data-task="ph5-a"><span>Tag <code>v1.0</code>. The site is already live and stays free.</span></li>
+          <li><input type="checkbox" data-task="ph5-b"><span>EPUB and PDF direct.</span></li>
+          <li><input type="checkbox" data-task="ph5-c"><span>Print-on-demand through Lulu or Amazon KDP if you want a physical copy.</span></li>
+          <li><input type="checkbox" data-task="ph5-d"><span>Consider Leanpub, which sells in-progress books and suits a project you are testing as you write.</span></li>
+        </ul>
+      </div>
+
+      <div class="note"><p>No dates. Dates on a side project you are also studying from are fiction. The sequence is the plan.</p></div>
+      <div class="cbox"><label>Your notes on this section</label><textarea data-comment="s10" placeholder="Reorder anything? Different stopping points?"></textarea><span class="saved">saved</span></div>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section class="sec" id="s11" data-title="Decisions still open" data-keywords="licence diagrams lilypond interactive solutions choices open questions">
+    <div class="sec-head"><span class="sec-num">11</span><h2>Decisions still open</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
+    <div class="sec-body">
+      <p>Pick an option to record your choice. Selections export with your notes.</p>
+
+      <div class="decision" data-decision="licence">
+        <h3>Licence</h3>
+        <p>CC BY-NC-SA on the site with the book sold separately is the usual arrangement and it works. Decide before the first public commit, because changing it later needs everyone's agreement, and there will only ever be one contributor if you get it right.</p>
+        <div class="opts">
+          <span class="opt" data-value="CC BY-NC-SA site, book sold separately">CC BY-NC-SA + paid book</span>
+          <span class="opt" data-value="CC BY-SA everything">CC BY-SA everything</span>
+          <span class="opt" data-value="All rights reserved, site free to read">All rights reserved</span>
+          <span class="opt" data-value="Undecided">Undecided</span>
+        </div>
+      </div>
+
+      <div class="decision" data-decision="diagrams">
+        <h3>Notation diagrams</h3>
+        <p>LilyPond gives correct notation and is fiddly. Hand-drawn SVG is faster and drifts. Decide during Phase 3, when you first need a staff.</p>
+        <div class="opts">
+          <span class="opt" data-value="LilyPond to SVG">LilyPond to SVG</span>
+          <span class="opt" data-value="Hand-drawn SVG">Hand-drawn SVG</span>
+          <span class="opt" data-value="Screenshots from MuseScore">MuseScore screenshots</span>
+          <span class="opt" data-value="Undecided">Undecided</span>
+        </div>
+      </div>
+
+      <div class="decision" data-decision="interactive">
+        <h3>Interactive site examples</h3>
+        <p>A browser-based Sonic Pi does not exist. Copy-to-clipboard plus the audio player is the realistic ceiling. Revisit only if something changes.</p>
+        <div class="opts">
+          <span class="opt" data-value="Copy button plus audio player">Copy + audio only</span>
+          <span class="opt" data-value="Investigate a web audio approximation">Investigate web audio</span>
+          <span class="opt" data-value="Undecided">Undecided</span>
+        </div>
+      </div>
+
+      <div class="decision" data-decision="solutions">
+        <h3>Solutions to exercises</h3>
+        <p>Whether "Take it further" gets an answers appendix. Leaning no for the exercises, yes for the capstones.</p>
+        <div class="opts">
+          <span class="opt" data-value="No exercise solutions, worked capstones">No solutions, worked capstones</span>
+          <span class="opt" data-value="Full solutions appendix">Full solutions appendix</span>
+          <span class="opt" data-value="Hints only">Hints only</span>
+          <span class="opt" data-value="Undecided">Undecided</span>
+        </div>
+      </div>
+
+      <div class="cbox"><label>Other decisions you want on this list</label><textarea data-comment="s11" placeholder=""></textarea><span class="saved">saved</span></div>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="sec" id="s12" data-title="What could go wrong" data-keywords="risks failure stall audio chore snippet rot voice drift mitigation">
+    <div class="sec-head"><span class="sec-num">12</span><h2>What could go wrong</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
+    <div class="sec-body">
+      <div class="risk"><p><strong>The book stalls at Lesson 20.</strong> Most likely failure. Mitigation is Phase 0: if publishing is one command, a half-finished book is still a live site that helps people.</p></div>
+      <div class="risk"><p><strong>Audio recording becomes a chore.</strong> 150 clips at a minute each is two and a half hours spread over months, which is fine. It stops being fine if you have to re-record after every rewrite. Mitigation: do not record until <code>status: tested</code>.</p></div>
+      <div class="risk"><p><strong>Snippet rot.</strong> A Sonic Pi release changes a default and forty examples sound different. Mitigation: pin the Sonic Pi version in <code>setup.qmd</code>, and run the full extraction check before each release.</p></div>
+      <div class="risk"><p><strong>Writing drifts into tutorial voice.</strong> The temptation to encourage is strong when you are writing for beginners. Mitigation: <code>STYLE.md</code>, the prose linter, and reading aloud.</p></div>
+      <div class="cbox"><label>Risks you would add</label><textarea data-comment="s12" placeholder=""></textarea><span class="saved">saved</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Self-contained file. Notes, decisions, and tick marks are stored in this browser's localStorage and never leave the machine. Use <strong>Export notes</strong> to pull everything out as Markdown you can paste back into a conversation. Companion file: <a href="music_theory_through_sonic_pi.html">the 58-lesson syllabus</a>.</p>
+  </footer>
+
+</main>
+</div>
+
+<div class="modal-bg" id="modalbg" onclick="if(event.target===this) hideExport()">
+  <div class="modal">
+    <h2>Your notes on this plan</h2>
+    <p class="rejected">Everything you ticked, chose, and wrote. Copy it and paste it back to me.</p>
+    <textarea id="exportbox" readonly></textarea>
+    <div class="modal-actions">
+      <button class="primary" onclick="copyExport()">Copy to clipboard</button>
+      <button onclick="downloadExport()">Download .md</button>
+      <button onclick="hideExport()">Close</button>
+      <span class="counter" id="copystatus"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const K = 'sonicpi-plan-';
+
+  /* localStorage throws in some contexts: data: URLs, hardened private modes.
+     Fall back to memory so the page stays fully interactive and only
+     persistence is lost. Without this, one throw kills the whole script. */
+  const mem = new Map();
+  let persist = true;
+  try {
+    window.store.set(K + 'probe', '1');
+    window.store.del(K + 'probe');
+  } catch (e) { persist = false; }
+  const store = {
+    get: k => { try { return persist ? store.get(k) : (mem.has(k) ? mem.get(k) : null); } catch (e) { return null; } },
+    set: (k, v) => { try { persist ? store.set(k, v) : mem.set(k, v); } catch (e) {} },
+    del: k => { try { persist ? store.del(k) : mem.delete(k); } catch (e) {} },
+    keys: () => { try { return persist ? Object.keys(localStorage) : Array.from(mem.keys()); } catch (e) { return []; } }
+  };
+  const secs = Array.from(document.querySelectorAll('section.sec'));
+
+  /* ---------- table of contents ---------- */
+  const toc = document.getElementById('toc');
+  secs.forEach(s => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = '#' + s.id;
+    a.textContent = s.dataset.title;
+    a.dataset.for = s.id;
+    a.innerHTML += '<span class="dot"></span>';
+    a.addEventListener('click', () => { s.classList.add('open'); });
+    li.appendChild(a);
+    toc.appendChild(li);
+  });
+  const tocLinks = Array.from(toc.querySelectorAll('a'));
+
+  /* ---------- collapse / expand ---------- */
+  secs.forEach(s => {
+    s.querySelector('.sec-head').addEventListener('click', () => s.classList.toggle('open'));
+    if (store.get(K + 'open-' + s.id) === '1') s.classList.add('open');
+  });
+  const observer = new MutationObserver(muts => {
+    muts.forEach(m => {
+      const s = m.target;
+      if (s.classList) store.set(K + 'open-' + s.id, s.classList.contains('open') ? '1' : '0');
+    });
+  });
+  secs.forEach(s => observer.observe(s, { attributes: true, attributeFilter: ['class'] }));
+
+  window.openAll = () => secs.forEach(s => s.classList.add('open'));
+  window.closeAll = () => secs.forEach(s => s.classList.remove('open'));
+
+  /* ---------- scroll spy ---------- */
+  const spy = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        tocLinks.forEach(a => a.classList.toggle('active', a.dataset.for === e.target.id));
+      }
+    });
+  }, { rootMargin: '-66px 0px -70% 0px' });
+  secs.forEach(s => spy.observe(s));
+
+  /* ---------- comments ---------- */
+  const areas = Array.from(document.querySelectorAll('textarea[data-comment]'));
+  function markSection(id) {
+    const sec = document.getElementById(id);
+    const area = sec.querySelector('textarea[data-comment]');
+    const has = area && area.value.trim().length > 0;
+    sec.classList.toggle('commented', has);
+    const link = tocLinks.find(a => a.dataset.for === id);
+    if (link) link.classList.toggle('has-comment', has);
+  }
+  areas.forEach(a => {
+    a.value = store.get(K + 'c-' + a.dataset.comment) || '';
+    let t;
+    a.addEventListener('input', () => {
+      store.set(K + 'c-' + a.dataset.comment, a.value);
+      markSection(a.dataset.comment);
+      updateCounter();
+      const flag = a.parentElement.querySelector('.saved');
+      clearTimeout(t);
+      flag.classList.add('show');
+      t = setTimeout(() => flag.classList.remove('show'), 900);
+    });
+    markSection(a.dataset.comment);
+  });
+
+  /* ---------- task checkboxes ---------- */
+  const tasks = Array.from(document.querySelectorAll('input[type="checkbox"][data-task]'));
+  function paintPhases() {
+    document.querySelectorAll('.phase').forEach(p => {
+      const boxes = Array.from(p.querySelectorAll('input[type="checkbox"]'));
+      const done = boxes.filter(b => b.checked).length;
+      p.querySelector('.bar i').style.width = boxes.length ? (100 * done / boxes.length) + '%' : '0';
+    });
+  }
+  tasks.forEach(b => {
+    b.checked = store.get(K + 't-' + b.dataset.task) === '1';
+    b.closest('li').classList.toggle('done', b.checked);
+    b.addEventListener('change', () => {
+      store.set(K + 't-' + b.dataset.task, b.checked ? '1' : '0');
+      b.closest('li').classList.toggle('done', b.checked);
+      paintPhases(); updateCounter();
+    });
+  });
+  paintPhases();
+
+  /* ---------- decisions ---------- */
+  const decisions = Array.from(document.querySelectorAll('.decision'));
+  decisions.forEach(d => {
+    const key = K + 'd-' + d.dataset.decision;
+    const saved = store.get(key);
+    d.querySelectorAll('.opt').forEach(o => {
+      if (o.dataset.value === saved) o.classList.add('sel');
+      o.addEventListener('click', () => {
+        const already = o.classList.contains('sel');
+        d.querySelectorAll('.opt').forEach(x => x.classList.remove('sel'));
+        if (already) { store.del(key); }
+        else { o.classList.add('sel'); store.set(key, o.dataset.value); }
+        updateCounter();
+      });
+    });
+  });
+
+  /* ---------- counter ---------- */
+  function updateCounter() {
+    const c = areas.filter(a => a.value.trim()).length;
+    const t = tasks.filter(b => b.checked).length;
+    const d = decisions.filter(x => x.querySelector('.opt.sel')).length;
+    document.getElementById('counter').innerHTML =
+      '<strong>' + c + '</strong> note' + (c === 1 ? '' : 's') + ' &middot; <strong>' + t + '/' + tasks.length +
+      '</strong> tasks &middot; <strong>' + d + '/' + decisions.length + '</strong> decisions' +
+      (persist ? '' : ' &middot; <span class="nostore">not saved in this view</span>');
+  }
+  updateCounter();
+
+  /* ---------- search ---------- */
+  const search = document.getElementById('search');
+  search.addEventListener('input', () => {
+    const q = search.value.toLowerCase().trim();
+    secs.forEach(s => {
+      const hay = (s.innerText + ' ' + (s.dataset.keywords || '') + ' ' + s.dataset.title).toLowerCase();
+      const hit = !q || hay.includes(q);
+      s.classList.toggle('hidden', !hit);
+      if (q && hit) s.classList.add('open');
+      const link = tocLinks.find(a => a.dataset.for === s.id);
+      if (link) link.style.display = hit ? '' : 'none';
+    });
+  });
+
+  /* ---------- export ---------- */
+  function buildExport() {
+    const date = new Date().toISOString().slice(0, 10);
+    let out = '# Plan review notes — ' + date + '\n\n';
+
+    const chosen = decisions.map(d => {
+      const sel = d.querySelector('.opt.sel');
+      return sel ? '- **' + d.querySelector('h3').textContent + ':** ' + sel.dataset.value : null;
+    }).filter(Boolean);
+    if (chosen.length) out += '## Decisions\n\n' + chosen.join('\n') + '\n\n';
+
+    const ticked = tasks.filter(b => b.checked);
+    if (ticked.length) {
+      out += '## Done\n\n';
+      ticked.forEach(b => { out += '- [x] ' + b.closest('li').querySelector('span').textContent.trim() + '\n'; });
+      out += '\n';
+    }
+
+    const withNotes = areas.filter(a => a.value.trim());
+    if (withNotes.length) {
+      out += '## Comments\n\n';
+      withNotes.forEach(a => {
+        const sec = document.getElementById(a.dataset.comment);
+        out += '### ' + sec.querySelector('.sec-num').textContent + '. ' + sec.dataset.title + '\n\n';
+        out += a.value.trim() + '\n\n';
+      });
+    }
+
+    if (!chosen.length && !ticked.length && !withNotes.length) {
+      out += 'Nothing recorded yet. Tick tasks, pick decisions, or write in the note boxes.\n';
+    }
+    return out;
+  }
+
+  window.showExport = function () {
+    document.getElementById('exportbox').value = buildExport();
+    document.getElementById('copystatus').textContent = '';
+    document.getElementById('modalbg').classList.add('show');
+  };
+  window.hideExport = function () {
+    document.getElementById('modalbg').classList.remove('show');
+  };
+  window.copyExport = function () {
+    const box = document.getElementById('exportbox');
+    box.select();
+    navigator.clipboard.writeText(box.value).then(
+      () => { document.getElementById('copystatus').textContent = 'Copied.'; },
+      () => { document.execCommand('copy'); document.getElementById('copystatus').textContent = 'Copied.'; }
+    );
+  };
+  window.downloadExport = function () {
+    const blob = new Blob([buildExport()], { type: 'text/markdown' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'plan-review-notes.md';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
+  window.resetAll = function () {
+    if (!confirm('Clear all notes, decisions, and tick marks?')) return;
+    store.keys().filter(k => k.startsWith(K)).forEach(k => store.del(k));
+    if (!persist) { mem.clear(); }
+    location.reload();
+  };
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') hideExport();
+    if (e.key === '/' && document.activeElement.tagName !== 'TEXTAREA' && document.activeElement !== search) {
+      e.preventDefault(); search.focus();
+    }
+  });
+})();
+</script>
+</body>
+</html>

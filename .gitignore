@@ -1,0 +1,78 @@
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# ---------------------------------------------------------------------------
+# Quarto
+# ---------------------------------------------------------------------------
+# _book/ is the rendered site and book. GitHub Actions rebuilds it on every
+# push, so committing it would only create merge conflicts in generated HTML.
+_book/
+.quarto/
+_freeze/
+site_libs/
+/*_files/
+
+# ---------------------------------------------------------------------------
+# LaTeX, from the PDF build
+# ---------------------------------------------------------------------------
+# keep-tex: true leaves a .tex file next to the PDF. Both live in _book/ and
+# are already ignored above; these patterns catch stray runs elsewhere.
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+
+# ---------------------------------------------------------------------------
+# LilyPond, from the notation diagrams in Phase 3
+# ---------------------------------------------------------------------------
+# LilyPond scatters intermediates beside its output. The .ly source and the
+# final .svg are the only files worth keeping.
+*-systems.*
+*.count
+*.eps
+*.ps
+*.texi
+
+# ---------------------------------------------------------------------------
+# Audio masters
+# ---------------------------------------------------------------------------
+# Sonic Pi records WAV. scripts/make-audio.sh converts to the MP3 the site
+# ships, and the MP3s are committed. The WAV masters are large and would bloat
+# the repo permanently, since git keeps every version of a binary forever.
+# Keep them backed up outside git, or switch to Git LFS if you want them here.
+*.wav
+*.aiff
+*.flac
+
+# ---------------------------------------------------------------------------
+# Generated code
+# ---------------------------------------------------------------------------
+# scripts/extract-code.sh regenerates code/ from the fenced blocks in the .qmd
+# files. The lessons are the source of truth; this directory is a build output.
+code/
+
+# ---------------------------------------------------------------------------
+# Tooling
+# ---------------------------------------------------------------------------
+node_modules/
+__pycache__/
+.venv/
+venv/
+.bundle/
+
+# Secrets
+.env
+.env.*
+!.env.example
