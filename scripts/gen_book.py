@@ -150,7 +150,8 @@ Delete this block once the lesson is drafted.
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
+What the musical concept is and what it does to sound. Two or three paragraphs,
+first person plural, no encouragement. See STYLE.md.
 
 ## Run this
 
@@ -158,20 +159,20 @@ What the musical concept is and what it does to sound. Two or three paragraphs.
 # TODO
 ```
 
-What you just heard, in a sentence or two.
+What we just heard, in a sentence or two.
 
 ## Change one thing
 
-Two or three directed experiments. Each states what to change and what to
-listen for.
+Two or three directed experiments. Each says what to change and what to listen
+for.
 
 ## Why it works
 
-The explanation, now that the sound is in the reader's ears.
+The explanation, now that the sound is in our ears.
 
 ## Take it further
 
-One optional harder exercise. Solution in the appendix.
+One optional harder exercise. Worked answer in the solutions appendix.
 """
 
 
@@ -194,9 +195,9 @@ def render_solutions(parts):
         'title: "Solutions"',
         "---",
         "",
-        "Answers to the *Take it further* exercise in each lesson. Work the",
-        "exercise before reading. A solution you have not tried to reach teaches",
-        "nothing.",
+        "Worked answers to the *Take it further* exercise in each lesson. Work",
+        "the exercise before reading. A solution we have not tried to reach",
+        "teaches nothing.",
         "",
         "Sections marked TODO are waiting on their lesson to be drafted.",
         "",

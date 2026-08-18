@@ -2,8 +2,8 @@
 title: "Sources and licences"
 ---
 
-Music used as transcription material, with its provenance. Lesson 42 covers how
-to build this list and what to check before adding to it.
+Music we use as transcription material, with its provenance. Lesson 42 covers
+how we build this list and what to check before adding to it.
 
 Public domain status differs by country, and a modern typeset edition of an old
 work can carry its own copyright even when the music itself is free. Record the

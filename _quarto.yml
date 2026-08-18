@@ -59,7 +59,7 @@ book:
       chapters:
         - parts/04-intervals/18-interval-carries-two-measurements.qmd
         - parts/04-intervals/19-interval-sound-dictionary.qmd
-        - parts/04-intervals/20-build-your-own-drill-harness.qmd
+        - parts/04-intervals/20-build-our-own-drill-harness.qmd
     - part: "Part 5. Scales and keys"
       chapters:
         - parts/05-scales-and-keys/21-major-scale-step-formula.qmd
@@ -91,7 +91,7 @@ book:
         - parts/08-reading-notation/41-decode-four-printed-bars.qmd
     - part: "Part 9. Transcription"
       chapters:
-        - parts/09-transcription/42-finding-music-you-can-legally-use.qmd
+        - parts/09-transcription/42-finding-music-we-can-legally-use.qmd
         - parts/09-transcription/43-four-pass-pipeline.qmd
         - parts/09-transcription/44-transcribe-by-ear.qmd
         - parts/09-transcription/45-transcribe-from-score.qmd
@@ -113,7 +113,7 @@ book:
         - parts/12-capstones/55-capstone-solo-melody.qmd
         - parts/12-capstones/56-capstone-b-melody-accompaniment.qmd
         - parts/12-capstones/57-capstone-c-two-voice-polyphony.qmd
-        - parts/12-capstones/58-refactor-into-your-own-library.qmd
+        - parts/12-capstones/58-refactor-into-our-own-library.qmd
     # END CHAPTERS
 
   appendices:

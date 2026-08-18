@@ -1,0 +1,33 @@
+# One extended regex per line. Blank lines and # comments are ignored.
+# Keeping these out of the shell script avoids quoting problems and makes the
+# list editable without touching code. See STYLE.md for the reasoning.
+
+# Vocabulary
+\bdelve
+\bcrucial\b
+\bjourney\b
+\bunlock
+\brobust\b
+\bseamless
+\bpowerful\b
+\bgame-changer
+\bdeep dive\b
+\bdive in\b
+\bat its core\b
+it's worth noting
+\bobviously\b
+\bof course\b
+
+# Verbs that are fine as nouns and slop as verbs
+\bharness the\b
+\bleverage the\b
+
+# Constructions
+\bnot just\b
+\bnot only\b.*\bbut also\b
+
+# Voice, from the STYLE.md voice section
+\blet's\b
+\blet us\b
+\bwe have shown\b
+\bwe will see\b

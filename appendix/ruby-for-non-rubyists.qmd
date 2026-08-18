@@ -2,7 +2,7 @@
 title: "Ruby for non-Rubyists"
 ---
 
-Everything you need to read the code in this book, assuming you program in
+Everything needed to read the code in this book, assuming we program in
 something else. Sonic Pi is Ruby with a music DSL on top, and this book uses a
 small corner of the language.
 
@@ -77,8 +77,8 @@ notes = ring(:c4, :e4, :g4)
 8.times { |i| play notes[i]; sleep 0.5 }   # cycles, no bounds error
 ```
 
-## Things that will trip you
+## Things that trip us up
 
 Ruby returns the last expression, so functions rarely need `return`. Integer
-division truncates, so write `2.0/3` and not `2/3` when you mean a triplet.
+division truncates, so we write `2.0/3` and not `2/3` when we mean a triplet.
 Symbols and strings are different types, and Sonic Pi wants symbols.

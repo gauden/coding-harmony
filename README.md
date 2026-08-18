@@ -4,38 +4,56 @@ Music theory for people who already write code.
 
 The audience is programmers who are at ease with arrays, functions, and threads,
 and who cannot read a note. [Sonic Pi](https://sonic-pi.net/) is the laboratory.
-Each lesson takes one musical idea, encodes it as data, plays it, and asks you to
-change something and listen to what happened.
+Each lesson takes one musical idea, encodes it as data, plays it, and asks for one
+change so we can hear what the change did.
 
 This is not the Sonic Pi tutorial. That one teaches programming and uses music as
 the reward. Here the programming is assumed, and Ruby idioms get a one-line note
 the first time they appear.
 
+The prose is first person plural and deliberately unencouraging. The rules are in
+[`STYLE.md`](STYLE.md).
+
 ## Status
 
-Early. The syllabus and the build plan are written. The lessons are not.
+Early. The syllabus, the build plan, and the book scaffold are done. The lessons
+are not written yet.
+
+The book renders to a website, a PDF, and an EPUB from one Markdown source.
+`scripts/gen_book.py` generates the chapter list and one stub per lesson from the
+syllabus, so the syllabus stays the single source of truth for what exists.
 
 ## What is here
 
-Both files are self-contained HTML. Clone the repo and open them in a browser.
+The two planning documents are self-contained HTML. Clone the repo and open them
+in a browser.
 
 | File | What it is |
 |---|---|
 | [`curriculum/music_theory_through_sonic_pi.html`](curriculum/music_theory_through_sonic_pi.html) | The syllabus. 58 lessons across 13 parts, with progress tracking and search. |
 | [`curriculum/plan.html`](curriculum/plan.html) | How the site and book get built. Toolchain, repository layout, lesson template, audio workflow, writing standard, five phases. Interactive, with a notes export. |
+| [`STYLE.md`](STYLE.md) | The prose rules, starting with the voice. |
 
-## Where it is going
+## Building it
 
-The lessons will be Quarto `.qmd` files, which are Markdown with a YAML header.
-One source tree renders to a GitHub Pages site and to PDF and EPUB for the book.
-Every example that produces sound gets a recording next to it on the website.
+Lessons are Quarto `.qmd` files, which are Markdown with a YAML header. Every
+example that produces sound gets a recording next to it on the website.
+
+```bash
+quarto render
+```
+
+That produces `_book/` with the site, the PDF, and the EPUB. Needs
+[Quarto](https://quarto.org/) and, for the PDF, `quarto install tinytex`.
 
 ## Requirements
 
-Sonic Pi 4 or later, from [sonic-pi.net](https://sonic-pi.net/). Check that
-`play 60` makes a noise and you are ready to start. Headphones or decent speakers
-will do more for your progress than any other purchase, because half of this
-course is hearing small differences.
+Sonic Pi 5.0.0, from [sonic-pi.net](https://sonic-pi.net/). Every example is
+written and recorded against that version. Check that `play 60` makes a noise and
+we are ready to start.
+
+Headphones or decent speakers do more for progress here than any other purchase,
+because half of this course is hearing small differences.
 
 ## Licence
 

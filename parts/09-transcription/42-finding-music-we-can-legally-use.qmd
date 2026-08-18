@@ -1,5 +1,5 @@
 ---
-title: "42. Finding music you can legally use"
+title: "42. Finding music we can legally use"
 subtitle: "25 min"
 part: "Transcription"
 concepts: [sources, public, domain, imslp, mutopia, musescore]
@@ -12,14 +12,15 @@ Delete this block once the lesson is drafted.
 
 > - IMSLP for scans, Mutopia for typeset public-domain scores, MuseScore for community arrangements with varying licences.
 > - Public domain rules differ by country and a modern edition of an old work can carry its own copyright.
-> - Build a shortlist of twenty pieces at your level and record the source and licence for each one.
+> - Build a shortlist of twenty pieces at our level and record the source and licence for each one.
 >
 > **Ends with: a sources.md file with twenty candidates, each with a link and a licence note.**
 :::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
+What the musical concept is and what it does to sound. Two or three paragraphs,
+first person plural, no encouragement. See STYLE.md.
 
 ## Run this
 
@@ -27,17 +28,17 @@ What the musical concept is and what it does to sound. Two or three paragraphs.
 # TODO
 ```
 
-What you just heard, in a sentence or two.
+What we just heard, in a sentence or two.
 
 ## Change one thing
 
-Two or three directed experiments. Each states what to change and what to
-listen for.
+Two or three directed experiments. Each says what to change and what to listen
+for.
 
 ## Why it works
 
-The explanation, now that the sound is in the reader's ears.
+The explanation, now that the sound is in our ears.
 
 ## Take it further
 
-One optional harder exercise. Solution in the appendix.
+One optional harder exercise. Worked answer in the solutions appendix.

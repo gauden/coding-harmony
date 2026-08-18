@@ -1,8 +1,8 @@
 ---
-title: "47. Independent voices"
-subtitle: "35 min"
-part: "Texture and arrangement"
-concepts: [polyphony, live_loop, thread, sync, independent, voices]
+title: "20. Build our own drill harness"
+subtitle: "30 min"
+part: "Intervals"
+concepts: [drill, quiz, interval, training, random, reveal]
 sonic-pi: []
 status: outline
 ---
@@ -10,11 +10,11 @@ status: outline
 ::: {.callout-note collapse="true" title="Planned, from the syllabus"}
 Delete this block once the lesson is drafted.
 
-> - live_loop and in_thread give you one process per voice. sync and cue keep them aligned.
-> - Sonic Pi's deterministic scheduling means voices do not drift. Verify this with a sixteen-bar test.
-> - Keep each voice's score in its own data structure. Shared mutable state across voices is as bad here as anywhere.
+> - Random root, random interval from a configurable set, pause, then reveal by playing the answer named.
+> - Weight the set toward the intervals we keep missing. That is the whole point of writing it ourselves.
+> - Reuse the harness in Parts 5 and 6 for scales, chords, and cadences.
 >
-> **Ends with: a two-part arrangement that loops indefinitely and stays locked.**
+> **Ear drill: ten intervals a day, ascending only, from a set of four. Add a fifth interval after 9 of 10 twice running.**
 :::
 
 ## The idea

@@ -1,8 +1,8 @@
 ---
-title: "47. Independent voices"
-subtitle: "35 min"
-part: "Texture and arrangement"
-concepts: [polyphony, live_loop, thread, sync, independent, voices]
+title: "58. Refactor into our own library"
+subtitle: "60+ min"
+part: "Capstones"
+concepts: [refactor, library, framework, schema, readme, reusable]
 sonic-pi: []
 status: outline
 ---
@@ -10,11 +10,12 @@ status: outline
 ::: {.callout-note collapse="true" title="Planned, from the syllabus"}
 Delete this block once the lesson is drafted.
 
-> - live_loop and in_thread give you one process per voice. sync and cue keep them aligned.
-> - Sonic Pi's deterministic scheduling means voices do not drift. Verify this with a sixteen-bar test.
-> - Keep each voice's score in its own data structure. Shared mutable state across voices is as bad here as anywhere.
+> - Extract the helpers written more than twice: playback, validation, transposition, voicing, articulation.
+> - Settle on one event schema and migrate old pieces to it.
+> - Keep it small. A framework large enough to hide the score has failed.
+> - Write a README that explains the representation choices to us in six months.
 >
-> **Ends with: a two-part arrangement that loops indefinitely and stays locked.**
+> **Final checkpoint: we can take a printed score or a short recording and turn it into structured, editable code, and explain the theory encoded in it.**
 :::
 
 ## The idea

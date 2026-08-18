@@ -1,28 +1,35 @@
 #!/usr/bin/env bash
-# Report banned vocabulary and constructions from STYLE.md.
+# Report banned vocabulary, constructions, and voice slips from STYLE.md.
+# Patterns live in scripts/prose-banned.txt, one extended regex per line.
 # Exits 1 if anything is found, so it can gate a commit or a build.
 set -uo pipefail
 cd "$(dirname "$0")/.."
 
-WORDS='delve|crucial|journey|unlock|robust|seamless|powerful|game-changer|deep dive|dive in|at its core|it'"'"'s worth noting|obviously|of course'
-PHRASES='harness the|leverage the|not just|not only.*but also'
-
+PATTERNS=scripts/prose-banned.txt
 status=0
-files=$(git ls-files '*.qmd' '*.md' 2>/dev/null | grep -v -e '^STYLE.md$' -e '^notes/')
 
-for pattern in "$WORDS" "$PHRASES"; do
-  # -n line numbers, -I skip binaries, -E extended regex, -i case-insensitive
-  if hits=$(grep -nIEi -- "$pattern" $files 2>/dev/null); then
-    echo "$hits"
-    status=1
-  fi
-done
+# STYLE.md quotes the banned words in order to ban them, and the field notes
+# are private working text, so neither is linted.
+files=$(git ls-files '*.qmd' '*.md' 2>/dev/null \
+        | grep -v -e '^STYLE.md$' -e '^notes/' -e '^scripts/prose-banned.txt$')
+
+[ -n "$files" ] || { echo "No tracked prose files."; exit 0; }
+
+# Strip comments and blank lines before handing the list to grep.
+active=$(grep -vE '^\s*(#|$)' "$PATTERNS")
+
+if hits=$(printf '%s\n' "$active" | grep -nIEi -f /dev/stdin -- $files); then
+  echo "$hits"
+  status=1
+fi
 
 # Em dashes get their own pass so the message can explain itself.
-if hits=$(grep -nI -- '—' $files 2>/dev/null); then
+if hits=$(grep -nI -- '—' $files); then
   echo "$hits" | sed 's/$/   <- em dash, prefer a full stop or comma/'
   status=1
 fi
 
-[ $status -eq 0 ] && echo "Prose clean."
+if [ $status -eq 0 ]; then
+  echo "Prose clean: $(printf '%s\n' $files | wc -l | tr -d ' ') files, $(printf '%s\n' "$active" | wc -l | tr -d ' ') patterns."
+fi
 exit $status

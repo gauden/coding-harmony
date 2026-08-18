@@ -2,8 +2,8 @@
 title: "Sonic Pi cheat sheet"
 ---
 
-The subset used in this book. The built-in help pane documents everything else,
-and it is faster than any web search.
+The subset this book uses. The built-in help pane documents everything else, and
+it is faster than any web search.
 
 ## Sound
 
@@ -44,8 +44,8 @@ and it is faster than any web search.
 ## Randomness
 
 `rrand(lo, hi)` for a float, `rrand_i(lo, hi)` for an integer, `choose` to pick
-from a list, `one_in(n)` for a probability. Set `use_random_seed 42` at the top
-of any example whose output you want to reproduce.
+from a list, `one_in(n)` for a probability. We set `use_random_seed 42` at the top of any
+example whose output should be reproducible.
 
 ## Effects
 
@@ -55,5 +55,4 @@ with_fx :reverb, room: 0.8 do
 end
 ```
 
-`:reverb`, `:echo`, `:lpf`, `:hpf`, and `:distortion` cover most of what this
-book needs.
+`:reverb`, `:echo`, `:lpf`, `:hpf`, and `:distortion` cover most of what we need.

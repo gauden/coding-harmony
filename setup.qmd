@@ -2,9 +2,9 @@
 title: "Before Lesson 1"
 ---
 
-Install Sonic Pi from [sonic-pi.net](https://sonic-pi.net/). Version 4 or later.
-The download page covers macOS, Windows, Linux, and Raspberry Pi, and the
-installer is the whole setup.
+Install Sonic Pi from [sonic-pi.net](https://sonic-pi.net/). The download page
+covers macOS, Windows, Linux, and Raspberry Pi, and the installer is the whole
+setup.
 
 Open it, type this into the first buffer, and press **Run**.
 
@@ -12,19 +12,31 @@ Open it, type this into the first buffer, and press **Run**.
 play 60
 ```
 
-If you hear a note, you are ready.
+A note means we are ready.
 
-Headphones or decent speakers will do more for your progress than any other
-purchase, because half of this course is hearing small differences. Laptop
-speakers reproduce almost nothing below about 200 Hz, which is most of Part 1
-and every bass line in Part 10.
+Headphones or decent speakers do more for progress here than any other purchase,
+because half of this course is hearing small differences. Laptop speakers
+reproduce almost nothing below about 200 Hz, which is most of Part 1 and every
+bass line in Part 10.
+
+## Which version
+
+Every example in this book was written and recorded against **Sonic Pi 5.0.0**.
+
+Sonic Pi occasionally changes a synth default or a function signature between
+releases. When a snippet sounds different from its recording, check the version
+before assuming a typo. Help, About reports it, and so does
+`Contents/Resources/VERSION` inside the application bundle on macOS.
+
+Later versions will mostly behave identically. Earlier ones will not, and 5.0
+introduced changes that the examples here rely on.
 
 ## The window
 
-Three areas matter. The **buffers** hold your code, and there are ten of them,
-which is more useful than it sounds once you are running several voices. The
-**log** on the right prints every note as it plays, and it is the first place to
-look when something sounds wrong. The **help** pane at the bottom documents every
+Three areas matter. The **buffers** hold our code, and there are ten of them,
+which is more useful than it sounds once several voices are running. The **log**
+on the right prints every note as it plays, and it is the first place to look
+when something sounds wrong. The **help** pane at the bottom documents every
 synth, sample, and function, and it is faster than searching the web.
 
 Two shortcuts worth learning now: `Cmd-R` or `Alt-R` runs the buffer, and
@@ -32,8 +44,8 @@ Two shortcuts worth learning now: `Cmd-R` or `Alt-R` runs the buffer, and
 
 ## A first sound
 
-Paste this in and run it. You are not expected to understand it yet. It is here
-so you know what the destination sounds like.
+Paste this in and run it. None of it needs to make sense yet. It is here so we
+know what the destination sounds like.
 
 ```{.ruby audio="setup-1.mp3"}
 # Four bars that already sound like music.
@@ -63,9 +75,3 @@ and run it again. Same rhythm, same bass, different feeling. Working out why is
 roughly what Parts 2 and 5 are for.
 
 Press `Cmd-.` to stop it.
-
-## Version
-
-The examples were written against Sonic Pi 4. Later versions change defaults
-occasionally, so if a snippet sounds different from its recording, check your
-version before assuming you mistyped something.
