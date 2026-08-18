@@ -12,7 +12,7 @@ Open it, type this into the first buffer, and press **Run**.
 play 60
 ```
 
-A note means we are ready.
+A note means you are ready.
 
 Headphones or decent speakers do more for progress here than any other purchase,
 because half of this course is hearing small differences. Laptop speakers
@@ -33,7 +33,7 @@ introduced changes that the examples here rely on.
 
 ## The window
 
-Three areas matter. The **buffers** hold our code, and there are ten of them,
+Three areas matter. The **buffers** hold your code, and there are ten of them,
 which is more useful than it sounds once several voices are running. The **log**
 on the right prints every note as it plays, and it is the first place to look
 when something sounds wrong. The **help** pane at the bottom documents every
@@ -44,7 +44,7 @@ Two shortcuts worth learning now: `Cmd-R` or `Alt-R` runs the buffer, and
 
 ## A first sound
 
-Paste this in and run it. None of it needs to make sense yet. It is here so we
+Paste this in and run it. None of it needs to make sense yet. It is here so you
 know what the destination sounds like.
 
 ```{.ruby audio="setup-1.mp3"}

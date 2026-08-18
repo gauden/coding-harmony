@@ -156,7 +156,7 @@
 <header>
   <div class="wrap">
     <h1>Music Theory Through Sonic Pi</h1>
-    <p class="subtitle">Music theory for people who already write code. We bring arrays, functions, and threads. The course supplies the ears.</p>
+    <p class="subtitle">Music theory for people who already write code. You bring arrays, functions, and threads. The course supplies the ears.</p>
     <div class="meta">
       <span class="pill">58 lessons</span>
       <span class="pill">20&ndash;35 minutes each</span>
@@ -182,15 +182,15 @@
   <section class="intro-grid">
     <div class="panel">
       <h2>How the course works</h2>
-      <p>Sonic Pi is the laboratory. Each lesson takes one musical idea, encodes it as data, plays it, and then asks for one change so we can hear what the change did. The programming stays deliberately ahead of the theory, and our existing skills carry the load.</p>
+      <p>Sonic Pi is the laboratory. Each lesson takes one musical idea, encodes it as data, plays it, and then asks you to change something and listen to what happened. The programming stays deliberately ahead of the theory, so what you already know carries the load.</p>
       <p>This is not the Sonic Pi tutorial. That one teaches programming and uses music as the reward. Here the programming is assumed. Ruby idioms get a one-line note when they first appear and no more than that.</p>
       <ul class="principles">
-        <li><strong>Sound first, name second.</strong> We hear an interval, a cadence, a mode before anyone tells us what it is called.</li>
+        <li><strong>Sound first, name second.</strong> You hear an interval, a cadence, a mode before anyone tells you what it is called.</li>
         <li><strong>Music is data.</strong> A note event carries pitch, onset, duration, amplitude, and articulation. Everything else is a function over those.</li>
         <li><strong>Score and renderer stay separate.</strong> The composition is content. The playback function is interpretation. Changing one should not touch the other.</li>
         <li><strong>Every lesson ends with something worth hearing.</strong> If the last snippet in a lesson is a bare test tone, the lesson is broken.</li>
-        <li><strong>Notation arrives late and on demand.</strong> We meet the staff after pitch and duration are already familiar as numbers, which turns it into a decoding exercise rather than a wall.</li>
-        <li><strong>Ear training runs in parallel.</strong> Ten minutes most days, using drills we wrote ourselves, from Part 2 onwards.</li>
+        <li><strong>Notation arrives late and on demand.</strong> The staff turns up in Part 8, once pitch and duration are already familiar as numbers, which turns it into a decoding exercise rather than a wall.</li>
+        <li><strong>Ear training runs in parallel.</strong> Ten minutes most days, using drills you write yourself, from Part 2 onwards.</li>
       </ul>
     </div>
     <div class="panel toc">
@@ -242,7 +242,7 @@ end</code></pre>
   </section>
 
   <section class="panel">
-    <h2>The event model we keep refining</h2>
+    <h2>The event model you keep refining</h2>
     <p>One representation carries the whole course. A score is a sequence of events. A renderer walks the sequence and turns each event into sound. Everything from a nursery rhyme to a two-voice invention fits this shape.</p>
 <pre><code># An event is [pitch, duration_in_beats]. :r means rest.
 score = [
@@ -268,7 +268,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
 
   <section class="panel">
     <h2>The ear track</h2>
-    <p>Theory we can only read is theory we cannot use. From Part 2 onwards, each part contributes a drill to a growing file called <code>drills.rb</code>. Run one for ten minutes on days without a lesson.</p>
+    <p>Theory you can only read is theory you cannot use. From Part 2 onwards, each part contributes a drill to a growing file called <code>drills.rb</code>. Run one for ten minutes on days without a lesson.</p>
     <ul class="principles">
       <li><strong>Part 2:</strong> pitch matching and octave recognition.</li>
       <li><strong>Part 3:</strong> clap-back rhythms and meter identification.</li>
@@ -295,9 +295,9 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
         <ul>
           <li><code>play</code>, <code>sleep</code>, <code>use_synth</code>, and the Run button. That is the entire API surface for the next hour.</li>
           <li>Swap <code>:pluck</code> for <code>:prophet</code>, <code>:blade</code>, and <code>:fm</code> on an unchanged phrase.</li>
-          <li>Find the log pane and the error messages, since we read both a lot.</li>
+          <li>Find the log pane and the error messages, since you will read both a lot.</li>
         </ul>
-        <div class="outcome"><strong>Ends with:</strong> a six-note phrase we can play through four instruments by editing one word.</div>
+        <div class="outcome"><strong>Ends with:</strong> a six-note phrase you can play through four instruments by editing one word.</div>
       </article>
 
       <article class="lesson" data-keywords="midi note numbers integers pitch arithmetic hz_to_midi">
@@ -315,9 +315,9 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
         <ul>
           <li><code>sleep 1</code> means one beat. <code>use_bpm</code> decides what a beat costs in seconds.</li>
           <li>Run the same score at 60, 96, and 152 BPM and notice which tempo makes it sound like a different piece.</li>
-          <li>Sonic Pi's scheduler keeps timing exact regardless of how long our code takes to run. Trust it.</li>
+          <li>Sonic Pi's scheduler keeps timing exact regardless of how long your code takes to run. Trust it.</li>
         </ul>
-        <div class="checkpoint"><strong>Checkpoint:</strong> we can write, hear, and re-time a short phrase without looking anything up.</div>
+        <div class="checkpoint"><strong>Checkpoint:</strong> you can write, hear, and re-time a short phrase without looking anything up.</div>
       </article>
     </div>
   </section>
@@ -336,7 +336,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
         <div class="lesson-title"><input type="checkbox" data-lesson="4"><div><h3>4. One note is many notes</h3><div class="duration">30 min</div></div></div>
         <ul>
           <li>Build a tone by adding sine partials at 1f, 2f, 3f, 4f with falling amplitude. Add them one at a time and listen.</li>
-          <li>The partials we just stacked are the harmonic series. Every pitched instrument produces some version of it.</li>
+          <li>Those partials are the harmonic series. Every pitched instrument produces some version of it.</li>
           <li>Change the amplitude profile and hear timbre change while pitch stays put.</li>
         </ul>
         <div class="outcome"><strong>Ends with:</strong> an additive tone that fades from thin to rich as partials enter.</div>
@@ -355,9 +355,9 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
       <article class="lesson" data-keywords="equal temperament tuning just intonation twelfth root of two compromise">
         <div class="lesson-title"><input type="checkbox" data-lesson="6"><div><h3>6. Twelve notes, one compromise</h3><div class="duration">30 min</div></div></div>
         <ul>
-          <li>Stack pure 3:2 fifths twelve times. We land near seven octaves and miss by an audible margin.</li>
+          <li>Stack pure 3:2 fifths twelve times. You land near seven octaves and miss by an audible margin.</li>
           <li>Equal temperament divides the octave into twelve equal ratios of 2<sup>1/12</sup> and spreads that error everywhere.</li>
-          <li>Play a just major third against an equal-tempered one. The difference is small, real, and audible once we know to listen for it.</li>
+          <li>Play a just major third against an equal-tempered one. The difference is small, real, and audible once you know to listen for it.</li>
         </ul>
         <div class="outcome"><strong>Ends with:</strong> the same triad in just intonation and equal temperament, back to back.</div>
       </article>
@@ -367,9 +367,9 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
         <ul>
           <li>Hold pitch and synth constant. Vary <code>attack</code>, <code>decay</code>, <code>sustain</code>, <code>release</code>.</li>
           <li>A slow attack turns a piano into a string section. A short release turns a pad into a percussion hit.</li>
-          <li>Envelope is how we encode staccato, legato, and accent later, so build the vocabulary now.</li>
+          <li>Envelope is how you encode staccato, legato, and accent later, so build the vocabulary now.</li>
         </ul>
-        <div class="checkpoint"><strong>Checkpoint:</strong> given a recorded note, we can guess its rough envelope shape and reproduce it.</div>
+        <div class="checkpoint"><strong>Checkpoint:</strong> given a recorded note, you can guess its rough envelope shape and reproduce it.</div>
       </article>
     </div>
   </section>
@@ -378,7 +378,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
     <div class="module-head">
       <div>
         <h2>Part 2. Pitch space</h2>
-        <p class="module-summary">The keyboard, the octave, and note spelling. Ends with a scale that makes anything we play sound deliberate.</p>
+        <p class="module-summary">The keyboard, the octave, and note spelling. Ends with a scale that makes anything you play sound deliberate.</p>
       </div>
       <div class="module-source"><a href="https://www.musictheory.net/lessons" target="_blank">musictheory.net</a></div>
     </div>
@@ -408,7 +408,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
         <div class="lesson-title"><input type="checkbox" data-lesson="10"><div><h3>10. Sharps, flats, and why spelling is not sound</h3><div class="duration">25 min</div></div></div>
         <ul>
           <li>F&#9839; and G&#9837; are the same key and the same integer. They are different names for different musical jobs.</li>
-          <li>Sonic Pi accepts <code>:fs4</code> and <code>:gb4</code> and gives 66 for both. Our transcriptions need the name as well as the number.</li>
+          <li>Sonic Pi accepts <code>:fs4</code> and <code>:gb4</code> and gives 66 for both. Your transcriptions need the name as well as the number.</li>
           <li>Carry a second field for spelling from now on. Part 8 depends on it.</li>
         </ul>
         <div class="outcome"><strong>Ends with:</strong> a pitch-class to spelling table and a note that prints both forms.</div>
@@ -441,7 +441,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
         <ul>
           <li>Quarter note is 1 beat, eighth is 0.5, sixteenth is 0.25. The names are historical, the arithmetic is not.</li>
           <li>Encode a rhythm as a bare duration array and play it on one drum sound.</li>
-          <li>Clap along with the click while the pattern plays. Notice which durations we cannot yet feel.</li>
+          <li>Clap along with the click while the pattern plays. Notice which durations you cannot yet feel.</li>
         </ul>
         <div class="outcome"><strong>Ends with:</strong> a rhythm interpreter that takes durations and any percussion sample.</div>
       </article>
@@ -483,7 +483,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
           <li>Add a few milliseconds of random jitter to onsets and amplitudes. Machines become players.</li>
           <li>Overdo both. Finding the point where it collapses teaches more than finding the point where it works.</li>
         </ul>
-        <div class="ear"><strong>Ear drill:</strong> Sonic Pi plays a four-beat pattern, we clap it back, then reveal the durations. Start with two distinct values.</div>
+        <div class="ear"><strong>Ear drill:</strong> Sonic Pi plays a four-beat pattern, you clap it back, then reveal the durations. Start with two distinct values.</div>
       </article>
 
       <article class="lesson" data-keywords="tuplet triplet polyrhythm 3 against 2 cross rhythm">
@@ -502,7 +502,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
     <div class="module-head">
       <div>
         <h2>Part 4. Intervals</h2>
-        <p class="module-summary">The unit of melodic and harmonic distance. Three lessons, then a drill we keep using for months.</p>
+        <p class="module-summary">The unit of melodic and harmonic distance. Three lessons, then a drill you keep using for months.</p>
       </div>
       <div class="module-source"><a href="https://www.musictheory.net/exercises" target="_blank">Interval exercises</a></div>
     </div>
@@ -521,18 +521,18 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
       <article class="lesson" data-keywords="ear interval recognition melodic harmonic sound dictionary consonance">
         <div class="lesson-title"><input type="checkbox" data-lesson="19"><div><h3>19. The interval sound dictionary</h3><div class="duration">30 min</div></div></div>
         <ul>
-          <li>Play each interval melodically, then harmonically. They feel like different things and we treat them as such.</li>
-          <li>Describe each one in our own words before learning the standard label. That description sticks better.</li>
-          <li>Anchor the hard ones to tunes we already know, and write the anchors in the file as comments.</li>
+          <li>Play each interval melodically, then harmonically. They feel like different things and you treat them as such.</li>
+          <li>Describe each one in your own words before learning the standard label. Your description sticks better.</li>
+          <li>Anchor the hard ones to tunes you already know, and write your anchors in the file as comments.</li>
         </ul>
         <div class="outcome"><strong>Ends with:</strong> a personal reference file mapping each interval to a sound and an anchor.</div>
       </article>
 
       <article class="lesson" data-keywords="drill quiz interval training random reveal score log">
-        <div class="lesson-title"><input type="checkbox" data-lesson="20"><div><h3>20. Build our own drill harness</h3><div class="duration">30 min</div></div></div>
+        <div class="lesson-title"><input type="checkbox" data-lesson="20"><div><h3>20. Build your own drill harness</h3><div class="duration">30 min</div></div></div>
         <ul>
           <li>Random root, random interval from a configurable set, pause, then reveal by playing the answer named.</li>
-          <li>Weight the set toward the intervals we keep missing. That is the whole point of writing it ourselves.</li>
+          <li>Weight the set toward the intervals you keep missing. That is the whole point of writing it yourself.</li>
           <li>Reuse the harness in Parts 5 and 6 for scales, chords, and cadences.</li>
         </ul>
         <div class="ear"><strong>Ear drill:</strong> ten intervals a day, ascending only, from a set of four. Add a fifth interval after 9 of 10 twice running.</div>
@@ -587,17 +587,17 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
           <li>Hold a drone on one root and play all seven against it. The drone is what makes the difference obvious.</li>
           <li>Identify the one altered degree that gives each mode its character. Dorian's sixth, Mixolydian's seventh, Lydian's fourth.</li>
         </ul>
-        <div class="ear"><strong>Ear drill:</strong> drone plus a random mode, we name it. Start with major, Dorian, and Mixolydian only.</div>
+        <div class="ear"><strong>Ear drill:</strong> drone plus a random mode, you name it. Start with major, Dorian, and Mixolydian only.</div>
       </article>
 
       <article class="lesson" data-keywords="circle of fifths key signature relative minor data structure graph">
         <div class="lesson-title"><input type="checkbox" data-lesson="25"><div><h3>25. The circle of fifths as a data structure</h3><div class="duration">30 min</div></div></div>
         <ul>
-          <li>Generate it: start at C, add 7 semitones, take modulo 12, repeat. Twelve steps and we are home.</li>
+          <li>Generate it: start at C, add 7 semitones, take modulo 12, repeat. Twelve steps and you are home.</li>
           <li>Adjacent keys share six of seven notes. That fact drives modulation, chord progressions, and key signatures.</li>
           <li>Derive the sharp and flat counts for every key from the circle instead of memorising a chart.</li>
         </ul>
-        <div class="checkpoint"><strong>Checkpoint:</strong> given any key, we can name its scale, its relative minor, and its two nearest neighbours without a lookup table.</div>
+        <div class="checkpoint"><strong>Checkpoint:</strong> given any key, you can name its scale, its relative minor, and its two nearest neighbours without a lookup table.</div>
       </article>
     </div>
   </section>
@@ -629,7 +629,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
           <li>Spread a triad over two octaves and hear it open up. Close voicings sit, open voicings breathe.</li>
           <li>Write <code>invert(chord, n)</code> and <code>voice_near(chord, previous)</code>.</li>
         </ul>
-        <div class="outcome"><strong>Ends with:</strong> a four-chord loop where nothing leaps, generated by our voicing function.</div>
+        <div class="outcome"><strong>Ends with:</strong> a four-chord loop where nothing leaps, generated by your voicing function.</div>
       </article>
 
       <article class="lesson" data-keywords="diatonic chords roman numerals I ii iii IV V vi vii progression">
@@ -649,7 +649,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
           <li>Play all four at the end of one identical eight-bar phrase.</li>
           <li>Name them once they are distinguishable by ear, and no sooner.</li>
         </ul>
-        <div class="ear"><strong>Ear drill:</strong> random cadence at the end of a fixed phrase, we name the type. Four options.</div>
+        <div class="ear"><strong>Ear drill:</strong> random cadence at the end of a fixed phrase, you name the type. Four options.</div>
       </article>
 
       <article class="lesson" data-keywords="seventh chord dominant maj7 min7 half diminished tension resolution tritone">
@@ -669,7 +669,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
           <li>Minimise total movement, keep common tones, avoid crossing. It is a small search problem with musical constraints.</li>
           <li>Play a naive root-position version and the optimised version back to back. The difference is not subtle.</li>
         </ul>
-        <div class="checkpoint"><strong>Checkpoint:</strong> we can hear four separate lines inside a chord progression and mute any one of them.</div>
+        <div class="checkpoint"><strong>Checkpoint:</strong> you can hear four separate lines inside a chord progression and mute any one of them.</div>
       </article>
     </div>
   </section>
@@ -689,7 +689,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
         <ul>
           <li>Reduce a melody to up, down, same. Play the contour on a fixed rhythm.</li>
           <li>Play the original rhythm on a fixed pitch. Ask someone which version they recognise.</li>
-          <li>Rhythm usually wins. That result shapes how we approach transcription in Part 9.</li>
+          <li>Rhythm usually wins. That result shapes how you approach transcription in Part 9.</li>
         </ul>
         <div class="outcome"><strong>Ends with:</strong> three controlled mutations of one tune and a verdict on what carries identity.</div>
       </article>
@@ -707,7 +707,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
       <article class="lesson" data-keywords="phrase antecedent consequent question answer period four bar">
         <div class="lesson-title"><input type="checkbox" data-lesson="34"><div><h3>34. Question and answer</h3><div class="duration">25 min</div></div></div>
         <ul>
-          <li>Four bars that end unresolved, four bars that close. Most tunes we know are built this way.</li>
+          <li>Four bars that end unresolved, four bars that close. Most tunes you know are built this way.</li>
           <li>Change only the last two notes of the first phrase and watch the pair stop working.</li>
           <li>Connect this to cadences. The answer phrase ends with the full stop from Lesson 29.</li>
         </ul>
@@ -727,7 +727,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
       <article class="lesson" data-keywords="articulation dynamics legato staccato accent phrasing performance expression">
         <div class="lesson-title"><input type="checkbox" data-lesson="36"><div><h3>36. Notated versus played</h3><div class="duration">30 min</div></div></div>
         <ul>
-          <li>Add <code>amp</code>, <code>articulation</code>, and an onset offset to our event schema.</li>
+          <li>Add <code>amp</code>, <code>articulation</code>, and an onset offset to your event schema.</li>
           <li>Render one phrase legato, detached, accented, and shaped with a crescendo to its high point.</li>
           <li>A perfectly quantised performance of a good melody can sound worse than a sloppy one. Worth confirming firsthand.</li>
         </ul>
@@ -750,7 +750,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
     <div class="module-head">
       <div>
         <h2>Part 8. Reading notation</h2>
-        <p class="module-summary">The staff arrives now, when it is a decoding problem we already have the concepts for. Four lessons.</p>
+        <p class="module-summary">The staff arrives now, when it is a decoding problem you already have the concepts for. Four lessons.</p>
       </div>
       <div class="module-source"><a href="https://www.musictheory.net/lessons" target="_blank">Staff, clefs, key signatures</a></div>
     </div>
@@ -771,7 +771,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
         <ul>
           <li>Same system, different offset. Learn it as a constant added to the treble mapping.</li>
           <li>Middle C sits between the staves and belongs to both.</li>
-          <li>Encode a simple two-hand keyboard texture as two voices in our event model.</li>
+          <li>Encode a simple two-hand keyboard texture as two voices in your event model.</li>
         </ul>
         <div class="outcome"><strong>Ends with:</strong> an eight-bar bass-and-melody sketch read from a printed grand staff.</div>
       </article>
@@ -780,10 +780,10 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
         <div class="lesson-title"><input type="checkbox" data-lesson="40"><div><h3>40. Key signatures as defaults</h3><div class="duration">30 min</div></div></div>
         <ul>
           <li>A key signature is a default rule applied to every matching letter until overridden.</li>
-          <li>An accidental is a local override that expires at the end of the bar. This is scoping, and scoping we know.</li>
+          <li>An accidental is a local override that expires at the end of the bar. This is scoping, and you know scoping.</li>
           <li>Write the resolver: letter plus key signature plus local accidentals in, MIDI number out.</li>
         </ul>
-        <div class="outcome"><strong>Ends with:</strong> a small resolver we reuse in every transcription from here on.</div>
+        <div class="outcome"><strong>Ends with:</strong> a small resolver you reuse in every transcription from here on.</div>
       </article>
 
       <article class="lesson" data-keywords="sight reading decode printed melody four bars practice">
@@ -802,18 +802,18 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
     <div class="module-head">
       <div>
         <h2>Part 9. Transcription</h2>
-        <p class="module-summary">A repeatable workflow for turning a score or a recording into code we can inspect and test. Five lessons.</p>
+        <p class="module-summary">A repeatable workflow for turning a score or a recording into code you can inspect and test. Five lessons.</p>
       </div>
       <div class="module-source"><a href="https://imslp.org/" target="_blank">IMSLP</a> &middot; <a href="https://www.mutopiaproject.org/" target="_blank">Mutopia</a></div>
     </div>
     <div class="lessons">
 
       <article class="lesson" data-keywords="sources public domain imslp mutopia musescore copyright licensing sheet music">
-        <div class="lesson-title"><input type="checkbox" data-lesson="42"><div><h3>42. Finding music we can legally use</h3><div class="duration">25 min</div></div></div>
+        <div class="lesson-title"><input type="checkbox" data-lesson="42"><div><h3>42. Finding music you can legally use</h3><div class="duration">25 min</div></div></div>
         <ul>
           <li>IMSLP for scans, Mutopia for typeset public-domain scores, MuseScore for community arrangements with varying licences.</li>
           <li>Public domain rules differ by country and a modern edition of an old work can carry its own copyright.</li>
-          <li>Build a shortlist of twenty pieces at our level and record the source and licence for each one.</li>
+          <li>Build a shortlist of twenty pieces at your level and record the source and licence for each one.</li>
         </ul>
         <div class="outcome"><strong>Ends with:</strong> a <code>sources.md</code> file with twenty candidates, each with a link and a licence note.</div>
       </article>
@@ -822,10 +822,10 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
         <div class="lesson-title"><input type="checkbox" data-lesson="43"><div><h3>43. The four-pass pipeline</h3><div class="duration">30 min</div></div></div>
         <ul>
           <li>Pass 1: tempo, meter, phrase boundaries. Pass 2: rhythm only. Pass 3: contour and anchor pitches. Pass 4: exact pitches and expression.</li>
-          <li>Never skip forward. Every pass we skip gets paid for twice in debugging.</li>
-          <li>Mark uncertain notes with a comment convention we can grep for.</li>
+          <li>Never skip forward. Every pass you skip gets paid for twice in debugging.</li>
+          <li>Mark uncertain notes with a comment convention you can grep for.</li>
         </ul>
-        <div class="outcome"><strong>Ends with:</strong> a checklist and an event schema we apply unchanged to every transcription.</div>
+        <div class="outcome"><strong>Ends with:</strong> a checklist and an event schema you apply unchanged to every transcription.</div>
       </article>
 
       <article class="lesson" data-keywords="ear transcription anchor tonic interval by ear dictation recording">
@@ -843,7 +843,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
         <ul>
           <li>Pick a short piece from the Lesson 42 shortlist.</li>
           <li>Encode pitch and duration exactly. Annotate with source measure numbers as comments.</li>
-          <li>Separate what the score says from what we think it should sound like. Keep both, clearly labelled.</li>
+          <li>Separate what the score says from what you think it should sound like. Keep both, clearly labelled.</li>
         </ul>
         <div class="outcome"><strong>Ends with:</strong> a score-faithful encoding with full provenance in comments.</div>
       </article>
@@ -864,7 +864,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
     <div class="module-head">
       <div>
         <h2>Part 10. Texture and arrangement</h2>
-        <p class="module-summary">Several things happening at once, on purpose. Concurrency we already understand, applied to voices.</p>
+        <p class="module-summary">Several things happening at once, on purpose. Concurrency you already understand, applied to voices.</p>
       </div>
       <div class="module-source"><a href="https://sonic-pi.net/tutorial.html" target="_blank">Live loops, threads, sync, FX</a></div>
     </div>
@@ -894,8 +894,8 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
         <div class="lesson-title"><input type="checkbox" data-lesson="49"><div><h3>49. Drum grids</h3><div class="duration">30 min</div></div></div>
         <ul>
           <li>One 16-step array per drum. Kick, snare, hats, and nothing else to begin with.</li>
-          <li>Accent with amplitude and shift hats slightly late to get the pocket we built in Lesson 16.</li>
-          <li>Transcribe a groove we like by repeated listening, one instrument at a time.</li>
+          <li>Accent with amplitude and shift hats slightly late to get the pocket you built in Lesson 16.</li>
+          <li>Transcribe a groove you like by repeated listening, one instrument at a time.</li>
         </ul>
         <div class="outcome"><strong>Ends with:</strong> a groove stored as readable arrays rather than an opaque loop.</div>
       </article>
@@ -917,7 +917,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
           <li>Vary the delay and the transposition. Most combinations sound bad, which is the lesson.</li>
           <li>A melody that works as a canon has to harmonise with itself. Find out what that constrains.</li>
         </ul>
-        <div class="checkpoint"><strong>Checkpoint:</strong> a three-voice canon on a subject of our own that holds up for sixteen bars.</div>
+        <div class="checkpoint"><strong>Checkpoint:</strong> a three-voice canon on your own subject that holds up for sixteen bars.</div>
       </article>
     </div>
   </section>
@@ -947,7 +947,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
         <ul>
           <li>Hold the current key in a variable. Roman numerals become relative addresses against it.</li>
           <li>A pivot chord is a chord that is valid in both keys, so it can be reinterpreted mid-progression.</li>
-          <li>Move to the dominant, sit there for four bars, then come home. Note the moment our ear accepts the new tonic.</li>
+          <li>Move to the dominant, sit there for four bars, then come home. Note the moment your ear accepts the new tonic.</li>
         </ul>
         <div class="outcome"><strong>Ends with:</strong> a passage that changes key twice and returns.</div>
       </article>
@@ -959,7 +959,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
           <li>The twelve-bar blues uses dominant sevenths where theory says it should not, and it works anyway.</li>
           <li>Encode a twelve-bar blues in numerals and render it in three keys.</li>
         </ul>
-        <div class="checkpoint"><strong>Checkpoint:</strong> given a progression with one chromatic chord, we can say where it came from.</div>
+        <div class="checkpoint"><strong>Checkpoint:</strong> given a progression with one chromatic chord, you can say where it came from.</div>
       </article>
     </div>
   </section>
@@ -970,7 +970,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
         <h2>Part 12. Capstones</h2>
         <p class="module-summary">Four projects. Faithful representation first, expressive realisation second.</p>
       </div>
-      <div class="module-source">Our own sources and our own library</div>
+      <div class="module-source">Your own sources and your own library</div>
     </div>
     <div class="lessons">
 
@@ -979,7 +979,7 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
         <ul>
           <li>32 to 64 bars from the shortlist.</li>
           <li>Pitches, rhythm, articulation, dynamics, and phrase marks, all as data.</li>
-          <li>Keep measure references and a list of the passages we are unsure about.</li>
+          <li>Keep measure references and a list of the passages you are unsure about.</li>
         </ul>
         <div class="outcome"><strong>Deliverable:</strong> a faithful monophonic transcription plus an expressive renderer.</div>
       </article>
@@ -1005,21 +1005,21 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
       </article>
 
       <article class="lesson" data-keywords="refactor library framework schema readme reusable helpers">
-        <div class="lesson-title"><input type="checkbox" data-lesson="58"><div><h3>58. Refactor into our own library</h3><div class="duration">60+ min</div></div></div>
+        <div class="lesson-title"><input type="checkbox" data-lesson="58"><div><h3>58. Refactor into your own library</h3><div class="duration">60+ min</div></div></div>
         <ul>
           <li>Extract the helpers written more than twice: playback, validation, transposition, voicing, articulation.</li>
           <li>Settle on one event schema and migrate old pieces to it.</li>
           <li>Keep it small. A framework large enough to hide the score has failed.</li>
-          <li>Write a README that explains the representation choices to us in six months.</li>
+          <li>Write a README that explains the representation choices to you in six months.</li>
         </ul>
-        <div class="checkpoint"><strong>Final checkpoint:</strong> we can take a printed score or a short recording and turn it into structured, editable code, and explain the theory encoded in it.</div>
+        <div class="checkpoint"><strong>Final checkpoint:</strong> you can take a printed score or a short recording and turn it into structured, editable code, and explain the theory encoded in it.</div>
       </article>
     </div>
 
     <div class="milestone">
       <h3>Choosing capstone material</h3>
       <div class="capstone-grid">
-        <div class="panel"><strong>Level 1</strong><br>Folk tune, hymn melody, simple classical theme, or a motif we can legally work from.</div>
+        <div class="panel"><strong>Level 1</strong><br>Folk tune, hymn melody, simple classical theme, or a motif you can legally work from.</div>
         <div class="panel"><strong>Level 2</strong><br>Melody with chordal accompaniment, a short piano miniature, or a lead sheet.</div>
         <div class="panel"><strong>Level 3</strong><br>Two-part counterpoint, a four-part chorale, or a carefully reduced orchestral passage.</div>
       </div>
@@ -1033,15 +1033,15 @@ play_score score, transpose: 5   # up a fourth, same data</code></pre>
       <tr><th>Session</th><th>Length</th><th>What</th></tr>
       <tr><td>Two per week</td><td>25&ndash;35 min</td><td>New lessons in order.</td></tr>
       <tr><td>One per week</td><td>30 min</td><td>Consolidation. Reread the last four lessons and rebuild one example from memory.</td></tr>
-      <tr><td>One per week</td><td>30 min</td><td>Free play. Use only what we have learned so far and make something we like.</td></tr>
-      <tr><td>Most days</td><td>10 min</td><td>Ear drills from our own <code>drills.rb</code>.</td></tr>
+      <tr><td>One per week</td><td>30 min</td><td>Free play. Use only what you have met so far and make something you like.</td></tr>
+      <tr><td>Most days</td><td>10 min</td><td>Ear drills from your own <code>drills.rb</code>.</td></tr>
     </table>
-    <p>Every fourth week, add no new theory. Finish a transcription instead. Theory sticks when we use it under pressure, and the pressure comes from wanting the thing to sound right.</p>
+    <p>Every fourth week, add no new theory. Finish a transcription instead. Theory sticks when you use it under pressure, and the pressure comes from wanting the thing to sound right.</p>
   </section>
 
   <section class="panel">
     <h2>The progression of representations</h2>
-    <p>Our code passes through these stages. Each one is the right answer for a while and then stops being it.</p>
+    <p>Your code passes through these stages. Each one is the right answer for a while and then stops being it.</p>
 <pre><code># 1. Imperative. Fine for four notes, unmanageable for forty.
 play :c4
 sleep 1
@@ -1080,7 +1080,7 @@ progression = [
       <li><strong>Sonic Pi tutorial.</strong> Named notes, rings, chord and scale constructors, synths, FX, live loops, timing. Read the sections needed rather than working through it. <a href="https://sonic-pi.net/tutorial.html" target="_blank" rel="noopener">sonic-pi.net/tutorial.html</a></li>
       <li><strong>Sonic Pi download and docs.</strong> <a href="https://sonic-pi.net/" target="_blank" rel="noopener">sonic-pi.net</a></li>
       <li><strong>musictheory.net lessons.</strong> Free, well-drawn, and the best place to look up a notation detail. <a href="https://www.musictheory.net/lessons" target="_blank" rel="noopener">musictheory.net/lessons</a></li>
-      <li><strong>musictheory.net exercises.</strong> Interactive drills. Complements the ones we write ourselves. <a href="https://www.musictheory.net/exercises" target="_blank" rel="noopener">musictheory.net/exercises</a></li>
+      <li><strong>musictheory.net exercises.</strong> Interactive drills. Complements the ones you write yourself. <a href="https://www.musictheory.net/exercises" target="_blank" rel="noopener">musictheory.net/exercises</a></li>
       <li><strong>IMSLP.</strong> Scanned public-domain scores. Check the licence notes on each edition. <a href="https://imslp.org/" target="_blank" rel="noopener">imslp.org</a></li>
       <li><strong>Mutopia Project.</strong> Typeset public-domain scores with clear licensing. <a href="https://www.mutopiaproject.org/" target="_blank" rel="noopener">mutopiaproject.org</a></li>
     </ol>

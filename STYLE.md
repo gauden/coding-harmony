@@ -8,33 +8,36 @@ Anyone writing here, human or otherwise, follows these.
 
 ## Voice
 
-**First person plural.** The "we" means the writer and the reader working
-through the same problem at the same time. It is the voice of someone sitting
-next to you at the keyboard rather than lecturing from the front.
+**First person singular for the writer.** This book is a record of one person
+learning music theory, so it says "I". Field notes, not a textbook handed down.
+Where I was confused, the text says I was confused.
 
-> We build a tone by stacking sine partials, then take one away and listen to
-> what changed.
+> I expected the tritone to sound broken. It sounds unresolved, which is a
+> different thing, and it took me three attempts to hear the difference.
 
-Not "you build a tone", which instructs from above, and not "the reader builds a
-tone", which is a report on someone else's afternoon.
+**Second person for the reader.** "You" throughout. The reader is a specific
+person at a keyboard, addressed directly.
 
-**Bare imperatives are fine for direct instructions.** "Install Sonic Pi." "Press
-Run." "Slow the tempo until both patterns are audible." These are short, neutral,
-and carry no subject at all. Reaching for "we press Run" where "press Run" will
-do adds a word and a small false note.
+> Play 220 Hz against 330 Hz. Your ear will call one of these pairs smooth
+> before you know why.
 
-**Second person survives for what belongs to the reader.** Their ear, their code,
-their `drills.rb`, their judgement. "Your ear will disagree with the arithmetic
-here" is honest. "You will find this exciting" is not.
+**First person plural only for programmers as a group.** "We" means people who
+already write code, which is the shared ground this book stands on. It does not
+mean the writer and the reader doing an exercise together.
+
+> It forces us to sit through an exposition of what a loop is.
+
+Not "we now build a scale", which is the textbook plural this book avoids.
+
+**Bare imperatives are fine for direct instructions.** "Install Sonic Pi."
+"Press Run." "Slow the tempo until both patterns are audible." Short, neutral,
+no subject at all.
 
 **Never "let's".** It is the register of a children's television presenter and it
 undoes everything else on this page.
 
-**Never the editorial "we" that means only the author.** No "we have shown", no
-"we will see in a later chapter". If the writer alone did something, say so
-plainly or leave it out.
-
-Present tense throughout. Active voice.
+Present tense throughout, except when recounting what happened during drafting.
+Active voice.
 
 ## Sentences
 
@@ -60,10 +63,13 @@ it before reading on.
 
 ## Banned vocabulary
 
-delve, matters, crucial, journey, unlock, harness (as a verb), leverage (as a
-verb), robust, seamless, powerful, elegant (as praise), simply, just, of course,
+delve, matters, crucial, unlock, harness (as a verb), leverage (as a verb),
+robust, seamless, powerful, elegant (as praise), simply, just, of course,
 obviously, dive in, deep dive, game-changer, at its core, it's worth noting,
 let's.
+
+"Journey" is deliberately absent from that list. The book describes itself as a
+record of one, and banning a word the framing depends on would be silly.
 
 `scripts/lint-prose.sh` greps for these and reports file and line. It catches
 drift; it does not catch bad writing.

@@ -14,13 +14,14 @@ Delete this block once the lesson is drafted.
 > - The smooth ones are 2:1, 3:2, and 4:3. The rough ones have large numbers in their ratios.
 > - Detune one partner by a few hertz and hear the beating that gives the game away.
 >
-> **Ends with: a ratio explorer where you type a fraction and hear it.**
+> **Ends with: a ratio explorer that takes a fraction and plays it.**
 :::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs,
-first person plural, no encouragement. See STYLE.md.
+What the musical concept is and what it does to sound. Two or three paragraphs.
+First person for me, second person for the reader, no encouragement. See
+STYLE.md.
 
 ## Run this
 
@@ -28,7 +29,7 @@ first person plural, no encouragement. See STYLE.md.
 # TODO
 ```
 
-What we just heard, in a sentence or two.
+What you just heard, in a sentence or two.
 
 ## Change one thing
 
@@ -37,7 +38,7 @@ for.
 
 ## Why it works
 
-The explanation, now that the sound is in our ears.
+The explanation, now that the sound is in your ears.
 
 ## Take it further
 

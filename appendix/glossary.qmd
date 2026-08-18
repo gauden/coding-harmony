@@ -2,7 +2,7 @@
 title: "Glossary"
 ---
 
-We build this up as the lessons are written, rather than assembling it at the
+I build this up as the lessons are written, rather than assembling it at the
 end. Each entry names the lesson where the term first does real work.
 
 *Empty. Entries land here as Part 0 onwards gets drafted.*

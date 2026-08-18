@@ -4,15 +4,15 @@ Music theory for people who already write code.
 
 The audience is programmers who are at ease with arrays, functions, and threads,
 and who cannot read a note. [Sonic Pi](https://sonic-pi.net/) is the laboratory.
-Each lesson takes one musical idea, encodes it as data, plays it, and asks for one
-change so we can hear what the change did.
+Each lesson takes one musical idea, encodes it as data, plays it, and then asks you
+to change something and listen to what happened.
 
 This is not the Sonic Pi tutorial. That one teaches programming and uses music as
 the reward. Here the programming is assumed, and Ruby idioms get a one-line note
 the first time they appear.
 
-The prose is first person plural and deliberately unencouraging. The rules are in
-[`STYLE.md`](STYLE.md).
+The book is written as field notes: first person for me, second person for you,
+and deliberately unencouraging. The rules are in [`STYLE.md`](STYLE.md).
 
 ## Status
 
@@ -50,7 +50,7 @@ That produces `_book/` with the site, the PDF, and the EPUB. Needs
 
 Sonic Pi 5.0.0, from [sonic-pi.net](https://sonic-pi.net/). Every example is
 written and recorded against that version. Check that `play 60` makes a noise and
-we are ready to start.
+you are ready to start.
 
 Headphones or decent speakers do more for progress here than any other purchase,
 because half of this course is hearing small differences.

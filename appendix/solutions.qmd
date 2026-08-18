@@ -3,7 +3,7 @@ title: "Solutions"
 ---
 
 Worked answers to the *Take it further* exercise in each lesson. Work
-the exercise before reading. A solution we have not tried to reach
+the exercise before reading. A solution you have not tried to reach
 teaches nothing.
 
 Sections marked TODO are waiting on their lesson to be drafted.
@@ -94,7 +94,7 @@ TODO
 
 TODO
 
-### 20. Build our own drill harness
+### 20. Build your own drill harness
 
 TODO
 
@@ -192,7 +192,7 @@ TODO
 
 ## Part 9. Transcription
 
-### 42. Finding music we can legally use
+### 42. Finding music you can legally use
 
 TODO
 
@@ -262,6 +262,6 @@ TODO
 
 TODO
 
-### 58. Refactor into our own library
+### 58. Refactor into your own library
 
 TODO

@@ -11,7 +11,7 @@ status: outline
 Delete this block once the lesson is drafted.
 
 > - Group eight identical eighth notes as 4/4, then as 3/4, using amplitude alone. Same notes, different piece.
-> - 6/8 versus 3/4 is the same six eighths grouped 2×3 or 3×2. Hear it before you name it.
+> - 6/8 versus 3/4 is the same six eighths grouped 2×3 or 3×2. Hear it before naming it.
 > - Write an assertion that a bar's durations sum to what the time signature promises.
 >
 > **Ends with: one pattern that flips between three meters at the press of Run.**
@@ -19,8 +19,9 @@ Delete this block once the lesson is drafted.
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs,
-first person plural, no encouragement. See STYLE.md.
+What the musical concept is and what it does to sound. Two or three paragraphs.
+First person for me, second person for the reader, no encouragement. See
+STYLE.md.
 
 ## Run this
 
@@ -28,7 +29,7 @@ first person plural, no encouragement. See STYLE.md.
 # TODO
 ```
 
-What we just heard, in a sentence or two.
+What you just heard, in a sentence or two.
 
 ## Change one thing
 
@@ -37,7 +38,7 @@ for.
 
 ## Why it works
 
-The explanation, now that the sound is in our ears.
+The explanation, now that the sound is in your ears.
 
 ## Take it further
 

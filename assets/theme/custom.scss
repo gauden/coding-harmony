@@ -5,24 +5,49 @@
 $primary:            #5b3f8c;
 $body-color:         #1f2328;
 $link-color:         #5b3f8c;
-$code-block-bg:      #18181b;
-$code-color:         #7c4dbe;
 $font-size-root:     17px;
 $toc-font-size:      0.88rem;
+
+// Inline code. Purple to match the site, dark enough to read on the light chip
+// Bootstrap puts behind it.
+$code-color:         #5b3f8c;
+
+// Code block background, matched to what highlight-style: a11y was designed
+// against (#fefefe). Quarto's own default is a translucent grey, which drags
+// every token's contrast down by roughly half a point.
+//
+// A dark value here is the trap: the a11y tokens are dark, so a dark background
+// renders dark-on-dark and the code becomes unreadable. That is exactly what
+// happened when this was set to #18181b. If the code theme is ever swapped for
+// a dark one, this has to move with it.
+$code-block-bg:      #fefefe;
 
 /*-- scss:rules --*/
 
 // Slightly wider measure than the Cosmo default; lessons are read, not skimmed.
 main { max-width: 46rem; }
 
-// Sonic Pi examples: code and its recording read as one unit.
+// Code blocks get a visible edge so they separate from the prose without
+// needing a heavy background.
+div.sourceCode {
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+}
+pre.sourceCode code { font-size: 0.86rem; line-height: 1.55; }
+
+// Sonic Pi examples: the code and its recording read as one unit, so the
+// player is docked to the bottom of the block it belongs to.
 .sonic-example { margin-bottom: 1.4rem; }
-.sonic-example div.sourceCode { margin-bottom: 0; border-radius: 8px 8px 0 0; }
+.sonic-example div.sourceCode {
+  margin-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  border-bottom: none;
+}
 
 .sonic-audio {
   background: #f0ecf8;
-  border: 1px solid #d9dde3;
-  border-top: none;
+  border: 1px solid #e1e4e8;
+  border-top: 1px solid #e6e0f2;
   border-radius: 0 0 8px 8px;
   padding: 8px 10px;
 }

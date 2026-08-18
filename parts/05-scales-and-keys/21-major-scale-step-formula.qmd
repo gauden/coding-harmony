@@ -10,17 +10,18 @@ status: outline
 ::: {.callout-note collapse="true" title="Planned, from the syllabus"}
 Delete this block once the lesson is drafted.
 
-> - 2 2 1 2 2 2 1. Generate the scale from a root and that array. Do not memorise note lists.
-> - Check your generator against scale(:c4, :major) for every one of the twelve roots.
-> - Play the scale up, down, and in thirds. The third pattern is a workout and it sounds good.
+> - 2 2 1 2 2 2 1. Generate the scale from a root and that array. No memorising note lists.
+> - Check the generator against scale(:c4, :major) for every one of the twelve roots.
+> - Play the scale up, down, and in thirds. The pattern in thirds is a workout and it sounds good.
 >
 > **Ends with: a scale constructor verified against Sonic Pi in all twelve keys.**
 :::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs,
-first person plural, no encouragement. See STYLE.md.
+What the musical concept is and what it does to sound. Two or three paragraphs.
+First person for me, second person for the reader, no encouragement. See
+STYLE.md.
 
 ## Run this
 
@@ -28,7 +29,7 @@ first person plural, no encouragement. See STYLE.md.
 # TODO
 ```
 
-What we just heard, in a sentence or two.
+What you just heard, in a sentence or two.
 
 ## Change one thing
 
@@ -37,7 +38,7 @@ for.
 
 ## Why it works
 
-The explanation, now that the sound is in our ears.
+The explanation, now that the sound is in your ears.
 
 ## Take it further
 

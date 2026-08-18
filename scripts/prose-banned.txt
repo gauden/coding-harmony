@@ -5,7 +5,8 @@
 # Vocabulary
 \bdelve
 \bcrucial\b
-\bjourney\b
+# \bjourney\b  -- deliberately allowed. The preface calls the book a record of
+#                 one, and banning the word the framing rests on would be silly.
 \bunlock
 \brobust\b
 \bseamless

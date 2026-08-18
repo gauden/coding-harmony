@@ -11,16 +11,17 @@ status: outline
 Delete this block once the lesson is drafted.
 
 > - F♯ and G♭ are the same key and the same integer. They are different names for different musical jobs.
-> - Sonic Pi accepts :fs4 and :gb4 and gives you 66 for both. Your transcriptions will need the name as well as the number.
-> - Carry a second field for spelling from now on. Part 8 will thank you.
+> - Sonic Pi accepts :fs4 and :gb4 and gives 66 for both. Your transcriptions need the name as well as the number.
+> - Carry a second field for spelling from now on. Part 8 depends on it.
 >
 > **Ends with: a pitch-class to spelling table and a note that prints both forms.**
 :::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs,
-first person plural, no encouragement. See STYLE.md.
+What the musical concept is and what it does to sound. Two or three paragraphs.
+First person for me, second person for the reader, no encouragement. See
+STYLE.md.
 
 ## Run this
 
@@ -28,7 +29,7 @@ first person plural, no encouragement. See STYLE.md.
 # TODO
 ```
 
-What we just heard, in a sentence or two.
+What you just heard, in a sentence or two.
 
 ## Change one thing
 
@@ -37,7 +38,7 @@ for.
 
 ## Why it works
 
-The explanation, now that the sound is in our ears.
+The explanation, now that the sound is in your ears.
 
 ## Take it further
 

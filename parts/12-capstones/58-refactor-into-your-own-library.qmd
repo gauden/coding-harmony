@@ -1,5 +1,5 @@
 ---
-title: "58. Refactor into our own library"
+title: "58. Refactor into your own library"
 subtitle: "60+ min"
 part: "Capstones"
 concepts: [refactor, library, framework, schema, readme, reusable]
@@ -13,15 +13,16 @@ Delete this block once the lesson is drafted.
 > - Extract the helpers written more than twice: playback, validation, transposition, voicing, articulation.
 > - Settle on one event schema and migrate old pieces to it.
 > - Keep it small. A framework large enough to hide the score has failed.
-> - Write a README that explains the representation choices to us in six months.
+> - Write a README that explains the representation choices to you in six months.
 >
-> **Final checkpoint: we can take a printed score or a short recording and turn it into structured, editable code, and explain the theory encoded in it.**
+> **Final checkpoint: you can take a printed score or a short recording and turn it into structured, editable code, and explain the theory encoded in it.**
 :::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs,
-first person plural, no encouragement. See STYLE.md.
+What the musical concept is and what it does to sound. Two or three paragraphs.
+First person for me, second person for the reader, no encouragement. See
+STYLE.md.
 
 ## Run this
 
@@ -29,7 +30,7 @@ first person plural, no encouragement. See STYLE.md.
 # TODO
 ```
 
-What we just heard, in a sentence or two.
+What you just heard, in a sentence or two.
 
 ## Change one thing
 
@@ -38,7 +39,7 @@ for.
 
 ## Why it works
 
-The explanation, now that the sound is in our ears.
+The explanation, now that the sound is in your ears.
 
 ## Take it further
 

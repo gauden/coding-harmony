@@ -12,15 +12,16 @@ Delete this block once the lesson is drafted.
 
 > - Four bars that end unresolved, four bars that close. Most tunes you know are built this way.
 > - Change only the last two notes of the first phrase and watch the pair stop working.
-> - Connect this to cadences. The answer phrase ends with the full stop you learned in Lesson 29.
+> - Connect this to cadences. The answer phrase ends with the full stop from Lesson 29.
 >
 > **Ends with: an eight-bar period that sounds complete on its own.**
 :::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs,
-first person plural, no encouragement. See STYLE.md.
+What the musical concept is and what it does to sound. Two or three paragraphs.
+First person for me, second person for the reader, no encouragement. See
+STYLE.md.
 
 ## Run this
 
@@ -28,7 +29,7 @@ first person plural, no encouragement. See STYLE.md.
 # TODO
 ```
 
-What we just heard, in a sentence or two.
+What you just heard, in a sentence or two.
 
 ## Change one thing
 
@@ -37,7 +38,7 @@ for.
 
 ## Why it works
 
-The explanation, now that the sound is in our ears.
+The explanation, now that the sound is in your ears.
 
 ## Take it further
 

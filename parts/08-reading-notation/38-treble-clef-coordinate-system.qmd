@@ -11,16 +11,17 @@ status: outline
 Delete this block once the lesson is drafted.
 
 > - Vertical position maps to letter name. One line-to-space step is one diatonic step, not one semitone.
-> - That last distinction is where most self-taught readers go wrong. Get it settled early.
+> - That last distinction is where most self-taught readers go wrong. Settle it early.
 > - Translate eight printed notes into Sonic Pi symbols and play them.
 >
-> **Ends with: a one-octave treble cheat sheet in your own handwriting or code.**
+> **Ends with: a one-octave treble cheat sheet, handwritten or generated.**
 :::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs,
-first person plural, no encouragement. See STYLE.md.
+What the musical concept is and what it does to sound. Two or three paragraphs.
+First person for me, second person for the reader, no encouragement. See
+STYLE.md.
 
 ## Run this
 
@@ -28,7 +29,7 @@ first person plural, no encouragement. See STYLE.md.
 # TODO
 ```
 
-What we just heard, in a sentence or two.
+What you just heard, in a sentence or two.
 
 ## Change one thing
 
@@ -37,7 +38,7 @@ for.
 
 ## Why it works
 
-The explanation, now that the sound is in our ears.
+The explanation, now that the sound is in your ears.
 
 ## Take it further
 

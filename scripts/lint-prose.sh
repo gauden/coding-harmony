@@ -10,8 +10,12 @@ status=0
 
 # STYLE.md quotes the banned words in order to ban them, and the field notes
 # are private working text, so neither is linted.
-files=$(git ls-files '*.qmd' '*.md' 2>/dev/null \
-        | grep -v -e '^STYLE.md$' -e '^notes/' -e '^scripts/prose-banned.txt$')
+# git ls-files still lists files deleted but not yet staged, so keep only the
+# ones on disk. Untracked new lessons get linted too.
+files=$({ git ls-files '*.qmd' '*.md'; git ls-files -o --exclude-standard '*.qmd' '*.md'; } 2>/dev/null \
+        | sort -u \
+        | grep -v -e '^STYLE.md$' -e '^notes/' -e '^scripts/prose-banned.txt$' \
+        | while IFS= read -r f; do [ -f "$f" ] && printf '%s\n' "$f"; done)
 
 [ -n "$files" ] || { echo "No tracked prose files."; exit 0; }
 

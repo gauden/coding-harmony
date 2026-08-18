@@ -12,15 +12,16 @@ Delete this block once the lesson is drafted.
 
 > - Find the tonic first by humming a note that feels like home, then locate it on the keyboard.
 > - Work in intervals from the anchor rather than guessing absolute pitches.
-> - Sixteen bars of a familiar monophonic melody. Slow the recording if you need to.
+> - Sixteen bars of a familiar monophonic melody. Slow the recording if needed.
 >
 > **Ear drill: four-note melodic dictation over a drone. Grow to six notes, then eight, then add rhythm.**
 :::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs,
-first person plural, no encouragement. See STYLE.md.
+What the musical concept is and what it does to sound. Two or three paragraphs.
+First person for me, second person for the reader, no encouragement. See
+STYLE.md.
 
 ## Run this
 
@@ -28,7 +29,7 @@ first person plural, no encouragement. See STYLE.md.
 # TODO
 ```
 
-What we just heard, in a sentence or two.
+What you just heard, in a sentence or two.
 
 ## Change one thing
 
@@ -37,7 +38,7 @@ for.
 
 ## Why it works
 
-The explanation, now that the sound is in our ears.
+The explanation, now that the sound is in your ears.
 
 ## Take it further
 

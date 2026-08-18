@@ -239,7 +239,7 @@
 <header>
   <div class="wrap">
     <h1>Build Plan: Website and Book</h1>
-    <p class="subtitle">How we build, test, and publish <em>Music Theory Through Sonic Pi</em>. One Markdown source, two outputs: a GitHub Pages site and a printable book.</p>
+    <p class="subtitle">How I build, test, and publish <em>Music Theory Through Sonic Pi</em>. One Markdown source, two outputs: a GitHub Pages site and a printable book.</p>
     <div class="meta">
       <span class="pill">12 sections</span>
       <span class="pill">5 phases</span>
@@ -270,8 +270,8 @@
 <main id="content">
 
   <!-- 1 -->
-  <section class="sec open" id="s1" data-title="What we are building" data-keywords="artifacts outputs website book pdf epub cadence">
-    <div class="sec-head"><span class="sec-num">1</span><h2>What we are building</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
+  <section class="sec open" id="s1" data-title="What I am building" data-keywords="artifacts outputs website book pdf epub cadence">
+    <div class="sec-head"><span class="sec-num">1</span><h2>What I am building</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
     <div class="sec-body">
       <table>
         <tr><th>Artifact</th><th>Format</th><th>Audience</th><th>Cadence</th></tr>
@@ -293,7 +293,7 @@
         <li>Lessons are Markdown, editable in any editor while sitting at Sonic Pi.</li>
         <li><code>format: html</code>, <code>pdf</code>, and <code>epub</code> in one config. <code>quarto render</code> produces all three.</li>
         <li>Callouts, cross-references, footnotes, and an index are built in, so the print book gets real book features without hand-rolling them.</li>
-        <li>Lua filters let us add one custom thing, an audio player next to code blocks, without forking anything.</li>
+        <li>Lua filters allow one custom addition, an audio player next to code blocks, without forking anything.</li>
         <li>No computation engine needed. Sonic Pi code is displayed, not executed, so there is no Jupyter or Knitr dependency and rendering stays fast.</li>
       </ul>
       <p class="rejected"><strong>Rejected alternatives.</strong> mdBook makes a good site and a poor PDF. Jupyter Book is heavier and aimed at executable Python. Astro Starlight makes an excellent site and has no book path. Plain Pandoc plus a Makefile is what Quarto already is, minus the navigation and search.</p>
@@ -348,12 +348,12 @@
 │   ├── make-audio.sh        # wav -> mp3, normalised, named by convention
 │   └── new-lesson.sh        # scaffolds a lesson from the template
 ├── notes/
-│   └── field-notes.md       # what broke when we actually tried the lesson
+│   └── field-notes.md       # what broke when the lesson met reality
 ├── STYLE.md                 # the writing rules, enforced by reading
 ├── curriculum/              # the syllabus tracker and this plan
 └── .github/workflows/
     └── publish.yml          # render and deploy on push to main</code></pre>
-      <p>The <code>curriculum/</code> folder stays where it is. The HTML tracker is our planning dashboard during drafting, and later becomes the site's Course map page.</p>
+      <p>The <code>curriculum/</code> folder stays where it is. The HTML tracker is the planning dashboard during drafting, and later becomes the site's Course map page.</p>
       <div class="cbox"><label>Notes on this section</label><textarea data-comment="s3" placeholder="Naming, nesting, anything missing?"></textarea><span class="saved">saved</span></div>
     </div>
   </section>
@@ -384,7 +384,7 @@ sound. No history unless the history explains the sound.
 ...
 ```
 
-What we just heard, in a sentence or two.
+What you just heard, in a sentence or two.
 
 ## Change one thing
 
@@ -394,7 +394,7 @@ someone else editing and running.
 
 ## Why it works
 
-The explanation, now that the sound is in our ears.
+The explanation, now that the sound is in your ears.
 
 ## Take it further
 
@@ -403,7 +403,7 @@ One optional harder exercise. No solution given.
 ## Ear drill
 
 Present only in lessons that add a drill to drills.rb.</code></pre>
-      <p>The <code>status</code> field drives a build-time badge on the site, so readers know which lessons we have tested and which are fresh.</p>
+      <p>The <code>status</code> field drives a build-time badge on the site, so readers know which lessons have been tested and which are fresh.</p>
       <h3>Conventions</h3>
       <ul>
         <li>Code blocks are <code>ruby</code> for highlighting. Sonic Pi is Ruby with a DSL on top.</li>
@@ -438,7 +438,7 @@ play :c4
       <p>into a highlighted code block followed by an <code>&lt;audio controls&gt;</code> element in HTML, and into a code block followed by a QR code and short URL in PDF. One <code>filters/audio.lua</code>, roughly forty lines, checks <code>quarto.doc.is_format("html")</code> and branches.</p>
       <div class="warnbox">
         <p><strong>Possible automation, to evaluate in Phase 2.</strong> Sonic Pi exposes an OSC interface that <code>sonic-pi-tool</code> can drive to evaluate a file and trigger a recording, which would let <code>make-audio.sh</code> regenerate every clip unattended. The port and authentication token changed between Sonic Pi 3 and 4 and are written into <code>~/.sonic-pi/log/</code>.</p>
-        <p>Treat this as an optimisation. If it takes more than an afternoon, we keep pressing Rec by hand. There are fewer than 150 clips and each takes under a minute.</p>
+        <p>Treat this as an optimisation. If it takes more than an afternoon, keep pressing Rec by hand. There are fewer than 150 clips and each takes under a minute.</p>
       </div>
       <div class="cbox"><label>Notes on this section</label><textarea data-comment="s5" placeholder="Worth automating? Audio format? Player styling?"></textarea><span class="saved">saved</span></div>
     </div>
@@ -454,7 +454,7 @@ play :c4
         <li><code>scripts/check-code.sh</code> runs each extracted file. Two tiers: <code>ruby -c</code> catches syntax errors and needs nothing installed, and evaluation through <code>sonic-pi-tool</code> catches undefined methods and bad arguments but needs Sonic Pi running. Tier one goes in CI. Tier two runs locally before a release.</li>
         <li>Long examples get a <code># ...continued from above</code> marker so extraction can join them into one runnable file.</li>
       </ul>
-      <div class="note"><p>The point is not test coverage. The point is that after we rewrite a lesson in week nine, we find out the same day that it broke a snippet from week three.</p></div>
+      <div class="note"><p>The point is not test coverage. The point is that after you rewrite a lesson in week nine, you find out the same day that it broke a snippet from week three.</p></div>
       <div class="cbox"><label>Notes on this section</label><textarea data-comment="s6" placeholder=""></textarea><span class="saved">saved</span></div>
     </div>
   </section>
@@ -510,8 +510,8 @@ filters:
   with:
     github_token: ${{ secrets.GITHUB_TOKEN }}
     publish_dir: ./_book</code></pre>
-      <p>PDF and EPUB are built locally and attached to a tagged release rather than on every push, because TinyTeX in CI is slow and the print book only needs regenerating when we decide it does.</p>
-      <p><strong>Domain.</strong> GitHub Pages gives <code>gauden.github.io/coding-harmony</code>. A custom domain via <code>CNAME</code> is a five-minute change whenever we want it.</p>
+      <p>PDF and EPUB are built locally and attached to a tagged release rather than on every push, because TinyTeX in CI is slow and the print book only needs regenerating when you decide it does.</p>
+      <p><strong>Domain.</strong> GitHub Pages gives <code>gauden.github.io/coding-harmony</code>. A custom domain via <code>CNAME</code> is a five-minute change whenever you want it.</p>
       <div class="cbox"><label>Notes on this section</label><textarea data-comment="s7" placeholder="Repo name, theme, domain?"></textarea><span class="saved">saved</span></div>
     </div>
   </section>
@@ -527,10 +527,10 @@ filters:
         <li>No "not X, but Y". No rhetorical triplets unless the third item is genuinely needed. No em dashes where a full stop or a comma does the job.</li>
         <li>Banned vocabulary: delve, matters, crucial, journey, unlock, harness (as verb), leverage (as verb), robust, seamless, powerful, elegant (as praise), simply, just, of course, obviously.</li>
         <li>No encouragement. The reader is an adult who chose to be here. Do not tell them something is exciting; write it so that it is.</li>
-        <li><strong>First person plural.</strong> The "we" is writer and reader at the same keyboard. Bare imperatives for direct instructions. Second person only for what belongs to the reader: their ear, their code, their judgement.</li>
+        <li><strong>First person for the writer, second for the reader.</strong> The book says "I" because it is a record of one person learning. "We" is reserved for programmers as a group. Bare imperatives for direct instructions. Second person only for what belongs to the reader: their ear, their code, their judgement.</li>
         <li>Musical terms in italics at first use, then plain. Define on first use in the sentence itself, not in a parenthesis.</li>
         <li>Prefer the concrete instance to the general claim. "Play 220&nbsp;Hz against 330&nbsp;Hz" beats "consider a perfect fifth".</li>
-        <li>Read every lesson aloud before marking it <code>tested</code>. Anything we stumble over gets rewritten.</li>
+        <li>Read every lesson aloud before marking it <code>tested</code>. Anything you stumble over gets rewritten.</li>
       </ul>
       <div class="note"><p>Add <code>scripts/lint-prose.sh</code> that greps for the banned words and reports file and line. Cheap, and it catches drift.</p></div>
       <div class="cbox"><label>Notes on this section</label><textarea data-comment="s8" placeholder="Words to add to the ban list?"></textarea><span class="saved">saved</span></div>
@@ -541,18 +541,18 @@ filters:
   <section class="sec" id="s9" data-title="The drafting loop" data-keywords="process workflow field notes testing rewrite cadence self-study">
     <div class="sec-head"><span class="sec-num">9</span><h2>The drafting loop</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
     <div class="sec-body">
-      <p class="lead">We are our own first student, and that is the main advantage this book has.</p>
+      <p class="lead">I am the first student, and that is the main advantage this book has.</p>
       <p>For each lesson:</p>
       <ol>
         <li><strong>Draft</strong> from the syllabus entry. Aim for a rough version, not a good one.</li>
         <li><strong>Sit at Sonic Pi and do the lesson</strong> as written, from a cold start. Time it.</li>
-        <li><strong>Write field notes immediately</strong> in <code>notes/field-notes.md</code>: what confused us, what took longer than the stated duration, what we wanted to try that the lesson did not offer, what sounded worse than promised.</li>
+        <li><strong>Write field notes immediately</strong> in <code>notes/field-notes.md</code>: what confused you, what took longer than the stated duration, what you wanted to try that the lesson did not offer, what sounded worse than promised.</li>
         <li><strong>Rewrite</strong> from the notes. This is where the book actually gets written.</li>
         <li><strong>Record the audio</strong>, set <code>status: tested</code>, commit.</li>
       </ol>
       <p>Keep field notes even when a lesson goes well. "This took 12 minutes not 25" is as useful as a complaint.</p>
       <div class="warnbox">
-        <p>Two rules that keep the loop honest. Never fix a lesson while doing it, because the confusion is the data. Never draft more than four lessons ahead of what we have tested, because the untested part builds on assumptions the testing would have disproved.</p>
+        <p>Two rules that keep the loop honest. Never fix a lesson while doing it, because the confusion is the data. Never draft more than four lessons ahead of what you have tested, because the untested part builds on assumptions the testing would have disproved.</p>
       </div>
       <div class="cbox"><label>Notes on this section</label><textarea data-comment="s9" placeholder=""></textarea><span class="saved">saved</span></div>
     </div>
@@ -630,7 +630,7 @@ filters:
         </ul>
       </div>
 
-      <div class="note"><p>No dates. Dates on a side project we are also studying from are fiction. The sequence is the plan.</p></div>
+      <div class="note"><p>No dates. Dates on a side project you are also studying from are fiction. The sequence is the plan.</p></div>
       <div class="cbox"><label>Notes on this section</label><textarea data-comment="s10" placeholder="Reorder anything? Different stopping points?"></textarea><span class="saved">saved</span></div>
     </div>
   </section>
@@ -678,18 +678,18 @@ filters:
     <div class="sec-head"><span class="sec-num">12</span><h2>What could go wrong</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
     <div class="sec-body">
       <div class="risk">
-        <p><strong>We abandon the project halfway.</strong> This is the most likely way the book fails, and it has nothing to do with music or code. Around Lesson 20 the novelty has worn off, the remaining work is visible, and the finish line is still months away. Most self-taught book projects die at roughly that point.</p>
+        <p><strong>The project stops halfway.</strong> This is the most likely way the book fails, and it has nothing to do with music or code. Around Lesson 20 the novelty has worn off, the remaining work is visible, and the finish line is still months away. Most self-taught book projects die at roughly that point.</p>
         <p><strong>What helps, concretely:</strong></p>
         <ul>
           <li><strong>Publish from day one.</strong> Done. The site deploys on every push, so whatever exists is already public and already useful to someone. A book abandoned at Lesson 25 is still a 25-lesson course online, which is a real thing rather than a failure.</li>
           <li><strong>Never break the chain on the ear drills.</strong> Ten minutes counts. The drills are the habit that keeps the project present on days with no writing in them.</li>
           <li><strong>Stop mid-lesson, not at the end of one.</strong> Leaving a half-finished paragraph makes the next session trivial to start. A clean stopping point is the hardest thing to return to.</li>
-          <li><strong>Take the fourth week off from theory.</strong> It is in the working rhythm for this reason. Transcribing something we actually want to hear is the reward that makes the next three weeks happen.</li>
+          <li><strong>Take the fourth week off from theory.</strong> It is in the working rhythm for this reason. Transcribing something you actually want to hear is the reward that makes the next three weeks happen.</li>
           <li><strong>Let the lesson count move.</strong> 58 is a plan, not a debt. Merging two lessons or cutting one is progress. Treating the number as fixed turns a flexible project into an obligation.</li>
           <li><strong>Watch for the tell.</strong> Two weeks without a commit is the signal. Not a reason to feel bad, a reason to check whether the next lesson is badly scoped and needs splitting.</li>
         </ul>
       </div>
-      <div class="risk"><p><strong>Audio recording becomes a chore.</strong> 150 clips at a minute each is two and a half hours spread over months, which is fine. It stops being fine when a rewrite invalidates recordings we already made. <strong>Mitigation, agreed:</strong> record nothing until the lesson reaches <code>status: tested</code>. This is now written into <code>STYLE.md</code> as well, so it survives being forgotten.</p></div>
+      <div class="risk"><p><strong>Audio recording becomes a chore.</strong> 150 clips at a minute each is two and a half hours spread over months, which is fine. It stops being fine when a rewrite invalidates recordings you already made. <strong>Mitigation, agreed:</strong> record nothing until the lesson reaches <code>status: tested</code>. This is now written into <code>STYLE.md</code> as well, so it survives being forgotten.</p></div>
       <div class="risk"><p><strong>Snippet rot.</strong> A Sonic Pi release changes a default and forty examples sound different. <strong>Mitigation, done:</strong> <code>setup.qmd</code> pins <strong>Sonic Pi 5.0.0</strong>, the version on this machine, and tells the reader how to check theirs. Run <code>scripts/check-code.sh --deep</code> before each release, and whenever the pin moves.</p></div>
       <div class="risk"><p><strong>Writing drifts into tutorial voice.</strong> The temptation to encourage is strong when writing for beginners. Mitigation: <code>STYLE.md</code>, the prose linter, and reading aloud.</p></div>
       <div class="cbox"><label>Risks to add</label><textarea data-comment="s12" placeholder=""></textarea><span class="saved">saved</span></div>

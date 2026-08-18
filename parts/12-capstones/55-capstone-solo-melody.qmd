@@ -10,7 +10,7 @@ status: outline
 ::: {.callout-note collapse="true" title="Planned, from the syllabus"}
 Delete this block once the lesson is drafted.
 
-> - 32 to 64 bars from your shortlist.
+> - 32 to 64 bars from the shortlist.
 > - Pitches, rhythm, articulation, dynamics, and phrase marks, all as data.
 > - Keep measure references and a list of the passages you are unsure about.
 >
@@ -19,8 +19,9 @@ Delete this block once the lesson is drafted.
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs,
-first person plural, no encouragement. See STYLE.md.
+What the musical concept is and what it does to sound. Two or three paragraphs.
+First person for me, second person for the reader, no encouragement. See
+STYLE.md.
 
 ## Run this
 
@@ -28,7 +29,7 @@ first person plural, no encouragement. See STYLE.md.
 # TODO
 ```
 
-What we just heard, in a sentence or two.
+What you just heard, in a sentence or two.
 
 ## Change one thing
 
@@ -37,7 +38,7 @@ for.
 
 ## Why it works
 
-The explanation, now that the sound is in our ears.
+The explanation, now that the sound is in your ears.
 
 ## Take it further
 

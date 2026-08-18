@@ -12,15 +12,16 @@ Delete this block once the lesson is drafted.
 
 > - Represent a progression as four independent lines rather than a list of chords.
 > - Minimise total movement, keep common tones, avoid crossing. It is a small search problem with musical constraints.
-> - Play a naive root-position version and your optimised version back to back. The difference is not subtle.
+> - Play a naive root-position version and the optimised version back to back. The difference is not subtle.
 >
 > **Checkpoint: you can hear four separate lines inside a chord progression and mute any one of them.**
 :::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs,
-first person plural, no encouragement. See STYLE.md.
+What the musical concept is and what it does to sound. Two or three paragraphs.
+First person for me, second person for the reader, no encouragement. See
+STYLE.md.
 
 ## Run this
 
@@ -28,7 +29,7 @@ first person plural, no encouragement. See STYLE.md.
 # TODO
 ```
 
-What we just heard, in a sentence or two.
+What you just heard, in a sentence or two.
 
 ## Change one thing
 
@@ -37,7 +38,7 @@ for.
 
 ## Why it works
 
-The explanation, now that the sound is in our ears.
+The explanation, now that the sound is in your ears.
 
 ## Take it further
 

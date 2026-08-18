@@ -11,7 +11,7 @@ status: outline
 Delete this block once the lesson is drafted.
 
 > - Reduce a melody to up, down, same. Play the contour on a fixed rhythm.
-> - Play the original rhythm on a fixed pitch. Ask a friend which version they recognise.
+> - Play the original rhythm on a fixed pitch. Ask someone which version they recognise.
 > - Rhythm usually wins. That result shapes how you approach transcription in Part 9.
 >
 > **Ends with: three controlled mutations of one tune and a verdict on what carries identity.**
@@ -19,8 +19,9 @@ Delete this block once the lesson is drafted.
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs,
-first person plural, no encouragement. See STYLE.md.
+What the musical concept is and what it does to sound. Two or three paragraphs.
+First person for me, second person for the reader, no encouragement. See
+STYLE.md.
 
 ## Run this
 
@@ -28,7 +29,7 @@ first person plural, no encouragement. See STYLE.md.
 # TODO
 ```
 
-What we just heard, in a sentence or two.
+What you just heard, in a sentence or two.
 
 ## Change one thing
 
@@ -37,7 +38,7 @@ for.
 
 ## Why it works
 
-The explanation, now that the sound is in our ears.
+The explanation, now that the sound is in your ears.
 
 ## Take it further
 

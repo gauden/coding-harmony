@@ -11,7 +11,7 @@ status: outline
 Delete this block once the lesson is drafted.
 
 > - Sections are functions. ABA is a call sequence. A varied return is a call with different arguments.
-> - Keep literal repeats separate from varied ones in your data. The distinction is the whole art of form.
+> - Keep literal repeats separate from varied ones in the data. The distinction is the whole art of form.
 > - Assemble a two-minute piece from four sections and a transition.
 >
 > **Checkpoint: a piece long enough to have a shape, with no copy-pasted score data anywhere in it.**
@@ -19,8 +19,9 @@ Delete this block once the lesson is drafted.
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs,
-first person plural, no encouragement. See STYLE.md.
+What the musical concept is and what it does to sound. Two or three paragraphs.
+First person for me, second person for the reader, no encouragement. See
+STYLE.md.
 
 ## Run this
 
@@ -28,7 +29,7 @@ first person plural, no encouragement. See STYLE.md.
 # TODO
 ```
 
-What we just heard, in a sentence or two.
+What you just heard, in a sentence or two.
 
 ## Change one thing
 
@@ -37,7 +38,7 @@ for.
 
 ## Why it works
 
-The explanation, now that the sound is in our ears.
+The explanation, now that the sound is in your ears.
 
 ## Take it further
 

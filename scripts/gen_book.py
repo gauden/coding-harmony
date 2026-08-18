@@ -13,6 +13,10 @@ Existing lesson files are never touched. Once you have written a lesson, this
 script leaves it alone forever; it only fills in what is missing. Rerun it
 after adding, renaming, or reordering a lesson in the syllabus.
 
+Renaming a lesson changes its filename, which leaves the old stub behind as an
+orphan. Orphans are reported, and --prune deletes the ones that are still
+untouched outlines. Anything with real content is never deleted.
+
 Usage:
     python3 scripts/gen_book.py            # write files
     python3 scripts/gen_book.py --dry-run  # report what would change
@@ -150,8 +154,9 @@ Delete this block once the lesson is drafted.
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs,
-first person plural, no encouragement. See STYLE.md.
+What the musical concept is and what it does to sound. Two or three paragraphs.
+First person for me, second person for the reader, no encouragement. See
+STYLE.md.
 
 ## Run this
 
@@ -159,7 +164,7 @@ first person plural, no encouragement. See STYLE.md.
 # TODO
 ```
 
-What we just heard, in a sentence or two.
+What you just heard, in a sentence or two.
 
 ## Change one thing
 
@@ -168,7 +173,7 @@ for.
 
 ## Why it works
 
-The explanation, now that the sound is in our ears.
+The explanation, now that the sound is in your ears.
 
 ## Take it further
 
@@ -196,7 +201,7 @@ def render_solutions(parts):
         "---",
         "",
         "Worked answers to the *Take it further* exercise in each lesson. Work",
-        "the exercise before reading. A solution we have not tried to reach",
+        "the exercise before reading. A solution you have not tried to reach",
         "teaches nothing.",
         "",
         "Sections marked TODO are waiting on their lesson to be drafted.",
@@ -232,6 +237,8 @@ def write(path, content, dry_run, created, updated, skipped):
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--dry-run", action="store_true", help="report changes, write nothing")
+    ap.add_argument("--prune", action="store_true",
+                    help="delete orphaned stubs left behind by a rename (outlines only)")
     args = ap.parse_args()
 
     parts = parse_syllabus(SYLLABUS)
@@ -274,6 +281,20 @@ def main():
     else:
         write(SOLUTIONS.relative_to(ROOT), solutions, args.dry_run, created, updated, skipped)
 
+    # Orphans: stub files left behind when a lesson is renamed in the syllabus.
+    wanted = {ROOT / lesson_path(part, l) for part in parts for l in part["lessons"]}
+    orphans = sorted(f for f in (ROOT / "parts").rglob("*.qmd") if f not in wanted)
+    pruned, kept = [], []
+    for f in orphans:
+        untouched = "status: outline" in f.read_text(encoding="utf-8")
+        if args.prune and untouched and not args.dry_run:
+            f.unlink()
+            pruned.append(f.relative_to(ROOT))
+        elif untouched:
+            kept.append((f.relative_to(ROOT), "outline, safe to prune"))
+        else:
+            kept.append((f.relative_to(ROOT), "HAS CONTENT, will never be pruned"))
+
     verb = "would create" if args.dry_run else "created"
     print(f"{verb}: {len(created)}, updated: {len(updated)}, unchanged: {len(skipped)}")
     for p in created[:5]:
@@ -282,6 +303,20 @@ def main():
         print(f"  + ... and {len(created) - 5} more")
     for p in updated:
         print(f"  ~ {p}")
+    if pruned:
+        print(f"pruned {len(pruned)} orphaned stub(s):")
+        for p in pruned:
+            print(f"  - {p}")
+    if kept:
+        print(f"{len(kept)} orphan(s) left in place. Rerun with --prune to remove the outlines:")
+        for p, why in kept:
+            print(f"  ? {p}  ({why})")
+    # Empty part directories left over from a renamed part.
+    for d in sorted((ROOT / "parts").iterdir()):
+        if d.is_dir() and not any(d.iterdir()):
+            if args.prune and not args.dry_run:
+                d.rmdir()
+                print(f"  - {d.relative_to(ROOT)}/ (empty)")
 
 
 if __name__ == "__main__":
