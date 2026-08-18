@@ -1,0 +1,43 @@
+---
+title: "15. Syncopation on a grid"
+subtitle: "30 min"
+part: "Rhythm and meter"
+concepts: [syncopation, offbeat, sixteenth, grid, accent, anticipation]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Build a 16-slot boolean bar. Fill the strong beats and listen. It sounds like a metronome.
+> - Move accents to the offbeats. Anticipate a downbeat by one sixteenth. Listen again.
+> - Encode one traditional clave pattern as a bit array and hear why it has outlived every genre that used it.
+>
+> **Ends with: three rhythmic variants of one pitch sequence, from square to funky.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

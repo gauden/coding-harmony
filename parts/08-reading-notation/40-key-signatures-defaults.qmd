@@ -1,0 +1,43 @@
+---
+title: "40. Key signatures as defaults"
+subtitle: "30 min"
+part: "Reading notation"
+concepts: [key, signature, accidental, override, default, sharps]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - A key signature is a default rule applied to every matching letter until overridden.
+> - An accidental is a local override that expires at the end of the bar. This is scoping, and you know scoping.
+> - Write the resolver: letter plus key signature plus local accidentals in, MIDI number out.
+>
+> **Ends with: a small resolver you will reuse in every transcription from here on.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

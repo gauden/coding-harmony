@@ -1,0 +1,43 @@
+---
+title: "23. The minor family"
+subtitle: "30 min"
+part: "Scales and keys"
+concepts: [minor, natural, harmonic, melodic, scale, raised]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Natural minor is the major formula rotated. Harmonic minor raises degree 7 to restore the pull to the tonic.
+> - Melodic minor changes on the way up and back on the way down, for reasons you can hear in one bar.
+> - Diff the three as integer arrays and confirm the difference is one or two elements.
+>
+> **Ends with: the same eight-bar tune in all three minors, plus a printed diff.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

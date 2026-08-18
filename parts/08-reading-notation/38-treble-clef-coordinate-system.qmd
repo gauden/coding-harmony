@@ -1,0 +1,43 @@
+---
+title: "38. Treble clef as a coordinate system"
+subtitle: "25 min"
+part: "Reading notation"
+concepts: [treble, clef, staff, lines, spaces, middle]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Vertical position maps to letter name. One line-to-space step is one diatonic step, not one semitone.
+> - That last distinction is where most self-taught readers go wrong. Get it settled early.
+> - Translate eight printed notes into Sonic Pi symbols and play them.
+>
+> **Ends with: a one-octave treble cheat sheet in your own handwriting or code.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

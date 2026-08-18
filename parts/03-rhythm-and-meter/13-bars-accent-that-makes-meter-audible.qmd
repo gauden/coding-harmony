@@ -1,0 +1,43 @@
+---
+title: "13. Bars, and the accent that makes meter audible"
+subtitle: "30 min"
+part: "Rhythm and meter"
+concepts: [meter, bar, measure, time, signature, 4/4]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Group eight identical eighth notes as 4/4, then as 3/4, using amplitude alone. Same notes, different piece.
+> - 6/8 versus 3/4 is the same six eighths grouped 2×3 or 3×2. Hear it before you name it.
+> - Write an assertion that a bar's durations sum to what the time signature promises.
+>
+> **Ends with: one pattern that flips between three meters at the press of Run.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

@@ -1,0 +1,25 @@
+---
+title: "Sources and licences"
+---
+
+Music used as transcription material, with its provenance. Lesson 42 covers how
+to build this list and what to check before adding to it.
+
+Public domain status differs by country, and a modern typeset edition of an old
+work can carry its own copyright even when the music itself is free. Record the
+edition, not only the composer.
+
+## Where to look
+
+| Source | What it holds | Watch for |
+|---|---|---|
+| [IMSLP](https://imslp.org/) | Scanned scores, mostly pre-1929 | Editions vary in quality and in licence |
+| [Mutopia](https://www.mutopiaproject.org/) | Typeset public-domain scores | Small catalogue, clean licensing |
+| [MuseScore](https://musescore.com/) | Community arrangements | Licences vary per upload, many are not free |
+
+## Shortlist
+
+*Empty. Populated in Lesson 42.*
+
+| Piece | Composer | Source | Edition | Licence | Used in |
+|---|---|---|---|---|---|

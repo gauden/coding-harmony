@@ -1,0 +1,43 @@
+---
+title: "16. Swing and microtiming"
+subtitle: "30 min"
+part: "Rhythm and meter"
+concepts: [swing, shuffle, groove, microtiming, humanize, timing]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Delay every second eighth note by a fraction of its length. Sweep the fraction from 0 to 0.33 and hear straight become swung.
+> - Add a few milliseconds of random jitter to onsets and amplitudes. Machines become players.
+> - Overdo both. Finding the point where it collapses teaches more than finding the point where it works.
+>
+> **Ear drill: Sonic Pi plays a four-beat pattern, you clap it back, then reveal the durations. Start with two distinct values.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

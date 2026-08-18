@@ -1,0 +1,43 @@
+---
+title: "9. Octaves as address space"
+subtitle: "20 min"
+part: "Pitch space"
+concepts: [octave, register, bass, treble, address, space]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Play the same phrase at :c2, :c4, and :c6. Two of them will sound wrong for the material.
+> - Register is an arrangement decision. Bass, melody, and inner voices occupy different bands for a reason.
+> - Find the register where each Sonic Pi synth sounds best. Keep notes.
+>
+> **Ends with: one phrase spread across three registers with three synths.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

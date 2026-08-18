@@ -1,0 +1,43 @@
+---
+title: "12. Durations as fractions"
+subtitle: "25 min"
+part: "Rhythm and meter"
+concepts: [duration, quarter, eighth, sixteenth, fractions, beat]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Quarter note is 1 beat, eighth is 0.5, sixteenth is 0.25. The names are historical, the arithmetic is not.
+> - Encode a rhythm as a bare duration array and play it on one drum sound.
+> - Clap along with the click while the pattern plays. Notice which durations you cannot yet feel.
+>
+> **Ends with: a rhythm interpreter that takes durations and any percussion sample.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

@@ -1,0 +1,43 @@
+---
+title: "4. One note is many notes"
+subtitle: "30 min"
+part: "Why sound has structure"
+concepts: [harmonic, series, overtones, partials, timbre, sine]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Build a tone by adding sine partials at 1f, 2f, 3f, 4f with falling amplitude. Add them one at a time and listen.
+> - The partials you just stacked are the harmonic series. Every pitched instrument produces some version of it.
+> - Change the amplitude profile and hear timbre change while pitch stays put.
+>
+> **Ends with: an additive tone that fades from thin to rich as partials enter.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

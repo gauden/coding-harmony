@@ -1,0 +1,267 @@
+---
+title: "Solutions"
+---
+
+Answers to the *Take it further* exercise in each lesson. Work the
+exercise before reading. A solution you have not tried to reach teaches
+nothing.
+
+Sections marked TODO are waiting on their lesson to be drafted.
+
+## Part 0. Getting a sound out
+
+### 1. Hello, sound
+
+TODO
+
+### 2. Notes are integers
+
+TODO
+
+### 3. Time is beats, not seconds
+
+TODO
+
+## Part 1. Why sound has structure
+
+### 4. One note is many notes
+
+TODO
+
+### 5. Consonance is small whole numbers
+
+TODO
+
+### 6. Twelve notes, one compromise
+
+TODO
+
+### 7. The envelope is the instrument
+
+TODO
+
+## Part 2. Pitch space
+
+### 8. Twelve pitch classes
+
+TODO
+
+### 9. Octaves as address space
+
+TODO
+
+### 10. Sharps, flats, and why spelling is not sound
+
+TODO
+
+### 11. Pentatonic: the scale with no wrong notes
+
+TODO
+
+## Part 3. Rhythm and meter
+
+### 12. Durations as fractions
+
+TODO
+
+### 13. Bars, and the accent that makes meter audible
+
+TODO
+
+### 14. Rests, dots, and ties
+
+TODO
+
+### 15. Syncopation on a grid
+
+TODO
+
+### 16. Swing and microtiming
+
+TODO
+
+### 17. Tuplets and 3 against 2
+
+TODO
+
+## Part 4. Intervals
+
+### 18. An interval carries two measurements
+
+TODO
+
+### 19. The interval sound dictionary
+
+TODO
+
+### 20. Build your own drill harness
+
+TODO
+
+## Part 5. Scales and keys
+
+### 21. The major scale is a step formula
+
+TODO
+
+### 22. Scale degrees and the pull toward home
+
+TODO
+
+### 23. The minor family
+
+TODO
+
+### 24. Modes over a drone
+
+TODO
+
+### 25. The circle of fifths as a data structure
+
+TODO
+
+## Part 6. Chords and harmony
+
+### 26. Triads as stacked thirds
+
+TODO
+
+### 27. Inversions and voicing
+
+TODO
+
+### 28. Diatonic chords and Roman numerals
+
+TODO
+
+### 29. Cadences are punctuation
+
+TODO
+
+### 30. Seventh chords and tension
+
+TODO
+
+### 31. Voice leading as an optimisation problem
+
+TODO
+
+## Part 7. Melody, phrase, and form
+
+### 32. Contour and rhythm are separable
+
+TODO
+
+### 33. Motive, sequence, and development
+
+TODO
+
+### 34. Question and answer
+
+TODO
+
+### 35. Chord tones and decoration
+
+TODO
+
+### 36. Notated versus played
+
+TODO
+
+### 37. Form as control flow
+
+TODO
+
+## Part 8. Reading notation
+
+### 38. Treble clef as a coordinate system
+
+TODO
+
+### 39. Bass clef and the grand staff
+
+TODO
+
+### 40. Key signatures as defaults
+
+TODO
+
+### 41. Decode four printed bars
+
+TODO
+
+## Part 9. Transcription
+
+### 42. Finding music you can legally use
+
+TODO
+
+### 43. The four-pass pipeline
+
+TODO
+
+### 44. Transcribe by ear
+
+TODO
+
+### 45. Transcribe from a score
+
+TODO
+
+### 46. Debug a transcription like software
+
+TODO
+
+## Part 10. Texture and arrangement
+
+### 47. Independent voices
+
+TODO
+
+### 48. Bass lines that outline harmony
+
+TODO
+
+### 49. Drum grids
+
+TODO
+
+### 50. Register, timbre, and space
+
+TODO
+
+### 51. Canon and imitation
+
+TODO
+
+## Part 11. Chromatic harmony
+
+### 52. Secondary dominants
+
+TODO
+
+### 53. Modulation as state change
+
+TODO
+
+### 54. Borrowed chords and the blues
+
+TODO
+
+## Part 12. Capstones
+
+### 55. Capstone A: solo melody
+
+TODO
+
+### 56. Capstone B: melody and accompaniment
+
+TODO
+
+### 57. Capstone C: two-voice polyphony
+
+TODO
+
+### 58. Refactor into your own library
+
+TODO

@@ -1,0 +1,43 @@
+---
+title: "6. Twelve notes, one compromise"
+subtitle: "30 min"
+part: "Why sound has structure"
+concepts: [equal, temperament, tuning, just, intonation, twelfth]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Stack pure 3:2 fifths twelve times. You land near seven octaves and miss by an audible margin.
+> - Equal temperament divides the octave into twelve equal ratios of 21/12 and spreads that error everywhere.
+> - Play a just major third against an equal-tempered one. The difference is small, real, and now you can hear it.
+>
+> **Ends with: the same triad in just intonation and equal temperament, back to back.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

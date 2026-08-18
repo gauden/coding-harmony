@@ -1,0 +1,43 @@
+---
+title: "43. The four-pass pipeline"
+subtitle: "30 min"
+part: "Transcription"
+concepts: [pipeline, passes, workflow, method, transcription, process]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Pass 1: tempo, meter, phrase boundaries. Pass 2: rhythm only. Pass 3: contour and anchor pitches. Pass 4: exact pitches and expression.
+> - Never skip forward. Every pass you skip gets paid for twice in debugging.
+> - Mark uncertain notes with a comment convention you can grep for.
+>
+> **Ends with: a checklist and an event schema you will apply unchanged to every transcription.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

@@ -1,0 +1,43 @@
+---
+title: "11. Pentatonic: the scale with no wrong notes"
+subtitle: "30 min"
+part: "Pitch space"
+concepts: [pentatonic, scale, improvisation, random, walk, minor]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Five notes per octave, no semitone clashes, nothing that can sound like a mistake.
+> - Take a random walk through scale(:e3, :minor_pentatonic, num_octaves: 2) over a held drone.
+> - Constrain step size and repeat probability. Watch a random sequence turn into something that sounds composed.
+>
+> **Ear drill: play a random note in a one-octave window, hum it, then search up or down until they match. Ten trials, log your errors.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

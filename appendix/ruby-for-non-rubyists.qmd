@@ -1,0 +1,84 @@
+---
+title: "Ruby for non-Rubyists"
+---
+
+Everything you need to read the code in this book, assuming you program in
+something else. Sonic Pi is Ruby with a music DSL on top, and this book uses a
+small corner of the language.
+
+## Symbols
+
+`:c4` is a symbol: an interned string used as a name. Sonic Pi uses them for
+note names, synth names, and scale names.
+
+```ruby
+play :c4          # symbol
+play 60           # the same note as an integer
+```
+
+## Blocks
+
+A block is an anonymous function passed to a method, written with `do ... end`
+or braces. Parameters go between vertical bars.
+
+```ruby
+4.times do |i|
+  play 60 + i
+  sleep 0.5
+end
+```
+
+## each and map
+
+`each` iterates for effect. `map` transforms and returns a new array. Both take
+blocks.
+
+```ruby
+[60, 64, 67].each { |n| play n; sleep 0.5 }
+[60, 64, 67].map  { |n| n + 12 }              # => [72, 76, 79]
+```
+
+Destructuring works in block parameters, which is how the score walker reads
+pairs:
+
+```ruby
+[[:c4, 1], [:e4, 0.5]].each do |pitch, dur|
+  play pitch
+  sleep dur
+end
+```
+
+## Keyword arguments
+
+Trailing `name: value` pairs. Sonic Pi uses them for everything expressive.
+
+```ruby
+play :c4, amp: 0.7, release: 2, cutoff: 90
+```
+
+## Defining functions
+
+Sonic Pi wraps `def` in `define`, which registers the function with the runtime
+so it survives across runs and is available inside threads.
+
+```ruby
+define :play_score do |score, transpose: 0|
+  score.each { |pitch, dur| play pitch + transpose; sleep dur }
+end
+```
+
+## Rings
+
+A ring is Sonic Pi's own type: an array whose index wraps. `ring(1, 2, 3)[4]`
+returns `2`. Useful for patterns that outlive the sequence they are drawn from.
+
+```ruby
+notes = ring(:c4, :e4, :g4)
+8.times { |i| play notes[i]; sleep 0.5 }   # cycles, no bounds error
+```
+
+## Things that will trip you
+
+Ruby returns the last expression, so functions rarely need `return`. Integer
+division truncates, so write `2.0/3` and not `2/3` when you mean a triplet.
+Symbols and strings are different types, and Sonic Pi wants symbols.

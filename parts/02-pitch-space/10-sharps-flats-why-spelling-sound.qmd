@@ -1,0 +1,43 @@
+---
+title: "10. Sharps, flats, and why spelling is not sound"
+subtitle: "25 min"
+part: "Pitch space"
+concepts: [sharp, flat, enharmonic, spelling, accidental, naming]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - F♯ and G♭ are the same key and the same integer. They are different names for different musical jobs.
+> - Sonic Pi accepts :fs4 and :gb4 and gives you 66 for both. Your transcriptions will need the name as well as the number.
+> - Carry a second field for spelling from now on. Part 8 will thank you.
+>
+> **Ends with: a pitch-class to spelling table and a note that prints both forms.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

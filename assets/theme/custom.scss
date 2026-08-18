@@ -1,0 +1,47 @@
+/*-- scss:defaults --*/
+
+// Echoes the curriculum tracker and the build plan, so the three read as one
+// project rather than three unrelated documents.
+$primary:            #5b3f8c;
+$body-color:         #1f2328;
+$link-color:         #5b3f8c;
+$code-block-bg:      #18181b;
+$code-color:         #7c4dbe;
+$font-size-root:     17px;
+$toc-font-size:      0.88rem;
+
+/*-- scss:rules --*/
+
+// Slightly wider measure than the Cosmo default; lessons are read, not skimmed.
+main { max-width: 46rem; }
+
+// Sonic Pi examples: code and its recording read as one unit.
+.sonic-example { margin-bottom: 1.4rem; }
+.sonic-example div.sourceCode { margin-bottom: 0; border-radius: 8px 8px 0 0; }
+
+.sonic-audio {
+  background: #f0ecf8;
+  border: 1px solid #d9dde3;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  padding: 8px 10px;
+}
+.sonic-audio audio { width: 100%; height: 34px; display: block; }
+
+// Status badge, driven by the `status` field in each lesson's front matter.
+.lesson-status {
+  display: inline-block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 999px;
+  padding: 2px 9px;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+}
+.lesson-status.outline { background: #f2f2f0; color: #667085; border: 1px solid #d9dde3; }
+.lesson-status.draft   { background: #fbf3e6; color: #8a5a1a; border: 1px solid #e6d4b4; }
+.lesson-status.tested  { background: #edf7f1; color: #2d6a4f; border: 1px solid #b8d8c4; }
+
+// Duration sits under the lesson title.
+.quarto-title .subtitle { color: #667085; font-size: 0.95rem; }

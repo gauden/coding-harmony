@@ -1,0 +1,8 @@
+---
+title: "Glossary"
+---
+
+Built up as the lessons are written, rather than assembled at the end. Each
+entry names the lesson where the term first does real work.
+
+*Empty. Entries land here as Part 0 onwards gets drafted.*

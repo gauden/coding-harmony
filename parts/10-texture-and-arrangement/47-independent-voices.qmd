@@ -1,0 +1,43 @@
+---
+title: "47. Independent voices"
+subtitle: "35 min"
+part: "Texture and arrangement"
+concepts: [polyphony, live_loop, thread, sync, independent, voices]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - live_loop and in_thread give you one process per voice. sync and cue keep them aligned.
+> - Sonic Pi's deterministic scheduling means voices do not drift. Verify this with a sixteen-bar test.
+> - Keep each voice's score in its own data structure. Shared mutable state across voices is as bad here as anywhere.
+>
+> **Ends with: a two-part arrangement that loops indefinitely and stays locked.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

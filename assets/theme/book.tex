@@ -1,0 +1,20 @@
+% Print-side tuning. Kept deliberately small; the real typographic pass is
+% Phase 4, once the text has stopped moving.
+
+% Code listings wrap rather than run off the page.
+\usepackage{fvextra}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{
+  breaklines,
+  breakanywhere,
+  commandchars=\\\{\},
+  fontsize=\small
+}
+
+% Musical symbols used in the text: sharps, flats, naturals.
+\usepackage{newunicodechar}
+\newunicodechar{♯}{\ensuremath{\sharp}}
+\newunicodechar{♭}{\ensuremath{\flat}}
+\newunicodechar{♮}{\ensuremath{\natural}}
+
+% Part pages start recto and carry no page number.
+\renewcommand*{\partpagestyle}{empty}

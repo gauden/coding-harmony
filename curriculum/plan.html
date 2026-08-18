@@ -173,6 +173,8 @@
   .settled .badge { font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ok); border: 1px solid #b8d8c4; background: white; border-radius: 999px; padding: 2px 8px; font-weight: 600; }
   .settled ul { margin-bottom: 10px; }
   .settled p:last-child { margin-bottom: 0; }
+  .phase.done { border-color: #cfe3d6; background: #f8fcf9; }
+  .phase .badge { font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ok); border: 1px solid #b8d8c4; background: white; border-radius: 999px; padding: 2px 8px; font-weight: 600; margin-right: 6px; }
   .decision h3 { margin-top: 0; }
   .opts { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
   .opt {
@@ -241,7 +243,7 @@
     <div class="meta">
       <span class="pill">12 sections</span>
       <span class="pill">5 phases</span>
-      <span class="pill">3 open decisions</span>
+      <span class="pill">All decisions settled</span>
       <span class="pill">Working plan, not a contract</span>
     </div>
   </div>
@@ -562,8 +564,8 @@ filters:
     <div class="sec-body">
       <p>Tick items as you go. Progress is stored in this browser.</p>
 
-      <div class="phase" data-phase="0">
-        <h3>Phase 0. Scaffold <span class="phase-when">one evening</span></h3>
+      <div class="phase done" data-phase="0">
+        <h3>Phase 0. Scaffold <span class="phase-when"><span class="badge">done</span> one evening</span></h3>
         <div class="bar"><i></i></div>
         <ul class="tasks">
           <li><input type="checkbox" data-task="ph0-a"><span>Install Quarto and TinyTeX.</span></li>
@@ -572,7 +574,7 @@ filters:
           <li><input type="checkbox" data-task="ph0-d"><span>Write <code>STYLE.md</code> and the lesson template.</span></li>
           <li><input type="checkbox" data-task="ph0-e"><span>Empty book renders to HTML, PDF, and EPUB, and deploys to Pages.</span></li>
         </ul>
-        <p class="rejected">Do this before writing a word of content, so that publishing is never the thing standing between you and a finished lesson.</p>
+        <p class="rejected">Done. The book renders to HTML, PDF, and EPUB from 58 generated lesson stubs. <code>scripts/gen_book.py</code> drives the chapter list and the stubs from the syllabus, so adding a lesson there is the only edit needed.</p>
       </div>
 
       <div class="phase" data-phase="1">
@@ -634,10 +636,10 @@ filters:
   </section>
 
   <!-- 11 -->
-  <section class="sec" id="s11" data-title="Decisions still open" data-keywords="licence mit cc by-nc-sa think python downey diagrams lilypond interactive solutions choices open questions">
-    <div class="sec-head"><span class="sec-num">11</span><h2>Decisions still open</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
+  <section class="sec" id="s11" data-title="Decisions" data-keywords="licence mit cc by-nc-sa think python downey diagrams lilypond interactive solutions choices open questions">
+    <div class="sec-head"><span class="sec-num">11</span><h2>Decisions</h2><span class="sec-flag">note</span><span class="chev">&#9654;</span></div>
     <div class="sec-body">
-      <p>Three left. Pick an option to record your choice. Selections export with your notes.</p>
+      <p>All four are settled. The reasoning is kept here because a decision without its reason gets reopened.</p>
 
       <div class="settled">
         <h3>Licence <span class="badge">settled</span></h3>
@@ -649,36 +651,22 @@ filters:
         <p class="rejected">The non-commercial term binds others, not the copyright holder. Selling the book stays open to you.</p>
       </div>
 
-      <div class="decision" data-decision="diagrams">
-        <h3>Notation diagrams</h3>
-        <p>LilyPond gives correct notation and is fiddly. Hand-drawn SVG is faster and drifts. Decide during Phase 3, when you first need a staff.</p>
-        <div class="opts">
-          <span class="opt" data-value="LilyPond to SVG">LilyPond to SVG</span>
-          <span class="opt" data-value="Hand-drawn SVG">Hand-drawn SVG</span>
-          <span class="opt" data-value="Screenshots from MuseScore">MuseScore screenshots</span>
-          <span class="opt" data-value="Undecided">Undecided</span>
-        </div>
+      <div class="settled">
+        <h3>Notation diagrams <span class="badge">settled</span></h3>
+        <p><strong>LilyPond to SVG.</strong> Correct notation, regenerable from source, consistent across every diagram in the book. The cost is that LilyPond is fiddly and adds a build dependency.</p>
+        <p class="rejected">Needed from Part 8 onwards. Install with <code>brew install lilypond</code> when Phase 3 starts; nothing before then requires it.</p>
       </div>
 
-      <div class="decision" data-decision="interactive">
-        <h3>Interactive site examples</h3>
-        <p>A browser-based Sonic Pi does not exist. Copy-to-clipboard plus the audio player is the realistic ceiling. Revisit only if something changes.</p>
-        <div class="opts">
-          <span class="opt" data-value="Copy button plus audio player">Copy + audio only</span>
-          <span class="opt" data-value="Investigate a web audio approximation">Investigate web audio</span>
-          <span class="opt" data-value="Undecided">Undecided</span>
-        </div>
+      <div class="settled">
+        <h3>Interactive site examples <span class="badge">settled</span></h3>
+        <p><strong>Copy button plus audio player.</strong> Quarto's <code>code-copy</code> gives every block a copy control, and <code>filters/audio.lua</code> attaches a recording beneath it. The reader copies, pastes into Sonic Pi, and runs.</p>
+        <p class="rejected">A browser-based Sonic Pi does not exist, so this is the ceiling until something changes.</p>
       </div>
 
-      <div class="decision" data-decision="solutions">
-        <h3>Solutions to exercises</h3>
-        <p>Whether "Take it further" gets an answers appendix. Leaning no for the exercises, yes for the capstones.</p>
-        <div class="opts">
-          <span class="opt" data-value="No exercise solutions, worked capstones">No solutions, worked capstones</span>
-          <span class="opt" data-value="Full solutions appendix">Full solutions appendix</span>
-          <span class="opt" data-value="Hints only">Hints only</span>
-          <span class="opt" data-value="Undecided">Undecided</span>
-        </div>
+      <div class="settled">
+        <h3>Solutions to exercises <span class="badge">settled</span></h3>
+        <p><strong>Full solutions appendix.</strong> Every <em>Take it further</em> exercise gets a worked answer in <code>appendix/solutions.qmd</code>, generated with one section per lesson.</p>
+        <p class="rejected">The reader is working alone with no one to ask. A withheld answer stops being a teaching device and becomes a dead end.</p>
       </div>
 
       <div class="cbox"><label>Other decisions you want on this list</label><textarea data-comment="s11" placeholder=""></textarea><span class="saved">saved</span></div>

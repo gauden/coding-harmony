@@ -1,0 +1,43 @@
+---
+title: "36. Notated versus played"
+subtitle: "30 min"
+part: "Melody, phrase, and form"
+concepts: [articulation, dynamics, legato, staccato, accent, phrasing]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Add amp, articulation, and an onset offset to your event schema.
+> - Render one phrase legato, detached, accented, and shaped with a crescendo to its high point.
+> - A perfectly quantised performance of a good melody can sound worse than a sloppy one. Confirm this yourself.
+>
+> **Ends with: two renderers over the same score: score-strict and performance-shaped.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

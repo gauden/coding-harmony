@@ -1,0 +1,43 @@
+---
+title: "8. Twelve pitch classes"
+subtitle: "25 min"
+part: "Pitch space"
+concepts: [pitch, class, chromatic, twelve, keyboard, black]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Walk 60 to 72 one semitone at a time and hear the octave close.
+> - The keyboard's uneven black-key pattern is not decoration. It encodes where the semitone steps fall.
+> - Pitch class is pitch modulo 12. Write the function, then use it to find every C in a range.
+>
+> **Ends with: a chromatic browser driven by one integer offset.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

@@ -1,0 +1,43 @@
+---
+title: "53. Modulation as state change"
+subtitle: "35 min"
+part: "Chromatic harmony"
+concepts: [modulation, key, change, pivot, chord, state]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Hold the current key in a variable. Roman numerals become relative addresses against it.
+> - A pivot chord is a chord that is valid in both keys, so it can be reinterpreted mid-progression.
+> - Move to the dominant, sit there for four bars, then come home. Note the moment your ear accepts the new tonic.
+>
+> **Ends with: a passage that changes key twice and returns.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

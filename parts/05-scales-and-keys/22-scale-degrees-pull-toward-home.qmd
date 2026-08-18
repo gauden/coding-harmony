@@ -1,0 +1,43 @@
+---
+title: "22. Scale degrees and the pull toward home"
+subtitle: "30 min"
+part: "Scales and keys"
+concepts: [scale, degree, tonic, leading, tone, dominant]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Hold a drone on the tonic. Play each degree above it and rate how badly it wants to move.
+> - Degree 7 pulls hard to 8. Degree 4 leans to 3. Degree 5 is stable and not home.
+> - End the same melody on four different degrees. Only one of them sounds like an ending.
+>
+> **Ends with: one phrase with four endings, ranked by how finished they sound.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

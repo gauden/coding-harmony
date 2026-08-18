@@ -1,0 +1,43 @@
+---
+title: "24. Modes over a drone"
+subtitle: "30 min"
+part: "Scales and keys"
+concepts: [modes, dorian, phrygian, lydian, mixolydian, aeolian]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Rotating the major step formula gives seven modes. That is the entire mechanism.
+> - Hold a drone on one root and play all seven against it. The drone is what makes the difference obvious.
+> - Identify the one altered degree that gives each mode its character. Dorian's sixth, Mixolydian's seventh, Lydian's fourth.
+>
+> **Ear drill: drone plus a random mode, you name it. Start with major, Dorian, and Mixolydian only.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

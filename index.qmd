@@ -1,0 +1,63 @@
+---
+title: "Preface"
+---
+
+Music theory for people who already write code.
+
+This book assumes you are at ease with arrays, functions, maps, and threads, and
+that you cannot read a note. Those two facts together are unusual enough that
+most music teaching serves you badly. Beginner material spends chapters on
+things you grasped in a paragraph. Reference material assumes a decade of
+notation you never acquired.
+
+Sonic Pi closes the gap. It is a live coding environment where music is written
+as Ruby, which means every musical idea in this book can be handed to you as
+something you run, hear, and then take apart.
+
+## How the course works
+
+Each lesson takes one musical idea, encodes it as data, plays it, and asks you
+to change something and listen to what happened. The programming stays
+deliberately ahead of the theory so your existing skills carry the load.
+
+- **Sound first, name second.** You hear an interval, a cadence, a mode before
+  anyone tells you what it is called.
+- **Music is data.** A note event carries pitch, onset, duration, amplitude, and
+  articulation. Everything else is a function over those.
+- **Score and renderer stay separate.** The composition is content. The playback
+  function is interpretation. Changing one should not touch the other.
+- **Every lesson ends with something worth hearing.** If the last snippet in a
+  lesson is a bare test tone, the lesson is broken.
+- **Notation arrives late and on demand.** You learn the staff after you already
+  understand pitch and duration as numbers, which makes it a decoding exercise
+  rather than a wall.
+- **Ear training runs in parallel.** Ten minutes most days, using drills you
+  wrote yourself, from Part 2 onwards.
+
+## What this is not
+
+This is not the [Sonic Pi tutorial](https://sonic-pi.net/tutorial.html). That one
+teaches programming and uses music as the reward, and it is good at that. Here
+the programming is assumed. Ruby idioms get a short note the first time they
+appear and no more than that, collected in [Ruby for non-Rubyists](appendix/ruby-for-non-rubyists.qmd)
+for anyone arriving from another language.
+
+It is also not a substitute for playing an instrument. Nothing here will teach
+your hands anything. What it will teach you is what musicians are doing and why,
+in a representation you can inspect.
+
+## Working rhythm
+
+Four sessions a week gets you through the 58 lessons in about fifteen weeks,
+with the capstones after that.
+
+| Session | Length | What |
+|---|---|---|
+| Two per week | 25 to 35 min | New lessons, in order. |
+| One per week | 30 min | Consolidation. Reread the last four lessons and rebuild one example from memory. |
+| One per week | 30 min | Free play. Use only what you have learned so far and make something you like. |
+| Most days | 10 min | Ear drills from your own `drills.rb`. |
+
+Every fourth week, add no new theory. Finish a transcription instead. Theory
+sticks when you use it under pressure, and the pressure comes from wanting the
+thing to sound right.

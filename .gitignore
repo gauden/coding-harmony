@@ -76,3 +76,9 @@ venv/
 .env
 .env.*
 !.env.example
+
+/.quarto/
+**/*.quarto_ipynb
+
+# keep-tex output lands in the project root, not _book/
+/*.tex

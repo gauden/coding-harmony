@@ -1,0 +1,43 @@
+---
+title: "48. Bass lines that outline harmony"
+subtitle: "30 min"
+part: "Texture and arrangement"
+concepts: [bass, line, root, walking, approach, note]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Start with roots on downbeats. It works and it is dull.
+> - Add approach notes a semitone below the next root. Add passing tones between roots a third apart.
+> - Give the bass its own rhythm. A bass that copies the melody's rhythm is not a second voice.
+>
+> **Ends with: the same progression with a root bass and a walking bass, played in sequence.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

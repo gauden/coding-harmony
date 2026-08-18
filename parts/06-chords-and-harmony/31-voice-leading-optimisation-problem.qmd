@@ -1,0 +1,43 @@
+---
+title: "31. Voice leading as an optimisation problem"
+subtitle: "35 min"
+part: "Chords and harmony"
+concepts: [voice, leading, soprano, alto, tenor, bass]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Represent a progression as four independent lines rather than a list of chords.
+> - Minimise total movement, keep common tones, avoid crossing. It is a small search problem with musical constraints.
+> - Play a naive root-position version and your optimised version back to back. The difference is not subtle.
+>
+> **Checkpoint: you can hear four separate lines inside a chord progression and mute any one of them.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

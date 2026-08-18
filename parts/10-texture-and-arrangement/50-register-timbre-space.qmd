@@ -1,0 +1,43 @@
+---
+title: "50. Register, timbre, and space"
+subtitle: "35 min"
+part: "Texture and arrangement"
+concepts: [orchestration, register, timbre, space, fx, reverb]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Two voices in the same register and timbre will fight. Separate them by pitch band, envelope, or panning.
+> - Use with_fx :reverb and :echo to place voices at different depths.
+> - Fixing a muddy arrangement with volume alone almost never works. Try it and confirm.
+>
+> **Ends with: one harmonic skeleton arranged three ways: sparse, dense, and wide.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

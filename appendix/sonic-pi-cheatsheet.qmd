@@ -1,0 +1,59 @@
+---
+title: "Sonic Pi cheat sheet"
+---
+
+The subset used in this book. The built-in help pane documents everything else,
+and it is faster than any web search.
+
+## Sound
+
+| Call | Does |
+|---|---|
+| `play :c4` | Play a note. Accepts symbols or MIDI integers. |
+| `play_chord [:c4, :e4, :g4]` | Play notes together. |
+| `sample :bd_haus` | Play a recorded sample. |
+| `use_synth :prophet` | Set the instrument for what follows. |
+| `synth :pluck, note: :c4` | Play one note on a named synth without switching. |
+
+## Time
+
+| Call | Does |
+|---|---|
+| `sleep 1` | Advance one beat. |
+| `use_bpm 96` | Set the tempo. |
+| `live_loop :name do ... end` | A named loop that runs concurrently and can be redefined while running. |
+| `in_thread do ... end` | Run a block concurrently, once. |
+| `sync :name` / `cue :name` | Wait for, and send, a start signal. |
+
+## Envelope
+
+`attack`, `decay`, `sustain`, `release`, all in beats. `amp` scales loudness.
+`pan` places the sound between -1 and 1.
+
+## Music helpers
+
+| Call | Returns |
+|---|---|
+| `note(:c4)` | `60` |
+| `note_info(:c4)` | A structure with name, octave, and MIDI number. |
+| `scale(:c4, :major)` | A ring of the scale's notes. |
+| `chord(:c4, :major)` | A ring of the chord's notes. |
+| `chord_invert(chord(:c4, :major), 1)` | The chord, inverted. |
+| `hz_to_midi(440)` / `midi_to_hz(69)` | Convert between frequency and note number. |
+
+## Randomness
+
+`rrand(lo, hi)` for a float, `rrand_i(lo, hi)` for an integer, `choose` to pick
+from a list, `one_in(n)` for a probability. Set `use_random_seed 42` at the top
+of any example whose output you want to reproduce.
+
+## Effects
+
+```ruby
+with_fx :reverb, room: 0.8 do
+  play :c4
+end
+```
+
+`:reverb`, `:echo`, `:lpf`, `:hpf`, and `:distortion` cover most of what this
+book needs.

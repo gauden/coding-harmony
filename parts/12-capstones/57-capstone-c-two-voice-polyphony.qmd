@@ -1,0 +1,43 @@
+---
+title: "57. Capstone C: two-voice polyphony"
+subtitle: "120+ min"
+part: "Capstones"
+concepts: [capstone, polyphony, two, voice, invention, counterpoint]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - A two-voice invention, canon, or contrapuntal excerpt.
+> - Encode the voices independently and verify their alignment automatically.
+> - Annotate motives, imitative entries, cadences, and the implied harmony.
+>
+> **Deliverable: two voices, independently inspectable, that reproduce the source together.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

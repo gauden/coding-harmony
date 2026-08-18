@@ -1,0 +1,43 @@
+---
+title: "56. Capstone B: melody and accompaniment"
+subtitle: "90+ min"
+part: "Capstones"
+concepts: [capstone, accompaniment, hymn, song, lead, sheet]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - A short song, hymn, or keyboard miniature.
+> - Melody, bass, and inner harmony as three separate structures with one shared timeline.
+> - Every bar validated for metric integrity, every chord checked against the sounding notes.
+>
+> **Deliverable: a structured multi-part score, not one long script.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

@@ -1,0 +1,71 @@
+---
+title: "Before Lesson 1"
+---
+
+Install Sonic Pi from [sonic-pi.net](https://sonic-pi.net/). Version 4 or later.
+The download page covers macOS, Windows, Linux, and Raspberry Pi, and the
+installer is the whole setup.
+
+Open it, type this into the first buffer, and press **Run**.
+
+```ruby
+play 60
+```
+
+If you hear a note, you are ready.
+
+Headphones or decent speakers will do more for your progress than any other
+purchase, because half of this course is hearing small differences. Laptop
+speakers reproduce almost nothing below about 200 Hz, which is most of Part 1
+and every bass line in Part 10.
+
+## The window
+
+Three areas matter. The **buffers** hold your code, and there are ten of them,
+which is more useful than it sounds once you are running several voices. The
+**log** on the right prints every note as it plays, and it is the first place to
+look when something sounds wrong. The **help** pane at the bottom documents every
+synth, sample, and function, and it is faster than searching the web.
+
+Two shortcuts worth learning now: `Cmd-R` or `Alt-R` runs the buffer, and
+`Cmd-.` or `Alt-.` stops everything.
+
+## A first sound
+
+Paste this in and run it. You are not expected to understand it yet. It is here
+so you know what the destination sounds like.
+
+```{.ruby audio="setup-1.mp3"}
+# Four bars that already sound like music.
+# Every construct here is explained by the end of Part 3.
+
+use_bpm 96
+use_synth :pluck
+
+# E minor pentatonic. Five notes chosen so that any order sounds intentional.
+melody = [:e4, :g4, :a4, :b4, :d5, :b4, :a4, :g4]
+
+live_loop :tune do
+  melody.each do |n|
+    play n, release: 0.4
+    sleep 0.25          # sixteenth notes at this tempo
+  end
+end
+
+live_loop :bass do
+  play :e2, release: 1.8, amp: 0.7, cutoff: 70
+  sleep 2               # one bass note every two beats
+end
+```
+
+Now change one thing. Set `melody` to `[:e4, :f4, :g4, :a4, :b4, :c5, :d5, :e5]`
+and run it again. Same rhythm, same bass, different feeling. Working out why is
+roughly what Parts 2 and 5 are for.
+
+Press `Cmd-.` to stop it.
+
+## Version
+
+The examples were written against Sonic Pi 4. Later versions change defaults
+occasionally, so if a snippet sounds different from its recording, check your
+version before assuming you mistyped something.

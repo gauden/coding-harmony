@@ -1,0 +1,43 @@
+---
+title: "55. Capstone A: solo melody"
+subtitle: "60+ min"
+part: "Capstones"
+concepts: [capstone, solo, melody, transcription, 32, bars]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - 32 to 64 bars from your shortlist.
+> - Pitches, rhythm, articulation, dynamics, and phrase marks, all as data.
+> - Keep measure references and a list of the passages you are unsure about.
+>
+> **Deliverable: a faithful monophonic transcription plus an expressive renderer.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

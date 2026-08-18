@@ -1,0 +1,43 @@
+---
+title: "30. Seventh chords and tension"
+subtitle: "30 min"
+part: "Chords and harmony"
+concepts: [seventh, chord, dominant, maj7, min7, half]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Add a fourth note. Compare major 7, minor 7, dominant 7, and half-diminished on one root.
+> - The dominant seventh contains a tritone, and that tritone is what makes it demand resolution.
+> - Resolve V7 to I in four voices and follow each voice individually.
+>
+> **Ends with: a V7 to I resolution you can hear voice by voice with a solo flag.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

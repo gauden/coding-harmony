@@ -1,0 +1,43 @@
+---
+title: "28. Diatonic chords and Roman numerals"
+subtitle: "35 min"
+part: "Chords and harmony"
+concepts: [diatonic, chords, roman, numerals, I, ii]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Take every other degree of a scale. Seven triads fall out, and their qualities are fixed by the scale.
+> - Roman numerals name a chord by its job rather than its pitch. That makes a progression key-independent data.
+> - Render [:I, :V, :vi, :IV] in four keys from one symbolic list.
+>
+> **Ends with: a progression engine that takes numerals and a key and returns notes.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

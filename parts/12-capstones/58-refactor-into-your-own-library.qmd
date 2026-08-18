@@ -1,0 +1,44 @@
+---
+title: "58. Refactor into your own library"
+subtitle: "60+ min"
+part: "Capstones"
+concepts: [refactor, library, framework, schema, readme, reusable]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Extract the helpers you have written more than twice: playback, validation, transposition, voicing, articulation.
+> - Settle on one event schema and migrate old pieces to it.
+> - Keep it small. A framework large enough to hide the score has failed.
+> - Write a README that explains your representation choices to yourself in six months.
+>
+> **Final checkpoint: you can take a printed score or a short recording and turn it into structured, editable code, and explain the theory encoded in it.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.

@@ -1,0 +1,43 @@
+---
+title: "34. Question and answer"
+subtitle: "25 min"
+part: "Melody, phrase, and form"
+concepts: [phrase, antecedent, consequent, question, answer, period]
+sonic-pi: []
+status: outline
+---
+
+::: {.callout-note collapse="true" title="Planned, from the syllabus"}
+Delete this block once the lesson is drafted.
+
+> - Four bars that end unresolved, four bars that close. Most tunes you know are built this way.
+> - Change only the last two notes of the first phrase and watch the pair stop working.
+> - Connect this to cadences. The answer phrase ends with the full stop you learned in Lesson 29.
+>
+> **Ends with: an eight-bar period that sounds complete on its own.**
+:::
+
+## The idea
+
+What the musical concept is and what it does to sound. Two or three paragraphs.
+
+## Run this
+
+```{.ruby audio=""}
+# TODO
+```
+
+What you just heard, in a sentence or two.
+
+## Change one thing
+
+Two or three directed experiments. Each states what to change and what to
+listen for.
+
+## Why it works
+
+The explanation, now that the sound is in the reader's ears.
+
+## Take it further
+
+One optional harder exercise. Solution in the appendix.
