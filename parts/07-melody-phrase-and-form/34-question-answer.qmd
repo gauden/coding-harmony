@@ -4,42 +4,100 @@ subtitle: "25 min"
 part: "Melody, phrase, and form"
 concepts: [phrase, antecedent, consequent, question, answer, period]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Four bars that end unresolved, four bars that close. Most tunes you know are built this way.
-> - Change only the last two notes of the first phrase and watch the pair stop working.
-> - Connect this to cadences. The answer phrase ends with the full stop from Lesson 29.
->
-> **Ends with: an eight-bar period that sounds complete on its own.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Play four bars that stop on G, pause, then replay their opening and end on C.
+The first half sets a boundary without closing the larger shape. The second half
+answers it. Much of the effect can live in the last two notes.
+
+An *antecedent* is a phrase that behaves like a question, often ending with a
+half cadence. A *consequent* answers it with stronger closure, often an authentic
+cadence. Together they form a *period*. The two phrases need enough shared
+material to sound related and enough difference at the boundary to sound
+directed.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 96
+use_synth :piano
+
+define :play_phrase do |events|
+  events.each do |pitch, duration|
+    play pitch, release: duration * 0.8
+    sleep duration
+  end
+end
+
+opening = [[:c4, 1], [:e4, 1], [:g4, 1], [:e4, 1],
+           [:f4, 1], [:a4, 1], [:g4, 2]]
+
+question_tail = [[:d4, 1], [:f4, 1], [:g4, 2]]
+answer_tail = [[:d4, 1], [:b3, 1], [:c4, 2]]
+
+antecedent = opening + question_tail
+consequent = opening + answer_tail
+
+play_phrase antecedent
+sleep 1
+play_phrase consequent
+sleep 2
+
+# A broken pair: the question closes before the answer arrives.
+play_phrase opening + answer_tail
+sleep 1
+play_phrase consequent
 ```
 
-What you just heard, in a sentence or two.
+The first pair shares its opening and diverges at the cadence. G leaves the
+antecedent open; C closes the consequent. In the second pair, the first phrase
+already arrives on C, so the repeated closure has less work to do.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Change only the question's final G to C. The two phrases now compete to sound
+   final, weakening the eight-bar arc.
+2. Transpose the consequent opening up two semitones while keeping its answer
+   tail. The relation becomes less literal and the return to C more abrupt.
+3. Remove the one-beat pause. Silence helps the phrase boundary register; without
+   it, rhythm and cadence must carry the division alone.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+A period combines repetition and contrast. Shared opening data establishes that
+the two phrases belong to one object. Different suffixes alter their cadential
+function. In programming terms, each phrase is a common prefix plus a parameterised
+tail.
+
+The question ends on degree 5, the dominant. Lesson 29 treated a final V as a
+half cadence because it predicts continuation. The answer moves through the
+leading tone B to tonic C, giving the strongest local arrival available in the
+key. Melody and harmony can reinforce the same punctuation even when this small
+example states the chords only by implication.
+
+Four plus four bars is a common scale for a period, not a parser rule. A phrase
+is perceived through grouping, repetition, breath, duration, and cadence. The
+code exposes two of those cues: shared data and contrasting endings. A richer
+arrangement can add dynamics and accompaniment without changing the structure.
+
+The repeated opening also sets an expectation about timing. When the consequent
+begins with the same seven events, you can predict where its tail will diverge.
+Shorten the second opening and the answer may arrive too early to feel balanced.
+Lengthen it and the memory of the antecedent weakens. Symmetry is therefore one
+available design, not a requirement imposed by the data type.
+
+An answer can vary more than its cadence. It may begin higher, compress the
+rhythm, or reverse one interval while preserving the opening gesture. Make one
+change at a time during drafting. If pitch, rhythm, register, and harmony all
+change together, the listener has little evidence that the second phrase answers
+the first rather than starting a new section.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Create a period in A minor. Reuse one two-bar opening in both phrases. End the
+antecedent on E and the consequent on A, using G-sharp in the answer to create
+the harmonic-minor leading tone. Keep each phrase at exactly eight beats and
+print a bar-total assertion before playing.

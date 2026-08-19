@@ -4,42 +4,62 @@ subtitle: "20 min"
 part: "Getting a sound out"
 concepts: [tempo, bpm, beats, sleep, time, symbolic]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - sleep 1 means one beat. use_bpm decides what a beat costs in seconds.
-> - Run the same score at 60, 96, and 152 BPM and notice which tempo makes it sound like a different piece.
-> - Sonic Pi's scheduler keeps timing exact regardless of how long your code takes to run. Trust it.
->
-> **Checkpoint: you can write, hear, and re-time a short phrase without looking anything up.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+`sleep 1` waits for one beat. Its cost in seconds comes from `use_bpm`, so the score can describe musical time without baking in a clock rate. I found this distinction clearer when I stopped calling the numbers seconds. They are symbolic durations. The same array can move at 60, 96, or 152 beats per minute without rewriting a single event. The program below renders one phrase three times. Each pass changes only the tempo and leaves the note and duration arrays untouched.
+
+The log and the sound answer different questions. Printed values expose the representation; playback exposes the musical consequence. Keep both visible while editing, since an arithmetic error can still produce a plausible noise.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_synth :fm
+
+notes = [:c4, :e4, :g4, :a4, :g4, :e4]
+durations = [0.5, 0.5, 1, 0.5, 0.5, 1]
+
+define :play_phrase do |pitches, lengths|
+  pitches.zip(lengths).each do |pitch, duration|
+    play pitch, release: duration * 0.7
+    sleep duration
+  end
+end
+
+[60, 96, 152].each do |tempo|
+  use_bpm tempo
+  puts "#{tempo} BPM"
+  play_phrase notes, durations
+  sleep 2
+end
 ```
 
-What you just heard, in a sentence or two.
+At 60 BPM the rests feel spacious and the final note arrives deliberately. At 96 the phrase behaves like a compact tune. At 152 the short values pull it toward a riff, even though the score data is identical.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Remove the middle tempo and compare 60 directly with 152. Listen for which details disappear when there is no intermediate reference.
+
+2. Double every duration and double the BPM. The approximate wall-clock length stays fixed while the internal beat count changes.
+
+3. Change only the last sleep to `2`. The tempo remains global, but the ending acquires more space.
+
+After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Tempo is a conversion function from beats to wall-clock time. One beat lasts `60.0 / bpm` seconds. Sonic Pi schedules musical events against its timing system, so the score remains expressed in beats while the scheduler handles their real-time placement.
+
+The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+
+The scheduler claim has a practical boundary. Sonic Pi plans events ahead on a musical timeline, but a program can still fail if it asks for impossible work or contains an error. For ordinary phrases, express timing in beats and avoid compensating with hand-measured seconds. The beat representation becomes the foundation for duration arrays in Part 3. Before that, Part 1 asks why identical pitches can carry different colours, beginning with the frequencies inside a single note.
+
+BPM also changes the real duration of synth envelopes expressed in beats. A release of half a beat lasts half a second at 60 BPM and less than a fifth of a second at 152. This is usually desirable because articulation scales with the score. When an effect needs fixed wall-clock time, state that exception rather than silently mixing units.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Write an eight-event phrase whose durations total four beats. Play it at 60, 96, and 152 BPM. Print the expected length in seconds before each pass using `durations.sum * 60.0 / bpm`, then compare the three printed values.
+
+The printed duration at each tempo is the numeric acceptance check. Audition the three passes in Sonic Pi 5 and note whether any tempo changes the phrase's perceived role rather than only its speed.

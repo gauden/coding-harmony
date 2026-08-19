@@ -14,7 +14,7 @@ status=0
 # ones on disk. Untracked new lessons get linted too.
 files=$({ git ls-files '*.qmd' '*.md'; git ls-files -o --exclude-standard '*.qmd' '*.md'; } 2>/dev/null \
         | sort -u \
-        | grep -v -e '^STYLE.md$' -e '^notes/' -e '^scripts/prose-banned.txt$' \
+        | grep -v -e '^STYLE.md$' -e '^notes/' -e '^scripts/prose-banned.txt$' -e '^graphify-out/' \
         | while IFS= read -r f; do [ -f "$f" ] && printf '%s\n' "$f"; done)
 
 [ -n "$files" ] || { echo "No tracked prose files."; exit 0; }

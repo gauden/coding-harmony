@@ -4,42 +4,64 @@ subtitle: "25 min"
 part: "Rhythm and meter"
 concepts: [rest, tie, dot, dotted, rhythm, silence]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - A rest is an event with no attack. Model it explicitly so bar sums stay checkable.
-> - A dot adds half the value: 1.5, 0.75, 3. That is all a dot has ever meant.
-> - A tie is one long event crossing a barline. Not two attacks. The difference is audible and it is what makes rhythm feel human.
->
-> **Ends with: a phrase whose silence and tied note carry as much weight as the notes.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Silence belongs in the score. A *rest* is a timed event with no attack, so representing it explicitly keeps bar arithmetic intact. A *dot* adds half of a duration to itself: 1 becomes 1.5, 0.5 becomes 0.75, and 2 becomes 3. A *tie* joins duration across a boundary into one sustained event. Two repeated notes create two attacks. One tied note creates one attack and a longer body. The event array below uses `nil` for a rest and ordinary beat values for all durations.
+
+Run the unedited program twice before changing it. On the first pass, follow the pulse. On the second, attend to the feature named in the description. Repetition gives you a reference, and a single edit then has something definite to oppose.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 84
+use_synth :prophet
+
+events = [
+  {note: :c4, start: 0, duration: 1},
+  {note: nil, start: 1, duration: 1},
+  {note: :g4, start: 2, duration: 1.5},
+  {note: :e4, start: 3.5, duration: 2.5}
+]
+
+define :play_events do |score|
+  score.each do |event|
+    play event[:note], sustain: event[:duration] * 0.7,
+      release: event[:duration] * 0.3 if event[:note]
+    sleep event[:duration]
+  end
+end
+
+puts events.sum { |event| event[:duration] }
+play_events events
 ```
 
-What you just heard, in a sentence or two.
+The phrase leaves a deliberate hole after its opening note. Its dotted middle note delays the following event. The final tied note crosses the imagined bar line without a second attack.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Replace the `nil` rest with `:e4`. The bar length stays fixed while the silence becomes an attack.
+
+2. Split the final duration of `2.5` into `1.5` and `1.0` repeated notes. Listen for the new attack at the boundary.
+
+3. Change the dotted value from `1.5` to `1`. The next onset arrives half a beat earlier and the phrase total shrinks.
+
+After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+A score event separates presence from duration. `nil` changes the renderer's action, while the duration advances the clock in both cases. A tie is best normalized before playback by merging adjacent linked events into one longer event.
+
+The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+
+The `:start` fields make the events look like a general score, though this sequential renderer currently trusts array order and advances by duration. A later renderer can schedule by start time; here the explicit values document the intended timeline and make manual checks possible. The tied note is represented as one event because the ear receives one onset. Lesson 15 returns to a fixed grid and studies what happens when attacks avoid the strongest positions.
+
+A dotted value is multiplication by 1.5, not a special catalogue entry. That rule applies at every scale: a dotted eighth is 0.75 beats under this convention, and a dotted half is 3 beats. Calculate dots before constructing events. The renderer then receives ordinary durations and needs no branch for notation history.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Write a two-bar phrase whose events total eight beats. Include a one-beat rest, one dotted-quarter duration of 1.5 beats, and a note tied across the bar line. Print the duration sum and compare the tied form with a two-attack version.
+
+The event durations must sum to eight beats and the tied comparison must preserve that total. Audition both forms in Sonic Pi 5, listening specifically for the extra attack rather than a change in pitch.

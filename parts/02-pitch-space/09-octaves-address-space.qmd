@@ -4,42 +4,61 @@ subtitle: "20 min"
 part: "Pitch space"
 concepts: [octave, register, bass, treble, address, space]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Play the same phrase at :c2, :c4, and :c6. Two of them will sound wrong for the material.
-> - Register is an arrangement decision. Bass, melody, and inner voices occupy different bands for a reason.
-> - Find the register where each Sonic Pi synth sounds best. Keep notes.
->
-> **Ends with: one phrase spread across three registers with three synths.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+A melody can keep its interval pattern and fail because it occupies the wrong register. Play the same offsets from C2, C4, and C6. The low version becomes heavy and its close notes blur; the high version turns thin or piercing; the middle version reads as a lead line. *Register* is the vertical band in which notes live. I treat octave numbers as address-space regions. Bass, inner material, and melody need room because overlapping spectra compete even when their pitch classes differ.
+
+Listen once for event placement, then again for colour and decay. Holding most variables fixed is what turns the example into an experiment. If two edits happen together, the cause of the audible change becomes unclear. The bounded changes below preserve that discipline.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 92
+
+offsets = [0, 3, 5, 7, 5, 2]
+parts = [
+  {root: note(:c2), synth: :fm, amp: 0.7},
+  {root: note(:c4), synth: :pluck, amp: 0.8},
+  {root: note(:c6), synth: :blade, amp: 0.55}
+]
+
+parts.each do |part|
+  use_synth part[:synth]
+  offsets.each do |offset|
+    play part[:root] + offset, amp: part[:amp], release: 0.35
+    sleep 0.5
+  end
+  sleep 1
+end
 ```
 
-What you just heard, in a sentence or two.
+The bass phrase has mass but little separation. The middle phrase carries the contour clearly. The high phrase exposes attack noise and makes the leaps feel larger.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Give all three registers the same `:pluck` synth. This isolates register from timbre.
+
+2. Move the low phrase up one octave while leaving its synth unchanged. Listen for the point where individual notes separate.
+
+3. Play the three lines together. Reduce their amplitudes and notice where spectral crowding makes one disappear.
+
+After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+The offsets are relative addresses and the root supplies a base pointer. Adding the same offsets to three roots preserves the melodic structure while relocating it. A synth also has a useful range, much as a data type has practical limits beyond its formal range.
+
+The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+
+Register changes more than perceived height. A low synth allocates energy across frequencies that can mask neighbouring parts, while a high line may expose sharp transients. The useful band therefore depends on the sound source and the surrounding arrangement. Keep the offsets constant during the survey so register is the tested variable. The following lesson demonstrates another case where an integer address is insufficient: two spellings can share one pitch while carrying different harmonic intent.
+
+Octave transposition preserves pitch class because adding twelve leaves the same remainder modulo twelve. That connects the previous lesson's cyclic representation with this lesson's full addresses. The register survey needs both: pitch class proves the phrase uses the same note identities, while the integer root proves it occupies a different frequency band.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Choose three Sonic Pi synths and test each at C2, C4, and C6 with the same six offsets. Record one useful band per synth. Finish with a three-register arrangement in which bass, middle, and high phrases remain separately traceable.
+
+Deliver a small table of synth, low limit, high limit, and one concrete listening note. Audition the final three-part texture in Sonic Pi 5 and confirm each line remains traceable when all parts sound together.

@@ -4,42 +4,61 @@ subtitle: "30 min"
 part: "Intervals"
 concepts: [interval, semitone, letter, distance, quality, major]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Size comes from letter names, quality comes from semitone count. C to E is a third and it is major.
-> - This is why C♯ to E and D♭ to E sound identical and are named differently. Spelling again.
-> - Write interval_name(a, b) taking spellings as input and returning size plus quality.
->
-> **Ends with: an interval namer tested against every pair in an octave.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+C to E spans three letter names and four semitones. The letter count gives interval size, a third; the semitone count gives quality, major. An *interval* therefore carries two measurements. C-sharp to E and D-flat to E reach the same sounding distance in equal temperament, while their spellings produce different named sizes. This is why the spelling field introduced earlier survives numeric conversion. The interval namer below accepts hashes containing a letter, accidental, and MIDI pitch, then returns size and quality.
+
+Run the unedited program twice before changing it. On the first pass, follow the pulse. On the second, attend to the feature named in the description. Repetition gives you a reference, and a single edit then has something definite to oppose.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 72
+
+letters = {c: 0, d: 1, e: 2, f: 3, g: 4, a: 5, b: 6}
+base_distance = {1 => 0, 2 => 2, 3 => 4, 4 => 5, 5 => 7, 6 => 9, 7 => 11, 8 => 12}
+
+define :interval_name do |first, second, letter_map, distances|
+  size = ((letter_map[second[:letter]] - letter_map[first[:letter]]) % 7) + 1
+  semitones = second[:pitch] - first[:pitch]
+  expected = distances[size]
+  quality = semitones == expected ? ([1,4,5,8].include?(size) ? "perfect" : "major") : "altered"
+  "#{quality} #{size}"
+end
+
+c = {letter: :c, pitch: note(:c4)}
+e = {letter: :e, pitch: note(:e4)}
+puts interval_name(c, e, letters, base_distance)
+play c[:pitch]; sleep 1; play e[:pitch]
 ```
 
-What you just heard, in a sentence or two.
+Each pair sounds through the same piano envelope. The log distinguishes names that playback alone collapses, exposing the separate roles of diatonic spelling and chromatic distance.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Add C to F and C to F-sharp. Their size stays fourth while quality changes from perfect to augmented.
+
+2. Compare C-sharp to E with D-flat to E. Verify the equal sound distance and different letter span.
+
+3. Reverse one pair. Decide how the helper should represent descending direction before changing its arithmetic.
+
+After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Interval naming is a join between two coordinate systems. Letter indices wrap modulo seven and yield ordinal size. MIDI subtraction yields semitones. A lookup table maps the expected major or perfect distance to quality.
+
+The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+
+The first helper handles only baseline major and perfect cases plus a generic `altered` result. That limitation is visible in the return value and should remain visible in the exercise. A complete namer must compare the semitone count with the expected size and derive diminished, minor, major, perfect, or augmented quality as appropriate. Lesson 19 shifts from calculating those labels to building perceptual memories for the distances they name.
+
+Compound intervals extend beyond the octave by continuing the letter count and semitone distance, but the first implementation stays with simple ascending cases. Constraining the domain keeps the quality table inspectable. Add descending direction and compound size as separate later features; combining both changes at once makes failures harder to locate and names harder to verify.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Extend `interval_name` to all simple ascending pairs within an octave. Generate test pairs from C to every chromatic pitch, carrying a chosen spelling for each. Print size plus quality and compare each label with its semitone distance.
+
+The extended namer should cover every simple ascending interval and include explicit expected labels. Run its assertions in Ruby, then audition representative pairs in Sonic Pi 5; naming correctness and sound recognition are separate checks.

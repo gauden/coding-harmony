@@ -4,42 +4,91 @@ subtitle: "30 min"
 part: "Scales and keys"
 concepts: [scale, degree, tonic, leading, tone, dominant]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Hold a drone on the tonic. Play each degree above it and rate how badly it wants to move.
-> - Degree 7 pulls hard to 8. Degree 4 leans to 3. Degree 5 is stable and not home.
-> - End the same melody on four different degrees. Only one of them sounds like an ending.
->
-> **Ends with: one phrase with four endings, ranked by how finished they sound.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Hold C underneath the notes of C major. Some notes settle into the drone. Some
+seem to lean toward a neighbour. The pitches belong to one scale, yet they do
+different work because the drone gives them a shared centre.
+
+A note's position in a scale is its *scale degree*. Degree 1 is the *tonic*, the
+pitch that feels like home. Degree 7 is the leading tone because it sits one
+semitone below the tonic and presses upward. Degree 5, the dominant, is stable
+enough to pause on while leaving the phrase open. I needed the drone to hear
+these roles. An isolated B sounded like a pitch; B over C sounded like a request.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 72
+use_synth :sine
+
+define :play_phrase do |notes|
+  notes.each do |pitch|
+    play pitch, release: 0.38, amp: 0.8
+    sleep 0.5
+  end
+end
+
+c_major = scale(:c4, :major).to_a
+
+in_thread do
+  play :c3, sustain: 15.5, release: 0.5, amp: 0.45
+end
+
+[[6, 7], [3, 2], [4, 4], [1, 0]].each do |from, to|
+  play c_major[from], release: 0.7
+  sleep 1
+  play c_major[to], release: 0.9
+  sleep 2
+end
+
+stem = [:c4, :e4, :g4, :a4, :g4, :e4]
+[:f4, :g4, :b4, :c5].each do |ending|
+  play_phrase stem + [ending, ending]
+  sleep 1
+end
 ```
 
-What you just heard, in a sentence or two.
+The first pair, B to C, makes the clearest arrival. F to E also relaxes, though
+with less force. G repeated over the drone feels balanced and unfinished. The
+four versions of the phrase change only their last pitch. Their different
+degrees make one sound closed while the others keep the boundary porous.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Replace the C drone with `:a2` while leaving the melody untouched. The notes
+   now orbit A, and their roles change. Listen to C become a colour inside A
+   minor rather than the point of arrival.
+2. Change the B ending to `:bb4`. The pitch now sits a whole tone below C. Hear
+   how reducing the half-step weakens the upward pull.
+3. Raise the final G to `:g5`. It remains degree 5, yet register alters its
+   weight. Decide whether the high dominant sounds more open or more final than
+   the lower one.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Scale degree is an index interpreted relative to a tonic. The same MIDI number
+can have another degree after the tonal centre changes. This resembles an offset
+inside a data structure: the raw value is less informative than its position in
+the current context.
+
+Several forces combine. Small melodic distance encourages motion to a neighbour.
+The semitone from degree 7 to 8 is especially tight. The tonic drone also shares
+overtones with several scale notes, so degrees differ in roughness and stability.
+Repeated musical use strengthens those expectations. No single rule assigns a
+complete stability score, which is why listening over one fixed drone is useful.
+
+The phrase experiment controls its variables. Rhythm, synth, register, and first
+six notes stay fixed. The ending becomes the input under test. A longer melody
+would hide the effect behind other changes. Here the degree has nowhere to hide.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Create a hash that maps degrees 1 through 7 to your own tension rating from 0 to
+5. Write a program that plays each degree over a tonic drone in a shuffled order,
+prints its number after a two-beat pause, and then resolves it by the route you
+chose. Seed the shuffle with `use_random_seed 42`. Your finished exercise must
+cover every degree once and keep the drone unchanged throughout.

@@ -2,75 +2,118 @@
 
 Music theory for people who already write code.
 
-The audience is programmers who are at ease with arrays, functions, and threads,
+The audience is programmers who are at ease with arrays, functions, and threads
 and who cannot read a note. [Sonic Pi](https://sonic-pi.net/) is the laboratory.
-Each lesson takes one musical idea, encodes it as data, plays it, and then asks you
-to change something and listen to what happened.
+Each lesson takes one musical idea, encodes it as data, plays it, and asks you to
+change one input and listen again.
 
-This is not the Sonic Pi tutorial. That one teaches programming and uses music as
-the reward. Here the programming is assumed, and Ruby idioms get a one-line note
-the first time they appear.
+This is a music-theory course rather than a general Sonic Pi tutorial.
+Programming is assumed. Ruby idioms receive a short explanation when they first
+appear and a fuller reference in the appendices.
 
-The book is written as field notes: first person for me, second person for you,
-and deliberately unencouraging. The rules are in [`STYLE.md`](STYLE.md).
+The book uses a field-notes voice: first person for the writer, second person for
+the reader, with no motivational filler. The rules are in [`STYLE.md`](STYLE.md).
 
 ## Status
 
-Early. The syllabus, the build plan, and the book scaffold are done. The lessons
-are not written yet.
+The complete first draft is present: 58 lessons across 13 parts, the preface and
+setup chapter, five reference appendices, and worked entries for all 58 optional
+exercises. Every lesson is marked `draft`.
 
-The book renders to a website, a PDF, and an EPUB from one Markdown source.
-`scripts/gen_book.py` generates the chapter list and one stub per lesson from the
-syllabus, so the syllabus stays the single source of truth for what exists.
+`draft` means the planned lesson has substantive prose and a Ruby example, and
+the extracted Ruby clears syntax checks. It does not mean the examples have been
+auditioned end to end in Sonic Pi. Timing, synth balance, Sonic Pi API behaviour,
+and listening claims remain manual QA. Lessons move to `tested` only after a
+human works through them from a cold start and the prose is revised from field
+notes. Recordings are added after that pass; empty `audio=""` attributes are
+intentional in the draft.
+
+The syllabus remains the source of truth for lesson order and titles.
+`scripts/gen_book.py` regenerates the chapter manifest and can scaffold a newly
+added lesson. It is not part of ordinary prose editing.
 
 ## What is here
 
-The two planning documents are self-contained HTML. Clone the repo and open them
-in a browser.
-
 | File | What it is |
 |---|---|
-| [`curriculum/music_theory_through_sonic_pi.html`](curriculum/music_theory_through_sonic_pi.html) | The syllabus. 58 lessons across 13 parts, with progress tracking and search. |
-| [`curriculum/plan.html`](curriculum/plan.html) | How the site and book get built. Toolchain, repository layout, lesson template, audio workflow, writing standard, five phases. Interactive, with a notes export. |
-| [`STYLE.md`](STYLE.md) | The prose rules, starting with the voice. |
+| [`index.qmd`](index.qmd) | Preface, course method, working rhythm, and status model. |
+| [`setup.qmd`](setup.qmd) | Sonic Pi version, first sound, window orientation, and reader workflow. |
+| [`curriculum/music_theory_through_sonic_pi.html`](curriculum/music_theory_through_sonic_pi.html) | The 58-lesson syllabus and searchable course map. |
+| [`curriculum/plan.html`](curriculum/plan.html) | Build, audio, testing, and publication decisions. |
+| [`appendix/`](appendix/) | Ruby guide, Sonic Pi cheat sheet, solutions, glossary, and sources ledger. |
+| [`STYLE.md`](STYLE.md) | House voice and prose constraints. |
+| [`WRITING_BRIEF.md`](WRITING_BRIEF.md) | Lesson, code, and continuity contracts for contributors. |
+| [`TODO.md`](TODO.md) | Durable first-draft and integration checklist. |
+| [`DEVELOPMENT.md`](DEVELOPMENT.md) | Resume protocol, session record, checks, and deferred QA. |
 
-## Building it
+The two curriculum documents are self-contained HTML. Clone the repository and
+open them in a browser; their local progress state does not alter the manuscript.
 
-Lessons are Quarto `.qmd` files, which are Markdown with a YAML header. Every
-example that produces sound gets a recording next to it on the website.
+## Reading it
+
+Install Sonic Pi 5.0.0 and begin with [`setup.qmd`](setup.qmd). Lessons are meant
+to run in order because the data model grows across parts. Run each code block in
+a fresh buffer unless it declares a continuation. Make the *Change one thing*
+edits separately, then attempt *Take it further* before opening the corresponding
+solution.
+
+Headphones or speakers with usable bass response help when comparing small
+differences. Keep playback at a comfortable level during repeated ear drills.
+
+## Building and checking it
+
+Lessons are Quarto `.qmd` files. The project is configured to produce a website,
+PDF, and EPUB from the same sources.
 
 ```bash
-quarto render
+quarto render --to html
 ```
 
-That produces `_book/` with the site, the PDF, and the EPUB. Needs
-[Quarto](https://quarto.org/) and, for the PDF, `quarto install tinytex`.
+The HTML build writes to `_book/`. PDF output also needs TinyTeX, installed with
+`quarto install tinytex`.
 
-## Requirements
+Run the automated manuscript checks before proposing a change:
 
-Sonic Pi 5.0.0, from [sonic-pi.net](https://sonic-pi.net/). Every example is
-written and recorded against that version. Check that `play 60` makes a noise and
-you are ready to start.
+```bash
+uv run pytest
+scripts/lint-prose.sh
+scripts/extract-code.sh
+scripts/check-code.sh
+```
 
-Headphones or decent speakers do more for progress here than any other purchase,
-because half of this course is hearing small differences.
+These checks cover structure, placeholders, house-style patterns, and Ruby
+syntax. They cannot confirm that Sonic Pi accepts every call or that an example
+sounds as described.
+
+## Contributing and resuming
+
+Read [`TODO.md`](TODO.md) and [`DEVELOPMENT.md`](DEVELOPMENT.md) before choosing
+work. `DEVELOPMENT.md` records the current phase and the manual checks still
+owed. Read [`WRITING_BRIEF.md`](WRITING_BRIEF.md) before changing a lesson, then
+apply [`STYLE.md`](STYLE.md) to prose.
+
+Keep lesson status at `draft` unless you personally run the complete lesson in
+Sonic Pi from a clean state, record field notes, and revise the lesson from that
+attempt. Do not invent audio filenames, source details, or runtime results. Keep
+score data separate from rendering logic and preserve the shared event keys
+`:note`, `:start`, and `:duration`.
+
+For a resumed Codex session, say `resume`. The durable protocol is at the top of
+[`DEVELOPMENT.md`](DEVELOPMENT.md).
 
 ## Licence
 
-Two licences, following the arrangement Allen Downey uses for
-[Think Python](https://github.com/AllenDowney/ThinkPython).
+Two licences follow the arrangement Allen Downey uses for [Think
+Python](https://github.com/AllenDowney/ThinkPython).
 
-**Code** is [MIT](https://mit-license.org/). The Sonic Pi examples, the scripts,
-the filters, and the build configuration. Copy any snippet into your own work,
-including work you sell.
+**Code** is [MIT](https://mit-license.org/). This covers Sonic Pi examples,
+scripts, filters, and build configuration.
 
 **Text** is [CC BY-NC-SA
-4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). The lesson prose, the
-curriculum, the diagrams, and the audio. Share and adapt it non-commercially,
-with attribution, under the same terms.
+4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). This covers lesson
+prose, curriculum, diagrams, and audio.
 
-Full terms in [`LICENSE.md`](LICENSE.md). Public-domain scores and recordings
-used as transcription material carry their own licences and are listed with their
-sources.
+Full terms are in [`LICENSE.md`](LICENSE.md). Transcription sources and their
+edition-level licensing notes belong in [`appendix/sources.qmd`](appendix/sources.qmd).
 
 Copyright 2026 Gauden Galea.

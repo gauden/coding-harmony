@@ -4,42 +4,109 @@ subtitle: "30 min"
 part: "Melody, phrase, and form"
 concepts: [motive, motif, sequence, development, transformation, transposition]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - A motive is a short idea that survives transformation. Transpose, invert, augment, fragment.
-> - A sequence repeats a motive at a new pitch level. Two repetitions convince, four bore.
-> - Build a sixteen-bar melody from one three-note cell and nothing else.
->
-> **Ends with: a melody generated entirely from transformations of a single cell.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Three notes can survive enough change to organise a long melody. Repeat them
+higher and the relationship is clear. Stretch their durations and the identity
+weakens without disappearing. Keep only the first two and the fragment still
+points back to its source.
+
+A *motive* is a short musical idea that remains recognisable under
+transformation. A *sequence* repeats it at another pitch level. *Development*
+turns repetition into an argument by transposing, inverting, augmenting, or
+fragmenting the source. Literal repetition establishes the object; controlled
+change keeps it active.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 108
+use_synth :pluck
+
+cell = [60, 63, 62]
+rhythm = [0.5, 0.5, 1]
+
+define :play_phrase do |notes, durations|
+  notes.zip(durations).each do |pitch, duration|
+    play pitch, release: duration * 0.8
+    sleep duration
+  end
+end
+
+define :transpose_notes do |notes, amount|
+  notes.map { |pitch| pitch + amount }
+end
+
+define :invert_notes do |notes, axis|
+  notes.map { |pitch| axis - (pitch - axis) }
+end
+
+bars = [
+  [cell, rhythm],
+  [transpose_notes(cell, 2), rhythm],
+  [transpose_notes(cell, 5), rhythm],
+  [invert_notes(cell, cell[0]), rhythm],
+  [cell, rhythm.map { |duration| duration * 2 }],
+  [cell.first(2) * 2, [0.5, 0.5, 0.5, 0.5]],
+  [transpose_notes(invert_notes(cell, cell[0]), 7), rhythm],
+  [[60, 63, 62, 60], [0.5, 0.5, 0.5, 0.5]]
+]
+
+2.times do
+  bars.each { |notes, durations| play_phrase notes, durations }
+end
 ```
 
-What you just heard, in a sentence or two.
+The opening three-note cell returns at several levels, upside down, at twice its
+duration, and as a fragment. Repeating the eight-bar plan produces a sixteen-bar
+melody from one source object and a small transformation vocabulary.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Replace the sequence offsets `2` and `5` with `1` and `2`. The sequence grows
+   more tightly and may sound less like separate statements.
+2. Move the inversion axis from the first note to 63. The same operation now
+   reflects around another pitch and changes the register of the result.
+3. Repeat the opening cell four times without transformation. Compare the point
+   at which confirmation turns into stasis with the developed version.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Transposition adds one constant to every pitch, preserving interval sizes.
+Inversion reflects signed distances around an axis: an upward minor third becomes
+a downward minor third. Augmentation scales durations. Fragmentation selects a
+subsequence. Each function preserves some invariants and discards others.
+
+The bars array stores score decisions while `play_phrase` handles interpretation.
+No transformed phrase needs copied note literals. If the source cell changes,
+every derived occurrence updates. This is the musical value of avoiding duplicated
+data as well as the engineering value.
+
+A sequence becomes audible through repetition at successive pitch levels. Two
+statements often establish the rule; later repetitions confirm it. The source
+warning that four can bore is a compositional judgement to audition. The code
+makes the count editable, so the claim can be tested rather than inherited.
+
+Placement changes what a transformation does to form. A transposed cell placed
+immediately after the source sounds like continuation. The same cell after eight
+bars can sound like recollection. Register, cadence, and accompaniment alter the
+connection further. The transformation functions capture pitch and duration
+relationships; the `bars` plan supplies rhetorical position. Neither layer
+replaces the other.
+
+The closing four-note bar adds C after the original cell. That small extension
+shows another development method: preserve the source and append a consequence.
+Try prepending a note instead. The cell may stop sounding like the beginning of
+the idea even though all its values remain present. Recognition depends on
+boundary and emphasis as well as membership.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Write a sixteen-bar plan from one four-note motive. It must contain one literal
+return, a three-step sequence, one inversion, one augmented statement, and one
+two-note fragment. No bar may contain hand-copied transformed pitches. Print a
+label before every bar so the generated structure can be compared with what you
+hear.

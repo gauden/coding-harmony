@@ -4,42 +4,104 @@ subtitle: "35 min"
 part: "Chords and harmony"
 concepts: [voice, leading, soprano, alto, tenor, bass]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Represent a progression as four independent lines rather than a list of chords.
-> - Minimise total movement, keep common tones, avoid crossing. It is a small search problem with musical constraints.
-> - Play a naive root-position version and the optimised version back to back. The difference is not subtle.
->
-> **Checkpoint: you can hear four separate lines inside a chord progression and mute any one of them.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Play C, F, G, C as root-position chords. The harmony is clear and every upper
+part jumps with each root. Revoice the same chords so nearby notes stay put or
+move by step. The progression becomes four melodies that happen to form chords.
+
+*Voice leading* is the control of those individual lines. A four-note texture can
+be stored as soprano, alto, tenor, and bass arrays. A useful first objective is
+small total movement, with penalties for crossed voices and rewards for common
+tones. The musical problem resembles constrained optimisation more than chord
+lookup.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 72
+use_synth :piano
+
+define :play_lines do |lines, muted|
+  lines.each do |name, pitches|
+    next if name == muted
+    in_thread do
+      pitches.each do |pitch|
+        play pitch, release: 1.6, amp: 0.55
+        sleep 2
+      end
+    end
+  end
+  sleep 8
+end
+
+naive = {
+  bass: [48, 53, 55, 48], tenor: [60, 65, 67, 60],
+  alto: [64, 69, 71, 64], soprano: [67, 72, 74, 67]
+}
+
+led = {
+  bass: [48, 53, 55, 48], tenor: [55, 57, 55, 55],
+  alto: [60, 60, 59, 60], soprano: [64, 65, 62, 64]
+}
+
+define :movement do |lines|
+  lines.values.sum do |pitches|
+    pitches.each_cons(2).sum { |a, b| (a - b).abs }
+  end
+end
+
+puts "naive movement: #{movement(naive)}"
+puts "led movement: #{movement(led)}"
+play_lines naive, nil
+play_lines led, nil
+[:bass, :tenor, :alto, :soprano].each { |name| play_lines(led, name) }
 ```
 
-What you just heard, in a sentence or two.
+Both versions spell the same C-F-G-C progression. The second keeps G in the
+tenor across several chords and holds C in the alto where possible. Muting one
+line changes the texture without changing the remaining data, which makes each
+path easier to follow.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Move the led soprano's G-chord note from 62 to 74. One twelve-semitone leap
+   raises the objective score and pulls attention away from the other lines.
+2. Swap tenor and alto on one chord. The pitch-class collection survives, but
+   the voices cross and their identities become harder to trace.
+3. Mute each line in turn. Notice which chord loses its root, third, or leading
+   tone, and which omission changes the cadence most.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+`movement` sums absolute differences between successive pitches in each voice.
+It is a cost function, not a complete theory. The lower score corresponds to
+smaller steps in this controlled comparison. A fuller search would reject voice
+crossing, keep each line inside a range, preserve required chord tones, and
+prefer contrary motion at cadences.
+
+Representing lines first changes the architecture. A chord-list model answers
+which pitches sound at one time. A voice model also answers where each pitch came
+from and where it goes. Transposing the data matrix gives either view.
+
+The greedy voicing from Lesson 27 minimised one transition at a time. A global
+search can evaluate the whole progression, because an inexpensive choice now
+may force a large leap later. Four voices and a small candidate set remain small
+enough for exhaustive enumeration.
+
+Common tones deserve a separate reward even though zero movement already lowers
+the cost. Holding a note changes articulation as well as distance: one voice can
+sustain through the chord boundary while the others move. The current renderer
+reattacks every pitch, hiding that distinction. A later version could merge
+equal adjacent events in one line and let the sustained common tone bind the
+harmonies together.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Generate every inversion of the four C-F-G-C chords within fixed bass, tenor,
+alto, and soprano ranges. Reject crossings and missing chord tones. Score each
+complete path by total movement, then play the cheapest path and the root-position
+baseline. Your report must print both scores and the four resulting voice arrays.

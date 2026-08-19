@@ -4,42 +4,100 @@ subtitle: "30 min"
 part: "Chords and harmony"
 concepts: [triad, major, minor, diminished, augmented, stacked]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Root, plus 4 or 3, plus 3 or 4. Four combinations, four qualities, no exceptions.
-> - Build all four from offsets and check against chord(:c4, :major).
-> - Play each as a block and as an arpeggio. The arpeggio is easier to hear and harder to forget.
->
-> **Ends with: a chord-quality trainer built on the Part 4 harness.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Play C, E, and G together. Remove E and the chord loses the property that tells
+you whether it is major or minor. Remove G and the sound loses much of its
+weight. Three notes are enough to establish a compact harmonic identity.
+
+A *triad* contains a root and two notes stacked a third apart. Count semitones
+instead of letter names for now. A major third spans four semitones and a minor
+third spans three. Stack them as 4 then 3 for a major triad, 3 then 4 for minor,
+3 then 3 for diminished, and 4 then 4 for augmented. The four qualities become
+four arrays rather than four diagrams.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 84
+use_synth :piano
+
+define :make_triad do |root, thirds|
+  [root, root + thirds[0], root + thirds[0] + thirds[1]]
+end
+
+define :play_both_ways do |notes|
+  play_chord notes, release: 1.2
+  sleep 2
+  notes.each do |pitch|
+    play pitch, release: 0.45
+    sleep 0.5
+  end
+  sleep 1
+end
+
+qualities = {
+  major: [4, 3],
+  minor: [3, 4],
+  diminished: [3, 3],
+  augmented: [4, 4]
+}
+
+qualities.each do |name, thirds|
+  triad = make_triad(note(:c4), thirds)
+  puts "#{name}: #{triad}"
+  play_both_ways triad
+end
+
+puts "matches Sonic Pi: #{make_triad(60, [4, 3]) == chord(:c4, :major).to_a}"
 ```
 
-What you just heard, in a sentence or two.
+The major and minor chords differ at their middle note. Diminished compresses
+both thirds and sounds pinched. Augmented expands both and withholds a stable
+fifth. The block presentation gives the chord as one object; the arpeggio makes
+its interval construction easier to follow.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Move the root from `:c4` to `:a3`. The quality remains intact because every
+   pitch receives the same offset.
+2. Reverse `[4, 3]` while the chord is sounding. One changed ordering turns major
+   into minor without moving the root or highest note by much.
+3. Change the synth to `:prophet` and use a longer release. Overlap makes the
+   arpeggio approach the block chord, while separate attacks remain audible.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+The root is the reference address. The first third is an offset from the root,
+and the second is an offset from the middle note. Cumulative addition produces
+absolute pitches. This is the same pattern used for scales, with three notes and
+two larger steps.
+
+The outer interval also changes by quality. Major and minor triads both span a
+perfect fifth of seven semitones. Diminished spans six, the tritone from Lesson
+19. Augmented spans eight. That outer frame explains why changing one internal
+third affects stability as well as colour.
+
+Spelling still carries musical information. C-E-G and C-F-flat-G can collapse
+to related piano keys under equal temperament, yet the stacked-third account
+depends on letter sequence as well as semitone distance. The constructor in this
+lesson deliberately works at the sounding-pitch layer. When these chords enter
+a key and a score, keep the spelled root and chord quality beside the generated
+integers. That gives later notation code enough information to print the chord
+without guessing how its pitches acquired their jobs.
+
+`chord(:c4, :major)` provides a reference for one case. Extend that comparison
+to the other qualities before trusting a reusable constructor. Ruby syntax can
+confirm that the program parses. Sonic Pi auditioning still has to confirm
+balance, timing, and the claimed distinctions.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Build a four-choice chord-quality drill from `qualities`. Start with
+`use_random_seed 42`, choose a quality and a root from MIDI 48 through 59, play
+the arpeggio followed by the block, wait four beats, then print the answer. Run
+ten trials and tally your answers outside the program. Each trial must use the
+same synth, rhythm, amplitude, and register span.

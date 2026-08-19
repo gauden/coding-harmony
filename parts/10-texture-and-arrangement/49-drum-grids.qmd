@@ -4,42 +4,96 @@ subtitle: "30 min"
 part: "Texture and arrangement"
 concepts: [drums, kick, snare, hihat, grid, groove]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - One 16-step array per drum. Kick, snare, hats, and nothing else to begin with.
-> - Accent with amplitude and shift hats slightly late to get the pocket you built in Lesson 16.
-> - Transcribe a groove you like by repeated listening, one instrument at a time.
->
-> **Ends with: a groove stored as readable arrays rather than an opaque loop.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+A drum groove is easier to inspect when each instrument has one row on a shared
+time grid. Sixteen steps give four subdivisions per beat in 4/4. A hit is true,
+a rest is false, and the column number is the event's time.
+
+Start with kick, snare, and closed hi-hat. More samples increase the number of
+decisions before the pulse is stable. Separate arrays also support the
+transcription method that works best for dense grooves: loop the source and
+listen for one instrument at a time.
+
+The grid captures attacks. Amplitude captures accents, and a small sleep offset
+can place an instrument ahead of or behind the exact subdivision. Those
+performance details should remain visible beside the pattern rather than being
+buried in a recorded loop.
 
 ## Run this
 
+The hi-hat marks all sixteen steps. Kick and snare occupy selected columns.
+Accent arrays make the beat hierarchy audible, and the hat plays 0.02 beats
+late.
+
 ```{.ruby audio=""}
-# TODO
+use_bpm 100
+
+kick =  [true, false, false, false, false, false, true, false,
+         true, false, false, false, false, false, false, false]
+snare = [false, false, false, false, true, false, false, false,
+         false, false, false, false, true, false, false, false]
+hats =  [true, true, true, true, true, true, true, true,
+         true, true, true, true, true, true, true, true]
+hat_amp = [0.8, 0.35, 0.5, 0.35] * 4
+
+16.times do |step|
+  sample :bd_haus, amp: 1.0 if kick[step]
+  sample :sn_dub, amp: 0.8 if snare[step]
+
+  in_thread do
+    sleep 0.02
+    sample :drum_cymbal_closed, amp: hat_amp[step], release: 0.08 if hats[step]
+  end
+
+  sleep 0.25
+end
 ```
 
-What you just heard, in a sentence or two.
+The kick establishes beats 1 and 3 with an extra pickup before beat 3. The
+snare marks beats 2 and 4. The hat accents every beat and sits slightly behind
+the kick-snare grid.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Set every hat amplitude to 0.5. The subdivision remains, but the bar loses
+   its four-beat shape. Restore the accent pattern before changing any hits.
+2. Move the second kick from index 6 to index 7. It now lands one sixteenth
+   before beat 3. Listen for a tighter pull into the downbeat.
+3. Change the hat offset from 0.02 to 0.06. The delayed layer becomes easier to
+   hear and may feel detached. Reduce it until the timing changes the pocket
+   without sounding like an error.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Each array is a Boolean function over step number. The renderer asks every
+instrument the same question at the same time: is there a hit in this column?
+That shared index keeps the layers aligned while allowing independent patterns.
+It also makes a paper transcription possible. Draw sixteen columns, mark the
+hits, then transfer rows into arrays.
+
+Amplitude is part of the pattern. Equal hi-hats can sound mechanical even when
+their positions match a performance. Stronger quarter-note accents reveal the
+meter, while weaker offbeats provide motion. Record the values explicitly so a
+later editor can see the intended hierarchy.
+
+Microtiming belongs after the grid is correct. A late hat changes the relation
+between layers without moving the kick and snare anchors. If every instrument
+receives a different offset before the basic transcription is stable, timing
+errors become hard to distinguish from style.
+
+Repeated listening works best by isolation. First mark the snare, then kick,
+then hats. Mute the rows you are not checking in Sonic Pi. When all rows are
+entered, listen for collisions and missing composite accents.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Transcribe one bar of a groove you can legally inspect or record yourself.
+Create one sixteen-step array per instrument, plus a parallel amplitude array
+where accents differ. Work in separate listening passes and write a REVIEW
+comment above uncertain columns. The target is a readable grid that reproduces
+the attack pattern without an opaque audio loop. Add timing offsets only after
+the strict grid plays correctly, and preserve both versions for comparison.

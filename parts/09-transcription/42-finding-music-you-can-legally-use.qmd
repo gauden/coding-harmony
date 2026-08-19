@@ -4,42 +4,105 @@ subtitle: "25 min"
 part: "Transcription"
 concepts: [sources, public, domain, imslp, mutopia, musescore]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - IMSLP for scans, Mutopia for typeset public-domain scores, MuseScore for community arrangements with varying licences.
-> - Public domain rules differ by country and a modern edition of an old work can carry its own copyright.
-> - Build a shortlist of twenty pieces at your level and record the source and licence for each one.
->
-> **Ends with: a sources.md file with twenty candidates, each with a link and a licence note.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Transcription begins before the first note. It begins with a source you can
+identify, revisit, and use under terms you understand. I used to treat the
+score as raw material and write down its address later. That reverses the
+useful order. A source without provenance is hard to check, and an arrangement
+without a licence note is hard to share.
+
+Three libraries offer different discovery routes. IMSLP includes scans and
+editions whose status can vary by item and jurisdiction. Mutopia offers typeset
+scores with displayed item terms. MuseScore hosts community uploads, where
+access and rights need checking piece by piece. Public domain is a legal status,
+not a musical period. Its rules differ by country, and a recent engraving,
+translation, or arrangement can have protection even when the underlying
+composition is old. Record what the page says on the day you use it.
+
+The working object is a small source record: title, composer, edition or
+arranger, repository, page address, licence statement, access date, and the
+bars you intend to transcribe. Keep that record beside the score data.
 
 ## Run this
 
+This program turns one candidate record into an audible audition. The notes are
+a tiny invented phrase, so the code does not pretend to reproduce a named
+edition.
+
 ```{.ruby audio=""}
-# TODO
+use_bpm 84
+use_synth :piano
+
+candidate = {
+  title: "Practice candidate",
+  repository: "replace with the source collection",
+  licence: "copy the exact statement from the source page",
+  accessed: "YYYY-MM-DD",
+  bars: "1-4",
+  notes: [:c4, :d4, :e4, :g4, :e4, :d4, :c4],
+  durations: [0.5, 0.5, 1, 1, 0.5, 0.5, 2]
+}
+
+candidate[:notes].zip(candidate[:durations]).each do |note_name, duration|
+  play note_name, release: duration * 0.8
+  sleep duration
+end
+
+puts "Source: #{candidate[:repository]}"
+puts "Licence note: #{candidate[:licence]}"
 ```
 
-What you just heard, in a sentence or two.
+You hear a seven-note phrase and see the incomplete source fields in the log.
+The incomplete text is deliberate. It makes an undocumented candidate noisy
+before you invest time in it.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Replace the repository and licence strings with details copied from one real
+   candidate page. Keep the wording exact. Listen to the phrase again, then
+   check that the log gives another person enough information to find the same
+   page.
+2. Replace the notes and durations with the first complete phrase from a
+   candidate whose terms permit your intended use. Preserve the bar range.
+   Listen for a clean ending. An arbitrary four-bar cut often stops in the
+   middle of a cadence.
+3. Add an edition or arranger field. If the page names neither, write
+   "not stated" rather than guessing. The sound does not change; the source
+   record becomes more honest.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Programmers already separate a value from its metadata when the metadata
+controls later operations. A file's bytes do not tell you whether redistribution
+is permitted. Notes have the same limitation. The pitches can be identical
+while the scan, engraving, or arrangement has different terms.
+
+The source record also protects the transcription process. If bar 7 sounds
+wrong next week, you know which artifact to reopen. Measure numbers mean
+something only relative to an edition. If a later editor changes line breaks or
+adds a pickup bar, the repository and edition fields explain the discrepancy.
+
+Build a shortlist before choosing the capstone. Twenty candidates is enough to
+expose practical differences: range, texture, score clarity, recording
+availability, and licence terms. Keep the musical filter narrow. For the first
+ear transcription, favour a clear monophonic line. For the score project,
+favour readable engraving and stable measure numbers.
+
+This lesson is a workflow, not legal advice. When the status is unclear, do not
+invent certainty from the composer's death date alone. Choose a source with a
+clear statement or obtain advice appropriate to where and how you plan to
+publish.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Create sources.md with twenty candidates. Give each entry a stable page address,
+the displayed licence or public-domain statement, access date, edition or
+arranger when named, approximate difficulty, texture, and a proposed bar range.
+Finish with a three-item shortlist: one melody for ear transcription, one score
+for exact entry, and one larger candidate for a capstone. The structural
+constraint is that another reader can recover every source without asking you
+which version you meant.

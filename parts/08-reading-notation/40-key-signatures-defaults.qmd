@@ -4,42 +4,104 @@ subtitle: "30 min"
 part: "Reading notation"
 concepts: [key, signature, accidental, override, default, sharps]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - A key signature is a default rule applied to every matching letter until overridden.
-> - An accidental is a local override that expires at the end of the bar. This is scoping, and you know scoping.
-> - Write the resolver: letter plus key signature plus local accidentals in, MIDI number out.
->
-> **Ends with: a small resolver you reuse in every transcription from here on.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+In D major, every written F means F-sharp unless a mark beside that note says
+otherwise. The key signature establishes a persistent default. A natural sign
+can override it for the rest of the bar, and the default returns at the next
+barline.
+
+A *key signature* maps letter names to sharp or flat alterations. An
+*accidental* is a local override scoped to a bar and letter-octave position.
+Notation behaves like nested configuration: global defaults, bar-local state,
+and an explicit value on the current event. Reading becomes easier when those
+layers are resolved in order.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 88
+use_synth :piano
+
+semitones = {c: 0, d: 2, e: 4, f: 5, g: 7, a: 9, b: 11}
+key_signature = {f: 1, c: 1}  # D major
+
+define :resolve_note do |event, key_signature, local, semitones|
+  scope_key = [event[:letter], event[:octave]]
+  local[scope_key] = event[:accidental] if event.key?(:accidental)
+  alteration = local.fetch(scope_key, key_signature.fetch(event[:letter], 0))
+  12 * (event[:octave] + 1) + semitones[event[:letter]] + alteration
+end
+
+bars = [
+  [
+    {letter: :f, octave: 4, duration: 1},
+    {letter: :g, octave: 4, duration: 1},
+    {letter: :f, octave: 4, duration: 1, accidental: 0},
+    {letter: :f, octave: 4, duration: 1}
+  ],
+  [
+    {letter: :f, octave: 4, duration: 1},
+    {letter: :c, octave: 5, duration: 1},
+    {letter: :c, octave: 5, duration: 1, accidental: -1},
+    {letter: :d, octave: 5, duration: 1}
+  ]
+]
+
+bars.each do |bar|
+  local = {}
+  bar.each do |event|
+    pitch = resolve_note(event, key_signature, local, semitones)
+    puts "#{event} -> #{pitch}"
+    play pitch, release: 0.7
+    sleep event[:duration]
+  end
+end
 ```
 
-What you just heard, in a sentence or two.
+The first F sounds sharp by default. The natural sign sets the local F4 override
+to zero, so the next F4 in that bar remains natural. The local hash resets before
+bar two, restoring F-sharp. C follows the same process with a flat override.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Change the signature to `{b: -1, e: -1}` for B-flat major. The resolver needs
+   no other change because flat and sharp alterations share one integer field.
+2. Add F5 after the F4 natural. The local key includes octave, so F5 still uses
+   the signature's F-sharp. Remove octave from `scope_key` and compare.
+3. Put an explicit sharp after the natural within the same bar. The later
+   accidental replaces the earlier local value, as a new assignment in scope.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+The resolver searches from most local to most general. An accidental on the
+event updates bar state. Existing bar state overrides the key signature. The key
+signature overrides the natural pitch-class table. `fetch` makes those fallback
+levels explicit.
+
+Separating letter from alteration preserves spelling. F-sharp and G-flat can
+produce the same MIDI number while retaining different letters and accidental
+values. That distinction supports interval names, key logic, and faithful source
+annotation.
+
+Actual notation has further rules, including cancellation conventions and
+accidentals tied across barlines. The small resolver covers the stated model and
+keeps its limits visible. It should be extended from examples rather than grown
+into a speculative notation engine.
+
+Key signatures describe defaults by letter, which is why the circle-of-fifths
+order matters again. D major sharpens F and C; it does not declare pitch classes
+6 and 1 without names. A G-flat in the same piece has another spelling path even
+when its MIDI value equals F-sharp. Preserve the source letter through resolution
+so later diagnostics can distinguish an intended enharmonic choice from a typo.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Write `resolve_bar(events, key_signature)` that returns new event hashes with a
+`:note` MIDI field while preserving letter, octave, start, duration, and
+accidental data. Test it with a four-bar phrase containing one sharp signature,
+one natural override, a repeated affected note, an octave-displaced note, and a
+barline reset. Print source and resolved events side by side.

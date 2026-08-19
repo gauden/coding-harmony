@@ -4,43 +4,129 @@ subtitle: "60+ min"
 part: "Capstones"
 concepts: [refactor, library, framework, schema, readme, reusable]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Extract the helpers written more than twice: playback, validation, transposition, voicing, articulation.
-> - Settle on one event schema and migrate old pieces to it.
-> - Keep it small. A framework large enough to hide the score has failed.
-> - Write a README that explains the representation choices to you in six months.
->
-> **Final checkpoint: you can take a printed score or a short recording and turn it into structured, editable code, and explain the theory encoded in it.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+The pieces in this book leave behind repeated code: event playback, bar
+validation, transposition, chord voicing, articulation, and source reporting.
+Extract a helper after you have written it more than twice and can name its
+stable inputs. Earlier extraction risks preserving guesses as an API.
+Begin this refactor after completing at least one of Lessons 55-57. A capstone
+provides real call sites, edge cases, and provenance fields; without them, the
+library design is still speculation.
+
+Settle on one event schema. The common keys are :note, :start, and :duration,
+with :amp when dynamics belong to score data. Migrate older pieces instead of
+teaching the library several aliases for duration.
+
+Keep the framework small enough that the score remains visible. A helper should
+remove accidental machinery, not hide musical decisions. Write a README for
+the version of you who returns in six months and no longer remembers why
+events use absolute starts or where articulation is applied.
 
 ## Run this
 
+This fresh buffer contains a compact library surface and one score. Validation,
+transposition, and rendering share the same event schema.
+
 ```{.ruby audio=""}
-# TODO
+use_bpm 78
+
+define :validate_events do |events, expected_end|
+  raise "empty score" if events.empty?
+
+  events.each do |event|
+    required = [:note, :start, :duration]
+    missing = required.reject { |key| event.key?(key) }
+    raise "missing keys: #{missing}" unless missing.empty?
+    raise "duration must be positive" unless event[:duration] > 0
+  end
+
+  actual_end = events.map { |event| event[:start] + event[:duration] }.max
+  raise "expected end #{expected_end}, got #{actual_end}" unless actual_end == expected_end
+end
+
+define :transpose_events do |events, semitones|
+  events.map do |event|
+    event.merge(note: note(event[:note]) + semitones)
+  end
+end
+
+define :play_events do |events, synth_name|
+  use_synth synth_name
+  cursor = 0.0
+  events.each do |event|
+    sleep event[:start] - cursor
+    play event[:note],
+      release: event[:duration] * 0.82,
+      amp: event.fetch(:amp, 0.8)
+    cursor = event[:start]
+  end
+  sleep events.last[:duration]
+end
+
+theme = [
+  {note: :c4, start: 0.0, duration: 1.0, amp: 0.65},
+  {note: :e4, start: 1.0, duration: 1.0, amp: 0.72},
+  {note: :g4, start: 2.0, duration: 1.0, amp: 0.8},
+  {note: :c5, start: 3.0, duration: 1.0, amp: 0.9}
+]
+
+validate_events theme, 4.0
+play_events theme, :piano
+sleep 1
+play_events transpose_events(theme, 7), :pluck
 ```
 
-What you just heard, in a sentence or two.
+The second phrase moves up a fifth. The original hashes remain unchanged
+because transpose_events returns a new array.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Remove duration from one event. Validation reports the schema error before
+   playback. Restore it, then add an unknown key and observe that the helper
+   ignores extension data it does not need.
+2. Change transpose_events to mutate event[:note] in place. The first array now
+   changes after transposition, which makes later comparisons unreliable.
+   Restore the merge-based version.
+3. Add an articulation key and a narrow release helper that maps :legato,
+   :detached, and :accent to renderer options. Keep pitch, start, and duration
+   handling outside that helper.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+A small library gives repeated representations one authority. When every piece
+uses :duration, a validation fix applies everywhere. When transposition always
+returns new events, callers know whether their source data is preserved.
+Predictable contracts are more useful than a large catalogue of wrappers.
+
+The helper names expose levels of abstraction. play_events handles the general
+timeline. play_phrase is appropriate for a sequential array where each event
+starts after the previous duration. A chord renderer can remain local until
+several pieces need the same voicing policy.
+
+README documentation should explain choices rather than restate names. Record
+why starts are absolute, whether amp belongs to score or performance data, how
+rests are represented, whether tied notes become one event, and which Sonic Pi
+version the examples target. Include one minimal fresh-buffer example and the
+manual audition steps.
+
+Version the library beside the pieces that use it. A schema migration should
+be visible in both helper code and score data. Avoid compatibility branches
+that allow :duration, :dur, and :length forever; they move complexity into
+every future function.
+
+The final capability is practical: take a printed score or a short recording,
+turn it into editable code, and explain the theory represented by the data.
+The library supports that work. It is not the work itself.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Collect helpers used by at least three finished pieces. Produce one small
+library file, one README, and a migration of two older scores to the settled
+schema. Required helpers are event validation, play_events, transposition, and
+one articulation or voicing function. The constraint is that each migrated
+score remains readable without opening the helper definitions. Record Ruby
+syntax results and leave Sonic Pi auditioning as manual QA.

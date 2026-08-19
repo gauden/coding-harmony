@@ -2,24 +2,89 @@
 title: "Sources and licences"
 ---
 
-Music I use as transcription material, with its provenance. Lesson 42 covers
-how to build this list and what to check before adding to it.
+This is the provenance ledger for music used as transcription material. Lesson
+42 explains how to create an entry and what to check before adding a file to the
+repository.
 
 Public domain status differs by country, and a modern typeset edition of an old
 work can carry its own copyright even when the music itself is free. Record the
 edition, not only the composer.
 
+## First-draft inventory
+
+The first draft distributes no third-party score, MIDI file, or recording. Its
+Sonic Pi examples and short exercise melodies were written for the book. That
+keeps the draft reproducible while the later recording and transcription pass is
+still pending.
+
+| Material | Creator | Source | Licence | Used in |
+|---|---|---|---|---|
+| Lesson prose and original exercise melodies | Gauden Galea | This repository | CC BY-NC-SA 4.0 | Throughout |
+| Sonic Pi code examples | Gauden Galea | This repository | MIT | Throughout |
+| Musical Equalizer icon | Gauden Galea | `assets/img/favicon.png` | CC BY-NC-SA 4.0 | Site and book identity |
+
+An exercise that asks you to choose a public-domain source does not place that
+source under this book's licence. Your copy remains governed by its own edition,
+performance, and recording rights.
+
 ## Where to look
 
 | Source | What it holds | Watch for |
 |---|---|---|
-| [IMSLP](https://imslp.org/) | Scanned scores, mostly pre-1929 | Editions vary in quality and in licence |
-| [Mutopia](https://www.mutopiaproject.org/) | Typeset public-domain scores | Small catalogue, clean licensing |
-| [MuseScore](https://musescore.com/) | Community arrangements | Licences vary per upload, many are not free |
+| [IMSLP](https://imslp.org/) | Scanned scores and parts from many periods | Item status, edition rights, and permitted use vary by jurisdiction |
+| [Mutopia](https://www.mutopiaproject.org/) | Typeset scores offered with item-level terms | Verify the displayed terms and the source edition |
+| [MuseScore](https://musescore.com/) | Community scores and arrangements | Access and rights vary per upload; an available score is not automatic permission to redistribute |
 
-## Shortlist
+These links are discovery routes, not evidence that a particular item is clear
+for reuse. Save the item page, the file, and the licence statement together.
+Availability and national public-domain rules can change independently.
+IMSLP's own [public-domain guidance](https://imslp.org/wiki/Public_domain)
+states that status varies between countries and does not guarantee that its
+general information is legally accurate for a particular use.
 
-*Empty. Populated in Lesson 42.*
+## Record one item
 
-| Piece | Composer | Source | Edition | Licence | Used in |
+Use one row per exact artifact. “Bach minuet” is insufficient because the
+composition, edition, typesetting, performance, and recording can each have a
+different rightsholder.
+
+| Field | Record |
+|---|---|
+| Piece | Work title and catalogue number where one exists |
+| Composer | Name plus death year used for the public-domain check |
+| Source | Stable page address, archive identifier, or repository path |
+| Edition | Editor, publisher, date, and scan or typeset identifier |
+| Performance | Performer and recording date if audio is used |
+| Licence | Exact licence or public-domain mark shown by the source |
+| Retrieved | Date the artifact and its rights statement were saved |
+| Used in | Lesson and measure or time range |
+
+Store a local note beside the artifact when a judgement is involved. A useful
+note states the rule applied and the evidence checked. It should not claim that
+the same rule holds in every country.
+
+## Candidate-source worksheet
+
+The transcription chapters ask you to select short material rather than require
+one universal piece. Add a row here before bringing an external artifact into a
+published edition.
+
+| Piece | Composer | Source | Edition or recording | Licence evidence | Intended lesson |
 |---|---|---|---|---|---|
+| Reader-selected four-bar melody | To be recorded by the reader | Local copy | Exact artifact required | Verify before redistribution | 41-46 |
+
+The placeholder row describes a workflow, not a licensed asset. Replace it only
+when the chosen artifact and its evidence are in hand.
+
+## Repository rule
+
+Do not commit an external score or recording because its composition is old.
+Commit it when the exact artifact has an entry above, the licence permits this
+form of redistribution, and the attribution appears beside every use. A link can
+also fail, so keep the retrieval date and enough metadata to find another lawful
+copy.
+
+For material that stays on the reader's machine, cite the source in field notes
+without copying it into the repository. The code representation you create from
+it may still encode a substantial part of the work. Treat publication of that
+representation as a separate rights decision.

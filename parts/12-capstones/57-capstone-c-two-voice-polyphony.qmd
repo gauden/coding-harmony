@@ -4,42 +4,119 @@ subtitle: "120+ min"
 part: "Capstones"
 concepts: [capstone, polyphony, two, voice, invention, counterpoint]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - A two-voice invention, canon, or contrapuntal excerpt.
-> - Encode the voices independently and verify their alignment automatically.
-> - Annotate motives, imitative entries, cadences, and the implied harmony.
->
-> **Deliverable: two voices, independently inspectable, that reproduce the source together.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Choose a two-voice invention, canon, or contrapuntal excerpt. The project asks
+for two lines that remain independently inspectable and reproduce the source
+together. Each voice needs its own events, measure references, phrase or motive
+labels, and uncertainty markers.
+Complete the independent-voice model in
+[Lesson 47](../10-texture-and-arrangement/47-independent-voices.qmd) and the
+entry-delay analysis in
+[Lesson 51](../10-texture-and-arrangement/51-canon-imitation.qmd) first. The
+capstone combines those concurrency decisions with the source checks from Part
+9.
+
+Polyphonic transcription adds a vertical check to the horizontal work. A note
+can be correct in its own melody and still enter at the wrong moment against the
+other voice. Validate each line's bar totals, then validate shared boundaries
+and inspect the intervals created at every attack.
+
+Annotate motives, imitative entries, cadences, and implied harmony. These labels
+are analytical claims, so keep them beside the score without allowing them to
+change playback.
 
 ## Run this
 
+The model uses two independent event arrays over eight beats. Motive labels show
+the imitative relationship, while one alignment check confirms that both voices
+finish together.
+
 ```{.ruby audio=""}
-# TODO
+use_bpm 86
+
+upper = [
+  {note: 60, start: 0.0, duration: 1.0, motive: :subject},
+  {note: 62, start: 1.0, duration: 1.0, motive: :subject},
+  {note: 64, start: 2.0, duration: 2.0, motive: :subject},
+  {note: 67, start: 4.0, duration: 1.0, motive: :answer},
+  {note: 65, start: 5.0, duration: 1.0, motive: :answer},
+  {note: 64, start: 6.0, duration: 2.0, motive: :cadence}
+]
+
+lower = [
+  {note: 48, start: 0.0, duration: 2.0, motive: :support},
+  {note: 55, start: 2.0, duration: 1.0, motive: :subject},
+  {note: 57, start: 3.0, duration: 1.0, motive: :subject},
+  {note: 59, start: 4.0, duration: 2.0, motive: :subject},
+  {note: 53, start: 6.0, duration: 1.0, motive: :cadence},
+  {note: 48, start: 7.0, duration: 1.0, motive: :cadence}
+]
+
+define :play_events do |events, synth_name, amp, pan_position|
+  use_synth synth_name
+  cursor = 0.0
+  events.each do |event|
+    sleep event[:start] - cursor
+    play event[:note],
+      release: event[:duration] * 0.82,
+      amp: amp,
+      pan: pan_position
+    cursor = event[:start]
+  end
+end
+
+upper_end = upper.last[:start] + upper.last[:duration]
+lower_end = lower.last[:start] + lower.last[:duration]
+raise "voice alignment failure" unless upper_end == lower_end
+
+in_thread { play_events upper, :piano, 0.75, 0.25 }
+play_events lower, :pluck, 0.65, -0.25
 ```
 
-What you just heard, in a sentence or two.
+The lower voice begins as support, then states a related rising subject while
+the upper voice continues. Panning aids inspection without changing the score.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Delay the lower subject events by 0.5 beats while leaving its first event
+   fixed. The final alignment fails or events overlap. This distinguishes a
+   local imitation edit from a legal whole-voice shift.
+2. Transpose lower subject notes up twelve semitones. The motive stays
+   recognisable, but voice crossing becomes likely. Listen for which line your
+   ear follows after the crossing.
+3. Mute either play_events call. Each remaining voice should have a coherent
+   contour and rhythm. If one line sounds like scattered chord filler, revisit
+   its event boundaries and source.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Independent arrays preserve horizontal identity. Global starts preserve
+vertical alignment. Together they allow both kinds of query: what does this
+voice do next, and what sounds against this attack?
+
+Interval inspection uses pitch arithmetic. At every distinct attack time, find
+the active note in each voice and subtract the lower from the upper. Reduce
+with % 12 when pitch class is the concern, but keep the full interval to detect
+crossing and register. Dissonance can be correct when prepared and resolved;
+the report identifies places to analyse rather than banning interval classes.
+
+Motive annotations resemble tags on events. An entry can share a subject label
+while being transposed or rhythmically altered. Cadence and implied-harmony
+labels describe spans, so a separate annotations array with start and duration
+may be cleaner for a longer work.
+
+Human comparison remains required. Syntax and alignment checks cannot confirm
+that two independently valid lines match the printed score or recording.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Transcribe at least sixteen bars of two-voice polyphony. Deliver separate
+voice arrays, per-bar duration checks, automatic final alignment, source
+coordinates, and annotations for motives, imitative entries, cadences, and
+implied harmony. Generate an interval report at every attack and explain each
+flagged crossing or exposed dissonance. The target is a combined rendering that
+matches the source while either voice remains readable and playable alone.

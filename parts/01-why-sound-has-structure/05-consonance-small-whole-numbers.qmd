@@ -4,42 +4,58 @@ subtitle: "30 min"
 part: "Why sound has structure"
 concepts: [consonance, ratio, fifth, fourth, octave, beating]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Play 220 Hz against 440, 330, 293.3, and 311. Rate each pair for smoothness before reading any labels.
-> - The smooth ones are 2:1, 3:2, and 4:3. The rough ones have large numbers in their ratios.
-> - Detune one partner by a few hertz and hear the beating that gives the game away.
->
-> **Ends with: a ratio explorer that takes a fraction and plays it.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Play 220 Hz beside 440, 330, 293.3, and 311 Hz before attaching names. Some pairs lock together; another carries a restless roughness. *Consonance* is the smoothness produced when two periodic sounds share frequent alignments. Small whole-number ratios create those alignments quickly: 2:1 for the octave, 3:2 for the fifth, and 4:3 for the fourth. The ratio explorer below holds the lower frequency at 220 Hz and derives its partner from a numerator and denominator.
+
+Listen once for event placement, then again for colour and decay. Holding most variables fixed is what turns the example into an experiment. If two edits happen together, the cause of the audible change becomes unclear. The bounded changes below preserve that discipline.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 60
+
+define :play_ratio do |base, numerator, denominator|
+  partner = base * numerator.to_f / denominator
+  synth :sine, note: hz_to_midi(base), sustain: 2.5, release: 0.4
+  synth :sine, note: hz_to_midi(partner), sustain: 2.5, release: 0.4
+  puts "#{numerator}:#{denominator} -> #{partner.round(2)} Hz"
+  sleep 3.2
+end
+
+play_ratio 220, 2, 1
+play_ratio 220, 3, 2
+play_ratio 220, 4, 3
+play_ratio 220, 311, 220
 ```
 
-What you just heard, in a sentence or two.
+The 2:1 pair fuses most strongly. The 3:2 and 4:3 pairs retain two pitch identities with little friction. The last, approximate pair sounds rougher because its cycles align less often.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Change the final ratio to `[45, 32]`. Compare its roughness with 3:2 while keeping the base and envelope fixed.
+
+2. Replace 330 Hz with 333 Hz by using `[333, 220]`. Listen for the slow beating produced by the three-hertz displacement.
+
+3. Lower the base to 110 Hz. The ratios remain equal, though the beating and fusion become easier to separate in the low register.
+
+After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+A ratio is a compact generator. The pair `[3, 2]` is data, and `base * numerator / denominator` turns it into a frequency. Small integers mean short repeating combined patterns. Detuning breaks that repetition and creates audible changes in amplitude called beating.
+
+The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+
+Smoothness is contextual rather than a universal ranking. Register, timbre, loudness, and musical style all influence what the pair does. The ratio account explains why simple periodic tones often fuse, and the detuning experiment exposes beating directly; it does not reduce every judgement of consonance to arithmetic. Keep the claim tied to the sine-wave examples you can run. Lesson 6 then confronts the tuning problem created when pure local ratios must coexist across all twelve keys.
+
+Beating rate is close to the absolute frequency difference for two nearby sine waves. A 220 and 223 Hz pair therefore produces about three pulses per second. This cue is strongest for close frequencies and does not describe every rough interval in the same way. Use the detuned unison to learn the phenomenon before hearing more complex interactions.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Extend the explorer with a detune argument measured in hertz. Play 3:2 with detunes of 0, 1, 3, and 7 Hz. Keep each pair sounding for three beats and record the point where you stop hearing a stable interval.
+
+For each detune value, record an observable cue such as pulse speed or loss of fusion. Audition the series in Sonic Pi 5 and keep the combined amplitude low enough to avoid mistaking loudness for roughness.

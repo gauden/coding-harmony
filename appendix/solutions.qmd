@@ -6,262 +6,716 @@ Worked answers to the *Take it further* exercise in each lesson. Work
 the exercise before reading. A solution you have not tried to reach
 teaches nothing.
 
-Sections marked TODO are waiting on their lesson to be drafted.
+Each answer gives a concrete implementation or a finite acceptance check.
+Listening claims still require auditioning in Sonic Pi 5.
 
 ## Part 0. Getting a sound out
 
 ### 1. Hello, sound
 
-TODO
+Use :beep, :piano, :pluck, and :fm as the four choices. A second phrase that
+contrasts with the original is [:c4, :eb4, :g4, :bb4, :g4, :c5]. Put both
+arrays in a phrases array, keep one use_synth selected_synth line, and call
+play_phrase once for each phrase. A deliberate use_synth :paino entry produces
+an unknown-synth error; the corrected line is use_synth :piano. Record the
+exact message from your Sonic Pi log because wording can vary by version.
+Audition all four synths manually. The :fm part often needs the lower phrase
+transposed down an octave to avoid a thin upper register.
 
 ### 2. Notes are integers
 
-TODO
+For an original [60, 62, 65, 67], the four printed forms are:
+
+- original: [60, 62, 65, 67]
+- transposition: [65, 67, 70, 72]
+- retrograde: [67, 65, 62, 60]
+- inversion around 60: [60, 58, 55, 53]
+
+The arithmetic is transpose = notes.map { |n| n + 5 }, retrograde =
+notes.reverse, and inversion = notes.map { |n| 60 - (n - 60) }. Pass each array
+to the same play_phrase helper with duration 0.5. Check the log against these
+four arrays, then audition the contours manually.
+
+```ruby
+use_bpm 96
+original = [60, 62, 65, 67]
+forms = [
+  original,
+  original.map { |n| n + 5 },
+  original.reverse,
+  original.map { |n| 60 - (n - 60) }
+]
+
+define :play_phrase do |notes|
+  notes.each do |n|
+    play n, release: 0.4
+    sleep 0.5
+  end
+end
+
+forms.each do |notes|
+  puts notes
+  play_phrase notes
+end
+```
 
 ### 3. Time is beats, not seconds
 
-TODO
+Choose durations [0.5, 0.5, 0.25, 0.25, 0.5, 0.5, 0.75, 0.75]. Their sum is
+4.0 beats. The expected printed lengths are 4.00 seconds at 60 BPM, 2.50
+seconds at 96 BPM, and about 1.58 seconds at 152 BPM. Render the same eight
+notes at each tempo and calculate seconds with durations.sum * 60.0 / bpm
+before playback. The numeric check is exact apart from formatting. Sonic Pi
+auditioning remains manual; note whether the fastest pass changes from a
+measured phrase into a gesture.
 
 ## Part 1. Why sound has structure
 
 ### 4. One note is many notes
 
-TODO
+Use amplitudes [1.0, 0.45, 0.20, 0.08] for the dark profile and
+[1.0, 0.20, 0.65, 0.55] for the bright profile. Both use frequencies
+[220, 440, 660, 880]. The third partial differs most: 0.20 versus 0.65, a
+difference of 0.45. Sum the four sine synths in a thread for each profile and
+alternate profiles four times with the same two-beat duration. Keep each
+partial's amplitude multiplied by 0.25. Manual audition should describe attack
+and brightness in concrete terms; the expected distinction is stronger upper
+energy in the second profile.
 
 ### 5. Consonance is small whole numbers
 
-TODO
+Set the lower frequency to 220 Hz and the undetuned 3:2 partner to 330 Hz.
+The four upper frequencies are 330, 331, 333, and 337 Hz. Store a listening
+row after each three-beat pair: detune, perceived pulse speed, and whether the
+two tones still fuse. There is no universal cutoff, so the worked acceptance
+rule is procedural: replay the set twice at amp 0.25 per sine, reverse the
+order on the second pass, and retain the first detune where both passes lose a
+stable interval. Sonic Pi auditioning supplies that row; syntax cannot.
 
 ### 6. Twelve notes, one compromise
 
-TODO
+For A4 = 440 Hz, calculate every frequency from the lesson formulas and print
+with format("%.2f", value). The pure fifth-stack diagnostic is
+(1.5 ** 12) / (2 ** 7), approximately 1.01364. It shows that twelve pure
+fifths overshoot seven octaves by about 1.364 percent. Print both triad arrays,
+then subtract their third-degree frequencies and report the absolute value.
+Render them through the same sine synth, amp, and release. The numbers are the
+worked result; deciding whether the third sounds calmer in either tuning
+requires manual audition.
 
 ### 7. The envelope is the instrument
 
-TODO
+One usable estimate for a softly plucked guitar note is
+{attack: 0.01, sustain: 0.15, release: 1.2, amp: 0.7}. Store it beside the four
+reference hashes and pass each field to the same synth call. The immediate
+attack produces the pluck, the short sustain prevents an organ-like plateau,
+and the long release supplies the decaying tail. Alternate reference and
+estimate at one fixed pitch. The acceptance check is a completed hash plus a
+sentence tying every audible difference to one segment. The resemblance
+requires manual Sonic Pi auditioning against a recording you may lawfully use.
 
 ## Part 2. Pitch space
 
 ### 8. Twelve pitch classes
 
-TODO
+With start = 60, offsets 0 through 12 print addresses 60 through 72 and pitch
+classes 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0. For chosen class 0, the MIDI
+range 36 through 84 yields [36, 48, 60, 72, 84]. The filter is
+(36..84).select { |n| n % 12 == chosen_class }. Assert that every adjacent
+difference is 12. Play the chromatic sweep and the filtered notes with one
+renderer; octave identity remains a manual listening check.
 
 ### 9. Octaves as address space
 
-TODO
+Use a table with rows for :fm, :piano, and :pluck. A starting hypothesis is
+:fm from C2 to C4, :piano from C2 to C6, and :pluck from C4 to C6. Test each
+band with the same offsets [0, 2, 4, 7, 9, 12] and replace the limits with your
+auditioned values. For the final texture, assign :fm at C2, :piano at C4, and
+:pluck at C6, with bass notes lasting twice as long as the upper notes. Mute
+each line once, then restore all three. Traceability requires manual audition.
 
 ### 10. Sharps, flats, and why spelling is not sound
 
-TODO
+Use these paired labels by pitch class: C/C, C-sharp/D-flat, D/D,
+D-sharp/E-flat, E/E, F/F, F-sharp/G-flat, G/G, G-sharp/A-flat, A/A,
+A-sharp/B-flat, B/B. Store two hashes per enharmonic class when both spellings
+are common, each with the same numeric :pitch and a different :spelling.
+Assert that the set of pitch values modulo 12 is exactly 0 through 11. Print
+both fields and play each numeric address once. Equal sound for paired labels
+is checked by manual audition; the table preserves the theoretical spelling.
 
 ### 11. Pentatonic: the scale with no wrong notes
 
-TODO
+Use the one-octave C major pentatonic pool [60, 62, 64, 67, 69, 72] and begin
+with use_random_seed 42. Keep target and guess as integers. For each of ten
+trials, play the target, allow edited up/down searches, then append
+{target: target, guess: guess, error: (target - guess).abs} to results. Print
+all ten rows and assert results.length == 10. Remove the fixed seed only after
+the interaction and reveal delay have been auditioned in Sonic Pi. A usable
+session ends with ten targets, guesses, and numeric errors.
 
 ## Part 3. Rhythm and meter
 
 ### 12. Durations as fractions
 
-TODO
+The interpreter needs two inputs: durations and sample_name. A complete test
+array is [1, 0.5, 0.5, 0.25, 0.25, 0.25, 0.25, 1], whose sum is four beats.
+Render it once with :perc_snap and once with :drum_cymbal_closed. In a separate
+thread, play :elec_tick every beat four times. Assert durations.sum == 4 before
+starting either thread. Clap the attacks against the click and record the
+smallest value you reproduce twice without adding or losing an event. That
+final threshold is manual listening evidence.
 
 ### 13. Bars, and the accent that makes meter audible
 
-TODO
+Use six eighth-note durations, [0.5] * 6. The 3/4 profile is
+[1.0, 0.45, 0.75, 0.45, 0.75, 0.45]; the 6/8 profile is
+[1.0, 0.45, 0.45, 0.8, 0.45, 0.45]; the control is [0.6] * 6. All sum to
+three beats and use the same renderer. The distinguishing location is index 3,
+where 6/8 begins its second group of three while 3/4 treats it as the weak half
+of beat 2. Assert the duration sum, then audition the three profiles manually.
 
 ### 14. Rests, dots, and ties
 
-TODO
+One valid two-bar timeline is: C4 for 1 beat, a 1-beat rest, D4 for 1.5 beats,
+E4 for 0.5 beat, then G4 tied for 2 beats across the bar line, F4 for 1 beat,
+and E4 for 1 beat. The total is 8 beats. Encode the rest as an event with
+note: nil and skip play while still sleeping its duration. Encode the tie as
+one G4 event of duration 2. The comparison replaces it with two consecutive G4
+events of duration 1. Both totals remain 8; the second rendering adds an attack.
+Confirm that attack manually.
 
 ### 15. Syncopation on a grid
 
-TODO
+Use sixteen sixteenth-note slots so eight attacks can fit each mask. A
+quarter-weighted mask can attack [0, 1, 4, 5, 8, 9, 12, 13], the offbeat mask
+[2, 3, 6, 7, 10, 11, 14, 15], and the syncopated mask
+[0, 1, 4, 5, 7, 9, 12, 13]. Each consumes eight pitches and spans four beats.
+The moved slot is 8 to 7, anticipating beat 3 by a sixteenth. Assert eight true
+values in each mask and audition the change in forward pull manually.
 
 ### 16. Swing and microtiming
 
-TODO
+Use use_random_seed 42 and choose from [0.5, 1.0] until the accumulated total
+reaches four beats, rejecting a value that would exceed it. Store the hidden
+array before playback. Render it straight, sleep 4 for the clap-back window,
+then print the array. For swing, split each pair of eighths into 0.66 and 0.34
+while preserving their one-beat sum. Assert rhythm.sum == 4.0 before both
+passes. Pacing and reproducibility require manual Sonic Pi auditioning with the
+same seed.
 
 ### 17. Tuplets and 3 against 2
 
-TODO
+Each cycle lasts two beats. The duplet layer sleeps 1 beat twice; the triplet
+layer sleeps 2.0 / 3 three times. Repeat both in separate threads sixteen times
+and run a boundary marker seventeen times, including time zero and the final
+boundary. Print 32 as the expected total. Do not add a final correction. The
+arithmetic gives 16 * 2 == 32 for both layers. Sonic Pi auditioning must confirm
+that the last attacks and boundary remain aligned and that marker amplitude
+does not mask either rhythm.
 
 ## Part 4. Intervals
 
 ### 18. An interval carries two measurements
 
-TODO
+Use the expected ascending labels from C: perfect unison, minor second, major
+second, minor third, major third, perfect fourth, augmented fourth, perfect
+fifth, minor sixth, major sixth, minor seventh, major seventh, perfect octave.
+Pair them with spellings C, D-flat, D, E-flat, E, F, F-sharp, G, A-flat, A,
+B-flat, B, C. The chromatic distances are 0 through 12. Add assertions for all
+thirteen pairs before printing size and quality. Then audition unison, tritone,
+fifth, and octave as representative pairs; sound recognition remains separate
+from naming.
 
 ### 19. The interval sound dictionary
 
-TODO
+Begin with four rows: 0 semitones as fused/repeated, 4 as open and settled, 7 as
+hollow and stable, and 12 as the same class in a new register. Give every row
+separate ascending, descending, and simultaneous descriptions. Use a ten-trial
+session drawn only from these four distances. Add a new entry after two
+consecutive scores of at least nine. The dictionary is accepted when each row
+contains a label, both sound descriptions, and an optional tune anchor. Every
+description is personal listening evidence and therefore requires manual
+audition.
 
 ### 20. Build your own drill harness
 
-TODO
+Use a pool [3, 4, 7, 12], seed 42, and ten target distances generated before
+the session. A complete log row is
+{date: "YYYY-MM-DD", pool: [3,4,7,12], seed: 42, answers: [...], score: 9,
+expanded: false}. Record each answer before revealing the label. Repeat on the
+next day; if both scores are 9 or 10, append 5 to the next session's pool and
+set expanded: true in that record. The finite checks are ten answers and a
+score matching their comparisons. Reveal timing and level need manual audition.
 
 ## Part 5. Scales and keys
 
 ### 21. The major scale is a step formula
 
-TODO
+For steps [2, 2, 1, 2, 2, 2, 1], descending_scale starts with root + 12 and
+subtracts steps.reverse one value at a time. F major ascends
+[65, 67, 69, 70, 72, 74, 76, 77] and descends
+[77, 76, 74, 72, 70, 69, 67, 65]. For every root 0 through 11, assert both
+arrays have length 8, ascending.first + 12 == descending.first, and both finish
+on equivalent tonic addresses. Print all twelve pairs, then audition the F
+pair manually.
+
+```ruby
+steps = [2, 2, 1, 2, 2, 2, 1]
+
+define :ascending_scale do |root, formula|
+  formula.each_with_object([root]) { |step, notes| notes << notes.last + step }
+end
+
+define :descending_scale do |root, formula|
+  formula.reverse.each_with_object([root + 12]) do |step, notes|
+    notes << notes.last - step
+  end
+end
+
+up = ascending_scale 65, steps
+down = descending_scale 65, steps
+raise "scale length" unless up.length == 8 && down.length == 8
+raise "wrong tonic" unless up.last == down.first && down.last == up.first
+
+(up + down.drop(1)).each do |pitch|
+  play pitch, release: 0.35
+  sleep 0.5
+end
+```
 
 ### 22. Scale degrees and the pull toward home
 
-TODO
+A reference tension map is {1 => 0, 2 => 2, 3 => 1, 4 => 3, 5 => 1, 6 => 2,
+7 => 5}. Resolve 2 down to 1, 3 down to 1 through 2, 4 down through 3 and 2,
+5 down to 1, 6 down through 5, and 7 up to 1. Shuffle degrees 1 through 7 after
+use_random_seed 42, keep one tonic drone thread running, wait two beats before
+printing each hidden degree, then play its route. Your ratings may differ; the
+finished run must cover every degree once. Audition tension ratings manually.
 
 ### 23. The minor family
 
-TODO
+Use step formulas natural [2,1,2,2,1,2,2], harmonic [2,1,2,2,1,3,1], and
+melodic-up [2,1,2,2,2,2,1]. melodic_down uses the natural formula in reverse
+from root + 12. In E, natural is E F-sharp G A B C D E; harmonic raises D to
+D-sharp; melodic-up raises C and D to C-sharp and D-sharp. Assert exactly one
+changed index for harmonic and two for melodic-up. Play two ascending melodic
+octaves, then descend with natural-minor degrees. Audition the directional
+change manually.
 
 ### 24. Modes over a drone
 
-TODO
+Store Ionian [0,2,4,5,7,9,11], Dorian [0,2,3,5,7,9,10], and Mixolydian
+[0,2,4,5,7,9,10]. Use the same six-note index phrase [0,1,2,5,4,6] so Ionian
+exposes major 7, Dorian exposes minor 3 and major 6, and Mixolydian exposes flat
+7. Seed selection with use_random_seed 42, play ten trials over an unchanged
+tonic drone, wait four beats, then print and replay the answer. Assert ten
+trials and equal rhythm arrays. Mode identification needs manual audition.
 
 ### 25. The circle of fifths as a data structure
 
-TODO
+Represent position 0 as C. Positive positions move tonic pitch class by +7 and
+add sharps in F C G D A E B order; negative positions move by -7 and add flats
+in B E A D G C F order. Spell edge keys from explicit sharp and flat spelling
+arrays, then derive relative minor by taking degree 6 of the major scale.
+Neighbours are index - 1 and index + 1 when present. Print records -7 through
+7 and assert abs(accidental_count) == abs(index). Play each tonic triad in
+order; spelling review and voicing need editorial inspection.
 
 ## Part 6. Chords and harmony
 
 ### 26. Triads as stacked thirds
 
-TODO
+Use qualities {major: [0,4,7], minor: [0,3,7], diminished: [0,3,6],
+augmented: [0,4,8]}. After use_random_seed 42, choose ten roots from 48 through
+59 and one quality per trial. Play the three pitches as equal half-beat notes,
+then as a two-beat block, wait four beats, and print root plus quality. Keep
+synth, amp, and register fixed. Tally answers outside the program. The code
+passes when it emits ten complete trials; category accuracy and level balance
+require manual audition.
 
 ### 27. Inversions and voicing
 
-TODO
+Generate candidate inversions by rotating chord pitch classes and adding
+octaves until every pitch lies near the previous voicing. Before scoring,
+reject a candidate unless candidate.first % 12 == bass_pitch_class. One valid
+C-F-G-C path is [48,55,60,64], [53,57,60,65], [59,62,67,71], and
+[55,60,64,67], giving the requested root, root, first, and second inversion
+basses. Compute movement as paired absolute differences and compare it with
+root-position stacks in the same registers. If your total is not lower, search
+one more octave of candidates. Audition both paths manually.
 
 ### 28. Diatonic chords and Roman numerals
 
-TODO
+Map [:I, :ii, :iii, :IV, :V, :vi, :vii_dim] to scale indexes 0 through 6 and
+qualities major, minor, minor, major, major, minor, diminished. For each root,
+build the major scale, then stack scale positions degree, degree + 2, and degree
++ 4 with octave correction. For C, [:vi, :IV, :I, :V] yields pitch classes
+[9,0,4], [5,9,0], [0,4,7], [7,11,2]. Assert four chords, three notes each, and
+membership in the scale for all twelve roots. Apply nearest-inversion selection
+only after these assertions, then audition one chosen key.
 
 ### 29. Cadences are punctuation
 
-TODO
+Use a shared two-chord body, then choose endings authentic V-I, plagal IV-I,
+half ending on V, and deceptive V-vi. Seed ten selections with
+use_random_seed 42. Render every chord with the same inversion, two-beat
+duration, synth, and amp; wait four beats before printing the label. A tally
+table needs four rows with attempted, correct, and confused-with counts.
+Review authentic versus plagal by bass motion, and half versus deceptive by
+whether V resolves. Trial count is automatic; recognition needs manual
+audition.
 
 ### 30. Seventh chords and tension
 
-TODO
+Enumerate inversions of G7 pitch classes [7,11,2,5] and C [0,4,7], expanding C
+to four voices by doubling the root. Pair candidates in ascending order and
+reject crossings. Require the voice containing B to end on C, the voice
+containing F to end on E, and every absolute move to be at most five semitones.
+One compact resolution is [47,50,53,55] to [48,52,55,60], with movements
+[1,2,2,5] and total 10. Print both voicings and the movement vector, then play
+the block resolution and each paired line. Balance and perceived resolution
+need manual audition.
 
 ### 31. Voice leading as an optimisation problem
 
-TODO
+Generate every legal four-voice voicing of each C, F, G, and C triad inside
+your stated SATB ranges, permitting doubled roots. Reject any tuple that is not
+ordered bass <= tenor <= alto <= soprano or lacks a chord pitch class. Build
+paths one chord at a time and score adjacent movement with
+sum((right[i] - left[i]).abs). A valid report prints the minimum score, baseline
+score, and four voice arrays such as bass [48,53,55,48]. Because ranges change
+the optimum, the acceptance test is exhaustive candidate generation plus a
+minimum no greater than the root-position baseline. Audition both paths
+manually.
 
 ## Part 7. Melody, phrase, and form
 
 ### 32. Contour and rhythm are separable
 
-TODO
+For a reference eight-note tune, keep exact arrays such as pitches
+[60,60,67,67,69,69,67,65] and durations [1,1,1,1,1,1,2,1]. Version A replaces
+all pitches with 60. Version B keeps pitches and replaces durations with 1.
+Version C keeps durations and generates whole-tone contour
+[60,60,62,62,64,64,62,60]. Randomise anonymous labels while keeping synth,
+tempo, register, and amp fixed. Record which version a willing listener names
+first and the identification time. One listener is a case study, not a general
+result; recognition requires manual audition.
 
 ### 33. Motive, sequence, and development
 
-TODO
+Start from motive [60,62,64,67]. Define transformations for transpose,
+invert-around-first-note, augment-duration, and fragment-first-two. A valid
+sixteen-bar label plan is original, sequence+2, sequence+4, sequence+6,
+contrast, inversion, inversion+2, contrast, augmented, augmented, fragment,
+fragment+5, contrast, literal-return, sequence+2, cadence. Generate every
+transformed pitch array by function call and print the label before rendering.
+Search the score construction for copied transformed literals; only the source
+motive may be a pitch literal. Musical continuity needs manual audition.
 
 ### 34. Question and answer
 
-TODO
+Use the shared two-bar opening A-C-E-D | C-B-A-E. The antecedent repeats its
+opening idea and ends B-G-sharp-E, giving an E arrival. The consequent begins
+with the identical opening and ends B-G-sharp-A, placing the harmonic-minor
+leading tone immediately before tonic. Represent each phrase as eight one-beat
+events or an equivalent duration pattern whose sum is 8. Assert both sums and
+print them before playback. The exact melodic spacing may be adjusted, but the
+opening identity, E versus A endings, and G-sharp-to-A motion must remain.
+Cadential strength requires manual audition.
 
 ### 35. Chord tones and decoration
 
-TODO
+Over C major then G major, one valid event plan is C4 chord tone at 0, D4
+passing at 1, E4 chord tone at 2, F4 neighbour at 3, G4 chord tone at 4, C5
+suspension at 5 resolving to B4 at 6, and F-sharp4 anticipation at 7 leading
+into the next implied G harmony. Store every row with :note, :start, :duration,
+and :role. play_events reads only note, start, and duration. The reduction
+selects role == :chord_tone and prints C4, E4, G4, B4. Confirm the decorative
+roles against the chosen harmonic timing during manual audition.
 
 ### 36. Notated versus played
 
-TODO
+Keep one frozen score array. Detached rendering maps every event to release =
+duration * 0.45. Legato maps to duration * 1.02. Phrase-shaped rendering reads
+optional :amp and :articulation, with amp 0.8 and :legato defaults; :staccato
+uses 0.45, :legato 0.95, and :accent 0.8 plus 0.15 amp. Deep-copy pitch, start,
+and duration triples before all three passes and compare afterward. The
+automatic result is equality across every triple. Whether the phrase shape
+reaches its musical high point requires manual Sonic Pi auditioning.
 
 ### 37. Form as control flow
 
-TODO
+Store form as [:A, :transition, :B, :A, :C, :A] with argument records for the
+three A calls: original, octave-up with lighter amp, then original register with
+denser articulation. One A array supplies all returns. Give B a low register
+and long durations; give C a high register and short syncopated durations.
+Make section durations total at least ninety seconds from BPM and beat counts,
+and print each name before its call. Search the program for duplicate section
+arrays. Form duration is numeric; contrast and effectiveness of varied returns
+require manual audition.
 
 ## Part 8. Reading notation
 
 ### 38. Treble clef as a coordinate system
 
-TODO
+Using middle C as coordinate -2, advance one diatonic letter per coordinate and
+increment octave after B. Classify even coordinate parity according to the
+lesson's line/space origin, then emit Markdown columns coordinate, kind, letter,
+octave, symbol, and MIDI. Mark -2 as middle C and the five staff-line
+coordinates from the mapping. Assert rows cover every integer -2 through 9 and
+that adjacent letters advance diatonically. For the eight printed positions,
+store coordinates first and derive symbols through the same function. Source
+decoding and octave placement require manual comparison with the page.
 
 ### 39. Bass clef and the grand staff
 
-TODO
+Use two arrays named treble and bass, each containing coordinate, :note, :start,
+and :duration. Include treble middle C on its lower ledger line, bass middle C
+on its upper ledger line, and one additional ledger-line coordinate in each
+array. An eight-bar 4/4 sketch ends at beat 32, so assert
+max(start + duration) == 32 for both voices. Render treble with :piano and bass
+with :fm from separate threads. The coordinate-to-note mapping and source match
+require manual page comparison; equal end time is automatic.
 
 ### 40. Key signatures as defaults
 
-TODO
+Represent a one-sharp signature as {f: 1}. resolve_bar starts with an empty
+local accidental map, updates it when an event carries sharp, flat, or natural,
+and applies that value to later matching letters in the same bar regardless of
+octave. Return event.merge(note: resolved_midi) so source fields survive. Test
+bar 1 with F-sharp by default, F-natural override, repeated F-natural, and F5
+natural; begin bar 2 with F and expect F-sharp after reset. Compare inputs and
+outputs side by side and assert the original hashes remain unchanged.
+
+```ruby
+define :resolve_bar do |events, key_signature|
+  pitch_class = {c: 0, d: 2, e: 4, f: 5, g: 7, a: 9, b: 11}
+  accidental_value = {natural: 0, sharp: 1, flat: -1}
+  local = {}
+
+  events.map do |event|
+    if event[:accidental]
+      local[event[:letter]] = accidental_value[event[:accidental]]
+    end
+    change = local.fetch(event[:letter], key_signature.fetch(event[:letter], 0))
+    midi = 12 * (event[:octave] + 1) + pitch_class[event[:letter]] + change
+    event.merge(note: midi)
+  end
+end
+
+bar_1 = [
+  {letter: :f, octave: 4, start: 0, duration: 1, accidental: nil},
+  {letter: :f, octave: 4, start: 1, duration: 1, accidental: :natural},
+  {letter: :f, octave: 5, start: 2, duration: 2, accidental: nil}
+]
+bar_2 = [{letter: :f, octave: 4, start: 0, duration: 4, accidental: nil}]
+
+raise "bar 1 scope" unless resolve_bar(bar_1, {f: 1}).map { |e| e[:note] } == [66, 65, 77]
+raise "barline reset" unless resolve_bar(bar_2, {f: 1}).first[:note] == 66
+```
 
 ### 41. Decode four printed bars
 
-TODO
+Create a source record with edition, page, and measure numbers, then save five
+versions: meter, rhythm, pitch spelling, resolved pitch plus ties, and
+articulation. In the rhythm version, assert each of four bar totals against the
+printed meter before adding any note. Resolve pitches through the Lesson 40
+function, merge tied durations into one sounding attack, and render final
+events directly rather than importing MIDI. The completion list names unclear
+engraving, optional ornaments, editorial accidentals, and performance timing
+as manual checks. Exact content remains source-dependent and requires page and
+recording comparison.
 
 ## Part 9. Transcription
 
 ### 42. Finding music you can legally use
 
-TODO
+Use one record per candidate with fields title, composer, edition_or_arranger,
+repository, page_url, displayed_rights_statement, accessed_on, difficulty,
+texture, and proposed_bars. Reject any row with a missing page address or a
+rights value inferred from the composition's age. A complete inventory has
+twenty recoverable rows and three shortlist flags: ear, score, and capstone.
+For each flag, ask another reader to open the exact artifact and locate the
+proposed bars. The choice of works remains open-ended because country, edition,
+ability, and intended publication change the answer. Legal review belongs to
+the reader; do not replace a displayed statement with this book's summary.
 
 ### 43. The four-pass pipeline
 
-TODO
+Create four version tags: p1-structure, p2-rhythm, p3-contour, and p4-exact.
+Each bar begins as events with :note, :start, and :duration; p2 uses one neutral
+note, p3 uses provisional pitches, and p4 replaces them. A worked checklist row
+is {bar: 3, meter_ok: true, rhythm_ok: true, anchors: [0.0, 2.5],
+exact_ok: false, review: "beat 3.5, compare slowed source"}. Before p3, assert
+every bar's durations equal the meter. Before p4, assert all phrase boundaries
+and anchors are present. The answer is complete with eight bar rows, four saved
+versions, and evidence text for every surviving REVIEW.
 
 ### 44. Transcribe by ear
 
-TODO
+Store sixteen bar arrays with source_start and source_end. For each exact pitch,
+add evidence such as {anchor: :c4, interval: 7, direction: :up}; use REVIEW when
+either field is uncertain. The dictation schedule advances from four to six
+notes after four correct attempts, then to eight after four more, and adds
+rhythm only after four correct eight-note trials. A finite review checks all
+bar totals, sixteen timestamp ranges, and an evidence chain for every pitch.
+The melody match and the definition of a correct dictation attempt require
+manual source comparison and Sonic Pi auditioning.
 
 ### 45. Transcribe from a score
 
-TODO
+Use a score hash containing source_url, edition, page, and an events array.
+Every event carries measure, :note, :start, and :duration; comments record ties
+and unclear print. Make a deep copy of the array before rendering, run a strict
+renderer, then run a shaped renderer whose amp, release, and synth are
+arguments. Compare the copied data with the original after both passes and
+raise if it changed. The structural answer is eight measures whose starts and
+durations survive both renderers byte for byte. Exact pitch and articulation
+still require comparison with the chosen public-domain artifact.
 
 ### 46. Debug a transcription like software
 
-TODO
+A useful report row is
+{bar: 4, total: 4.0, range: [60,72], large_leaps: [[2.0,13]],
+reviews: ["tie into beat 3"]}. Print one row per bar, then overall min and max.
+For the suspicious bar, render three passes from the same durations: neutral
+pitch 60, strict notes, then strict notes with expressive amp and release. Loop
+the three-pass group no more than three times before returning to the source.
+Every warning must end as corrected or explained, for example "13-semitone
+leap confirmed by source, m.4 beat 2." Sound comparison remains manual.
 
 ## Part 10. Texture and arrangement
 
 ### 47. Independent voices
 
-TODO
+Represent upper and lower as separate arrays of eight four-beat bars. Assert
+each bar sum is 4.0 and the lowest upper pitch exceeds the highest lower pitch
+by at least 12 semitones. One bar_clock live_loop cues :bar; each voice syncs
+once, renders its next bar, and advances its own index. Repeat sixteen cues.
+Acceptance has four mute tests: both, upper only, lower only, then both with the
+upper transposed. No test may edit the other array. Duration invariants are
+automatic. Lock, balance, and absence of audible drift require manual Sonic Pi
+auditioning over all sixteen bars.
 
 ### 48. Bass lines that outline harmony
 
-TODO
+For C-Am-F-G repeated twice, the root version uses
+[36,33,29,31,36,33,29,31] on downbeats. A worked walking bar can use
+[root, root + 7, diatonic_passing, next_root - 1], with each value lasting one
+beat. Across eight bars, label four final values next_root - 1 as chromatic
+approaches and choose four middle values from the key scale as passing tones.
+Assert each generated bar has four durations and starts on its required root.
+Render roots, sleep two beats, then walking bass. Register, groove, and approach
+quality need manual audition.
 
 ### 49. Drum grids
 
-TODO
+Use sixteen Boolean values each for kick, snare, and closed hat, plus sixteen
+amplitudes per active row. Mark uncertain columns in a parallel reviews array,
+for example reviews[11] = "hat or shaker". Render the strict version at 0.25
+beats per step, then render a copy with only the hat delayed 0.02 beats. Assert
+all rows and amplitude arrays have length 16. Compare strict and delayed
+versions against the source in separate passes. The grid and array lengths are
+automatic; hit identity, accents, and pocket remain manual listening decisions.
 
 ### 50. Register, timbre, and space
 
-TODO
+Keep one eight-chord skeleton. A reference allocation is sparse: bass and
+melody; dense: bass, pad, inner pulse, melody; wide: bass left and dry, pad
+centre with reverb, pulse right with short release, melody right-of-centre two
+octaves above the bass. Record diagnoses such as "pad masks melody sustain" and
+"bass reverb fills rests". Fix the first with a shorter pad release and the
+second with lower reverb mix, leaving roots and master amp unchanged. The
+answer passes when all versions read the same chord array and every wide role
+differs from its nearest neighbour in at least two dimensions. Audition manually.
 
 ### 51. Canon and imitation
 
-TODO
+Use an eight-beat subject stored once and entry records
+[{delay: 0, transpose: 0}, {delay: 4, transpose: 0},
+{delay: 8, transpose: -12}]. Repeat the subject sixteen times so the final
+entry sustains at least sixteen bars. Generate overlap reports for delays 2, 4,
+and 8 and transpositions 0, 12, and 7 before choosing. In one workable
+four-beat segment, label overlaps C-G as C harmony, E-C as C harmony, and D-G
+as G harmony. The selected version must use the unchanged subject object for
+all voices. Canon quality and exposed dissonances require manual audition.
 
 ## Part 11. Chromatic harmony
 
 ### 52. Secondary dominants
 
-TODO
+In C major, use the eight bars C, Am, Dm, G, C, Am, Dm, G-C. The tonicised copy
+replaces the second Dm with D7 immediately before G and keeps the other bars
+unchanged. Label D7 as V/V, target G as V, and F-sharp as the chromatic pitch.
+Store both progressions as root-quality hashes and render them with one helper.
+The final C confirms the home key. A data comparison should find one changed
+chord quality plus its seventh; the strength of the local G arrival requires
+manual audition.
 
 ### 53. Modulation as state change
 
-TODO
+Use C major for bars 1-3, G major for bars 4-8, and C major for bars 9-12.
+A concrete schedule is C, Am, Em, D, G, C, D, G, G, Dm, G, C. Interpret Em as
+iii in C then vi in G at the first change; interpret G as I in G then V in C at
+the return. Store key and numeral on every row, resolve each through one
+major-scale function, and print both before playback. The schedule provides
+four bars of confirmed G context and a final C cadence. Adoption of each tonic
+requires manual audition.
 
 ### 54. Borrowed chords and the blues
 
-TODO
+Store blues degrees [1,1,1,1,4,4,1,1,5,4,1,5] once and map 1, 4, 5 to offsets
+0, 5, 7 from tonics C, E, and A. Give every result dominant-seventh quality.
+The minor seventh on I is chromatic relative to the major scale because the
+blues quality rule supplies it. For the separate phrase, use C, F, Fm, C; A-flat
+in Fm comes from parallel C minor. Print a source tag beside every outside
+pitch. Arrays and tags are automatic checks. The distinction between modal
+colour and dominant pull needs manual audition.
 
 ## Part 12. Capstones
 
 ### 55. Capstone A: solo melody
 
-TODO
+There is no universal note list because the source is chosen by the reader. A
+complete answer has one source record, 32-64 bar objects, one event schema,
+per-bar totals, global min and max, phrase labels, articulation, amp, and an
+uncertainty table with source coordinates. Freeze or copy the score, render it
+strictly, render it expressively, then compare the score before and after both
+passes. Zero data changes is the structural acceptance result. Review every
+uncertain passage against the source and audition phrase peaks and cadences
+manually; editorial judgement decides fidelity.
 
 ### 56. Capstone B: melody and accompaniment
 
-TODO
+The reference architecture is three arrays named melody, bass, and harmony,
+each with global starts and durations. Partition all three into 16-32 bars and
+assert each bar's metric total. For every distinct attack, reduce sounding
+notes with note % 12 and compare them with the active chord pitch classes.
+Classify every mismatch as passing tone, neighbour, suspension, anticipation,
+or REVIEW. Assert equal final end times and verify that muting any renderer does
+not edit the others. Balance, voicing, and whether the analysis fits the chosen
+source require manual audition and editorial judgement.
 
 ### 57. Capstone C: two-voice polyphony
 
-TODO
+Use separate upper and lower arrays with source measure and beat. Validate each
+bar, then assert equal final end times. At every union of attack times, find the
+active upper and lower notes and print full interval plus interval % 12. Flag a
+negative full interval as crossing and exposed dissonance classes according to
+the analytical policy you state. Keep motives, entries, cadences, and harmony
+in annotations with start and duration. Every flag ends as corrected or
+explained from the source. Alignment is automatic; source fidelity and whether
+a dissonance is prepared and resolved require manual editorial review.
 
 ### 58. Refactor into your own library
 
-TODO
+The small library exports validate_events, play_events, transpose_events, and
+one articulation_release helper. All accept hashes with :note, :start, and
+:duration; amp is optional. transpose_events returns new hashes rather than
+mutating input. Migrate two older scores by renaming duration aliases and adding
+absolute starts, then run the same validation and renderer over both. The README
+records the schema, rest and tie policy, mutation policy, Sonic Pi 5.0.0 target,
+and one fresh-buffer example. Ruby syntax success is recorded automatically.
+Audition both migrated pieces manually and keep the framework small enough that
+their score arrays remain readable.

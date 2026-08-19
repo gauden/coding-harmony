@@ -4,42 +4,118 @@ subtitle: "35 min"
 part: "Texture and arrangement"
 concepts: [polyphony, live_loop, thread, sync, independent, voices]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - live_loop and in_thread give one process per voice. sync and cue keep them aligned.
-> - Sonic Pi's deterministic scheduling means voices do not drift. Verify this with a sixteen-bar test.
-> - Keep each voice's score in its own data structure. Shared mutable state across voices is as bad here as anywhere.
->
-> **Ends with: a two-part arrangement that loops indefinitely and stays locked.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Two melodies become *polyphony* when your ear can follow them as independent
+voices. Independence requires more than different pitches. Each voice needs its
+own rhythm, contour, register, and place in the phrase. If both parts attack
+together with the same durations, one tends to sound like chord filling.
+
+Sonic Pi maps this musical idea onto concurrency. A live_loop or in_thread gives
+each voice its own process. cue sends a timing event, and sync waits for it.
+Deterministic scheduling keeps the processes on the same beat grid, provided
+each one sleeps for the duration it claims.
+
+Keep the score for each voice in a separate structure. Shared tempo and bar
+length are useful. Shared mutable note arrays are a source of obscure bugs,
+especially when one loop rotates or changes an array while another reads it.
 
 ## Run this
 
+A clock loop announces each four-beat bar. The melody and bass wait for the same
+announcement, then consume independent score data whose durations each total
+four beats.
+
 ```{.ruby audio=""}
-# TODO
+use_bpm 88
+
+melody = [
+  {note: :e4, start: 0.0, duration: 1.0},
+  {note: :g4, start: 1.0, duration: 0.5},
+  {note: :a4, start: 1.5, duration: 0.5},
+  {note: :b4, start: 2.0, duration: 2.0}
+]
+
+bass = [
+  {note: :e2, start: 0.0, duration: 2.0},
+  {note: :d2, start: 2.0, duration: 1.0},
+  {note: :b1, start: 3.0, duration: 1.0}
+]
+
+define :play_events do |events, synth_name, amp|
+  use_synth synth_name
+  cursor = 0.0
+  events.each do |event|
+    sleep event[:start] - cursor
+    play event[:note], release: event[:duration] * 0.8, amp: amp
+    cursor = event[:start]
+  end
+  sleep events.last[:duration]
+end
+
+live_loop :bar_clock do
+  cue :bar
+  sleep 4
+end
+
+live_loop :upper_voice do
+  sync :bar
+  play_events melody, :piano, 0.9
+end
+
+live_loop :lower_voice do
+  sync :bar
+  play_events bass, :fm, 0.55
+end
 ```
 
-What you just heard, in a sentence or two.
+After the loops meet at a bar cue, they repeat without cumulative drift. The
+bass changes on a different attack pattern from the melody, so it remains
+audible as a line.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Change the last bass duration from 1.0 to 0.75. The lower loop reaches sync
+   early and waits for the next bar cue. Listen for the quarter-beat silence.
+   The voices do not drift, but the broken invariant becomes audible.
+2. Give the bass the melody's duration pattern while retaining its pitches.
+   The parts align at every attack. Listen for the texture becoming more like a
+   harmonised melody and less like two lines.
+3. Transpose the melody up twelve semitones by changing each note to
+   note(event[:note]) + 12 inside a separate renderer. The wider register makes
+   the voices easier to track without changing their rhythmic relationship.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Each voice is a state machine with one responsibility: play its next event,
+advance to the next absolute start, and meet the shared bar boundary. The
+`:note`, `:start`, and `:duration` keys retain the general event schema from the
+transcription lessons. The clock loop is coordination, not score storage. This
+distinction keeps a change to the melody from altering the bass process.
+
+Sonic Pi schedules musical time independently of how long Ruby takes to execute
+ordinary lines. A sixteen-bar test should therefore return to the same cue
+without gradual separation. A wrong sleep total produces a repeatable gap or
+late arrival instead of floating-point drift. That makes duration sums the
+first diagnostic.
+
+sync also defines a musical boundary. Bar cues suit repeating grooves. Phrase
+cues suit sections whose lengths differ. Too many cues couple the voices at
+every note and erase the benefit of independent processes. Coordinate at the
+largest boundary that still keeps the form stable.
+
+The example runs indefinitely, so stop it with Cmd-. or Alt-. The Ruby syntax
+can be checked outside Sonic Pi, while timing, balance, and the audible
+independence of the voices remain manual listening work.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Build an eight-bar two-part arrangement and let it repeat for sixteen bars.
+Store upper and lower events in separate arrays, validate each bar total, and
+use one cue per bar or phrase. Give the voices different attack patterns and a
+register gap of at least an octave. The target is a loop that stays locked while
+either line can be muted, transposed, or replaced without editing the other
+voice's score.

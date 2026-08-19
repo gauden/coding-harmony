@@ -16,6 +16,47 @@ play :c4          # symbol
 play 60           # the same note as an integer
 ```
 
+Symbols are values, so they work as hash keys and array members. `:c4 + 12`
+also works inside Sonic Pi because its music layer converts note symbols during
+arithmetic. Plain Ruby does not give arbitrary symbols that behaviour.
+
+## Arrays and indexing
+
+Arrays use zero-based indexes, negative indexes count from the end, and a range
+selects a slice.
+
+```ruby
+notes = [60, 62, 64, 65]
+notes[0]       # => 60
+notes[-1]      # => 65
+notes[1..2]    # => [62, 64]
+```
+
+`+` joins arrays and `rotate` moves values from the front to the back. The scale
+and mode chapters use both. Methods with a trailing `!` usually mutate their
+receiver; this book prefers the non-mutating form when score data is involved.
+
+```ruby
+[60, 64] + [67]          # => [60, 64, 67]
+[0, 2, 4, 5].rotate(1)  # => [2, 4, 5, 0]
+```
+
+## Hashes and event data
+
+A hash maps keys to values. The event schema uses symbols as keys. Modern Ruby
+allows `note: 60` as shorthand for `:note => 60`.
+
+```ruby
+event = {note: 60, start: 0, duration: 1, amp: 0.8}
+event[:note]            # => 60
+event.fetch(:duration)  # => 1
+event.fetch(:pan, 0)    # => 0 when :pan is absent
+```
+
+`fetch` is useful when absence is an error or when a default should be visible.
+Square-bracket lookup returns `nil` for a missing key, which can hide a spelling
+mistake until the renderer runs.
+
 ## Blocks
 
 A block is an anonymous function passed to a method, written with `do ... end`
@@ -42,10 +83,49 @@ Destructuring works in block parameters, which is how the score walker reads
 pairs:
 
 ```ruby
-[[:c4, 1], [:e4, 0.5]].each do |pitch, dur|
+[[:c4, 1], [:e4, 0.5]].each do |pitch, duration|
   play pitch
-  sleep dur
+  sleep duration
 end
+```
+
+Several nearby methods appear in later lessons:
+
+```ruby
+[60, 62, 64].each_cons(2).to_a  # => [[60, 62], [62, 64]]
+[60, 64, 67].zip([1, 1, 2])     # => [[60, 1], [64, 1], [67, 2]]
+[1, 2, 3].sum                    # => 6
+```
+
+`each_cons(2)` exposes adjacent values, which suits interval and voice-leading
+checks. `zip` aligns parallel arrays by index. `sum` is used for bar-duration
+assertions.
+
+## Conditions
+
+Ruby's `if` is an expression, and a short condition can follow the statement it
+controls.
+
+```ruby
+quality = interval == 4 ? :major : :minor
+play note if note
+
+if duration <= 0
+  raise "duration must be positive"
+end
+```
+
+Only `false` and `nil` are false in Ruby. Zero is true. That difference matters
+when pitch class 0 represents C.
+
+`case` works well for symbolic music data:
+
+```ruby
+offsets = case quality
+          when :major then [0, 4, 7]
+          when :minor then [0, 3, 7]
+          else raise "unknown quality"
+          end
 ```
 
 ## Keyword arguments
@@ -62,10 +142,26 @@ Sonic Pi wraps `def` in `define`, which registers the function with the runtime
 so it survives across runs and is available inside threads.
 
 ```ruby
-define :play_score do |score, transpose: 0|
-  score.each { |pitch, dur| play pitch + transpose; sleep dur }
+define :play_phrase do |score, transpose: 0|
+  score.each { |pitch, duration| play pitch + transpose; sleep duration }
 end
 ```
+
+Arguments before the keyword section are positional. A keyword with a default is
+optional; one without a default is required. The final expression becomes the
+return value.
+
+```ruby
+define :transpose do |notes, by:|
+  notes.map { |n| n + by }
+end
+
+transpose([60, 64, 67], by: 12)
+```
+
+Keep definitions above their first call in a fresh buffer. Sonic Pi remembers a
+named definition across runs, but examples in this book never depend on that
+history.
 
 ## Rings
 
@@ -77,8 +173,52 @@ notes = ring(:c4, :e4, :g4)
 8.times { |i| play notes[i]; sleep 0.5 }   # cycles, no bounds error
 ```
 
+Sonic Pi adds `tick` and `look` for counters associated with the current thread.
+`tick` advances and returns the counter; `look` reads it without advancing.
+
+```ruby
+notes = ring(:c4, :e4, :g4)
+6.times do
+  play notes.tick
+  sleep 0.5
+end
+```
+
+An explicit loop index is easier to inspect when several rings must advance at
+different rates. The book uses `tick` for repeating performance patterns and an
+index for transformations whose positions carry meaning.
+
+## Numeric details
+
+Pitch arithmetic uses integers. Beat durations often use floats, because Ruby
+2.6 evaluates `2 / 3` as integer division while `2.0 / 3` keeps the fraction.
+Modulo wraps pitch classes and pattern indexes.
+
+```ruby
+61 % 12       # => 1, the pitch class C-sharp or D-flat
+2.0 / 3       # => 0.6666666666666666
+13 % 4        # => 1, the second slot in a four-step pattern
+```
+
+Floating-point duration sums can carry tiny rounding errors. A check over many
+fractional events should compare within a tolerance instead of demanding exact
+equality.
+
+## Threads and shared state
+
+`in_thread` and `live_loop` run blocks concurrently under Sonic Pi's deterministic
+scheduler. Local variables are captured when a thread begins, but coordination
+between long-lived loops uses `cue` and `sync`. Sonic Pi also provides `set` and
+`get` for named state.
+
+Prefer messages and immutable score data to shared mutable arrays. A live loop
+that reads a changing array while another loop writes it is harder to reason
+about than two loops starting from the same cue and reading stable data.
+
 ## Things that trip you up
 
 Ruby returns the last expression, so functions rarely need `return`. Integer
 division truncates, so write `2.0/3` and not `2/3` when you mean a triplet.
-Symbols and strings are different types, and Sonic Pi wants symbols.
+Symbols and strings are different types, and Sonic Pi wants symbols. Method names
+may end in `?` without changing call syntax; the punctuation signals a Boolean
+result by convention.

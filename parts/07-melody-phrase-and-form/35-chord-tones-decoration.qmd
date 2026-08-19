@@ -4,42 +4,97 @@ subtitle: "30 min"
 part: "Melody, phrase, and form"
 concepts: [passing, tone, neighbor, suspension, anticipation, nonharmonic]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Strip a melody down to notes that belong to the underlying chord. What remains is the skeleton.
-> - The removed notes have names: passing, neighbour, suspension, anticipation. Each has a characteristic sound.
-> - Put them back one category at a time and hear the line acquire direction.
->
-> **Ends with: a melody, its harmonic reduction, and the two played in alternation.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Remove every short note between a melody's long arrivals and a plain harmonic
+skeleton appears. Put the short notes back and the line acquires momentum. The
+extra pitches may fall outside the current chord, but they are organised by
+where they come from and where they go.
+
+A *passing tone* fills the step between two chord tones. A *neighbour tone*
+leaves a chord tone by step and returns. A *suspension* holds a previous chord
+tone into the next harmony before resolving downward. An *anticipation* arrives
+early on a tone belonging to the next chord. These are behaviours over time,
+not labels attached to isolated pitch classes.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 88
+use_synth :piano
+
+define :play_phrase do |events|
+  events.each do |pitch, duration|
+    play pitch, release: duration * 0.82
+    sleep duration
+  end
+end
+
+skeleton = [[:c4, 2], [:e4, 2], [:g4, 2], [:c5, 2]]
+
+passing = [[:c4, 1], [:d4, 1], [:e4, 2],
+           [:g4, 1], [:a4, 1], [:c5, 2]]
+
+neighbor = [[:c4, 1], [:d4, 0.5], [:c4, 0.5], [:e4, 2],
+            [:g4, 1], [:f4, 0.5], [:g4, 0.5], [:c5, 2]]
+
+decorated = [[:c4, 1], [:d4, 1], [:e4, 1], [:f4, 1],
+             [:g4, 1], [:a4, 0.5], [:b4, 0.5], [:c5, 2]]
+
+[skeleton, passing, neighbor, decorated].each do |events|
+  play_phrase events
+  sleep 1
+end
 ```
 
-What you just heard, in a sentence or two.
+The skeleton exposes four stable targets and little else. Passing notes connect
+targets by step. Neighbours create local motion around one target. The decorated
+version increases density toward the final C, so the same harmonic outline gains
+direction.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Change D in the passing version to D-sharp. It still lies between C and E in
+   register, but the unequal steps give the connection another colour.
+2. Hold F across a change from an F-major accompaniment to C major, then resolve
+   it to E. Hear the suspension as prepared tension followed by a downward step.
+3. Move the final C half a beat early while the previous harmony continues.
+   That pitch becomes an anticipation only because the next chord makes C stable.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Chord membership is evaluated against time. C can be a chord tone over C major,
+a decoration over D minor, or an anticipation before A minor. A melody event
+therefore needs an aligned harmony event before the category can be computed.
+
+Reduction selects structurally stable notes, often those on strong beats or with
+long durations. Decoration then explains the paths between them. The process is
+lossy and interpretive. Two analysts can choose different skeletons when rhythm
+or harmony is ambiguous. Playing both versions makes the disagreement concrete.
+
+The arrays keep pitch and duration paired. A classifier could add `:role` to an
+event, but the renderer would still consume the original note and timing. That
+annotation belongs to analysis data rather than playback logic.
+
+Metric position influences the reading. A dissonant passing tone on a weak
+half-beat can disappear into motion. Hold the same pitch across a strong beat and
+it demands an explanation, perhaps as a suspension. Duration has a similar
+effect. The classification arises from pitch, harmony, onset, and destination
+together. A set-membership check can identify non-chord tones, but it cannot name
+their behaviour without neighbouring events.
+
+Reduction is also a compositional tool. Start from the skeleton and ask what each
+gap needs: directness, delay, or a small detour. Add one decoration and replay the
+line. When every gap receives a flourish, the stable notes lose their hierarchy.
+The alternating versions in the program keep that trade-off audible.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Write a two-bar melody over C major then G major. Include and label one passing
+tone, one neighbour, one suspension, and one anticipation. Store each event as a
+hash with `:note`, `:start`, `:duration`, and `:role`. Write a renderer that
+ignores `:role`, then print a second reduction containing only events labelled
+`:chord_tone`.

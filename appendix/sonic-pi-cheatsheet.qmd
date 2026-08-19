@@ -15,6 +15,27 @@ it is faster than any web search.
 | `use_synth :prophet` | Set the instrument for what follows. |
 | `synth :pluck, note: :c4` | Play one note on a named synth without switching. |
 
+Common `play` options:
+
+| Option | Meaning |
+|---|---|
+| `amp: 0.7` | Scale amplitude. Values above 1 are possible and can clip. |
+| `pan: -0.5` | Place the sound left to right from -1 to 1. |
+| `attack: 0.02` | Time taken to reach peak amplitude. |
+| `decay: 0.1` | Time taken to move from the peak to sustain level. |
+| `sustain: 0.4` | Time held at the sustain level. |
+| `release: 0.6` | Fade time after sustain. |
+| `cutoff: 90` | Low-pass filter cutoff expressed as a MIDI note number. |
+
+`play` returns a synth node. `control` can change a running node when a lesson
+needs a continuous bend or fade.
+
+```ruby
+voice = play :c4, sustain: 2, note_slide: 0.5
+sleep 1
+control voice, note: :g4
+```
+
 ## Time
 
 | Call | Does |
@@ -25,10 +46,40 @@ it is faster than any web search.
 | `in_thread do ... end` | Run a block concurrently, once. |
 | `sync :name` / `cue :name` | Wait for, and send, a start signal. |
 
+One beat lasts `60.0 / bpm` seconds. Score durations stay in beats, so a tempo
+change does not require rewriting them.
+
+`at` schedules several offsets from the same starting point:
+
+```ruby
+at [0, 0.5, 1.5], [:c4, :e4, :g4] do |note|
+  play note
+end
+sleep 2
+```
+
+## Patterns and state
+
+| Call | Does |
+|---|---|
+| `ring(1, 2, 3)` | Build a circular sequence. |
+| `pattern.tick` | Advance the current thread's counter and index the ring. |
+| `pattern.look` | Read at the current counter without advancing. |
+| `tick_reset` | Reset counters in the current thread. |
+| `set :name, value` | Store named Sonic Pi state. |
+| `get :name` | Read named Sonic Pi state. |
+
+Counters belong to a thread. Two live loops can tick rings independently without
+stealing positions from each other.
+
 ## Envelope
 
 `attack`, `decay`, `sustain`, `release`, all in beats. `amp` scales loudness.
 `pan` places the sound between -1 and 1.
+
+The total audible lifetime often extends beyond the following `sleep`. `sleep`
+advances the score cursor; envelope options describe the synth node. Long release
+times therefore overlap later notes.
 
 ## Music helpers
 
@@ -41,11 +92,30 @@ it is faster than any web search.
 | `chord_invert(chord(:c4, :major), 1)` | The chord, inverted. |
 | `hz_to_midi(440)` / `midi_to_hz(69)` | Convert between frequency and note number. |
 
+Rings returned by `scale` and `chord` support ordinary indexing and iteration.
+Call `.to_a` when a plain array makes printed comparisons clearer.
+
+## Samples
+
+| Call | Does |
+|---|---|
+| `sample :bd_haus` | Trigger a built-in sample. |
+| `sample_duration :loop_amen` | Return the sample length in seconds. |
+| `sample :loop_amen, beat_stretch: 4` | Stretch a loop to four beats. |
+| `sample :ambi_choir, rate: -1` | Play a sample backwards. |
+
+Sample names are symbols. Use the completion menu or the built-in help rather
+than relying on a name from a different Sonic Pi version.
+
 ## Randomness
 
 `rrand(lo, hi)` for a float, `rrand_i(lo, hi)` for an integer, `choose` to pick
 from a list, `one_in(n)` for a probability. Set `use_random_seed 42` at the top of any
 example whose output should be reproducible.
+
+Random calls made in separate threads follow separate deterministic streams.
+Moving a random call into another loop can therefore change the result even when
+the seed stays fixed.
 
 ## Effects
 
@@ -55,4 +125,33 @@ with_fx :reverb, room: 0.8 do
 end
 ```
 
-`:reverb`, `:echo`, `:lpf`, `:hpf`, and `:distortion` cover almost everything this book needs.
+`:reverb`, `:echo`, `:lpf`, `:hpf`, and `:distortion` cover almost everything this
+book needs. Effects nest, and order changes the signal path.
+
+```ruby
+with_fx :distortion, distort: 0.2 do
+  with_fx :reverb, room: 0.7 do
+    play :e3, release: 2
+  end
+end
+```
+
+## Inspection and failure
+
+| Call | Does |
+|---|---|
+| `puts value` | Print a value in the log. |
+| `print value` | Print without adding a line break. |
+| `raise "message"` | Stop the current run with an explicit error. |
+| `assert condition` | Fail when a Sonic Pi assertion is false. |
+
+Print score data before blaming a synth. For a missing note, inspect pitch,
+onset, duration, and amplitude in that order. A duration or amplitude of zero can
+look like a scheduler problem while the scheduler is behaving correctly.
+
+## Fresh-buffer checklist
+
+Before treating an example as self-contained, press Stop, switch to an unused
+buffer, paste the block, and run it. Confirm that every `define`, variable, synth
+selection, tempo, and random seed it requires appears above its first use. A
+successful second run in a dirty buffer does not prove that condition.

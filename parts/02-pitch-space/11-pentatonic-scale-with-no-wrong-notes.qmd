@@ -4,42 +4,62 @@ subtitle: "30 min"
 part: "Pitch space"
 concepts: [pentatonic, scale, improvisation, random, walk, minor]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Five notes per octave, no semitone clashes, nothing that can sound like a mistake.
-> - Take a random walk through scale(:e3, :minor_pentatonic, num_octaves: 2) over a held drone.
-> - Constrain step size and repeat probability. Watch a random sequence turn into something that sounds composed.
->
-> **Ear drill: play a random note in a one-octave window, hum it, then search up or down until they match. Ten trials, log the errors.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+The *minor pentatonic scale* uses five pitch classes per octave and omits the semitone pairs that create the sharpest local friction. That does not guarantee a good melody. It removes one common way for a random choice to sound accidentally wrong against a stable drone. The useful move is to constrain the generator further. The code walks through an E minor pentatonic scale by steps of minus one, zero, or one. Repeated notes and small motions turn independent randomness into a line with memory.
+
+The log and the sound answer different questions. Printed values expose the representation; playback exposes the musical consequence. Keep both visible while editing, since an arithmetic error can still produce a plausible noise.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_random_seed 42
+use_bpm 88
+use_synth :pluck
+
+notes = scale(:e3, :minor_pentatonic, num_octaves: 2)
+steps = [-1, 0, 0, 1]
+index = 3
+
+in_thread do
+  use_synth :dark_ambience
+  play :e2, sustain: 16, release: 2, amp: 0.55
+end
+
+16.times do
+  play notes[index], release: 0.35
+  sleep 0.5
+  index = (index + steps.choose).clamp(0, notes.length - 1)
+end
 ```
 
-What you just heard, in a sentence or two.
+A low E drone fixes the centre. Above it, the walk changes direction gradually and sometimes repeats, so the sequence sounds shaped despite being generated from random choices.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Replace the steps with `[-2, -1, 1, 2]`. Larger motion makes the line more angular and removes repeated notes.
+
+2. Increase the zero entries in the step array. Repetition becomes a structural feature rather than an accident.
+
+3. Remove the drone. The pitches remain legal members of the scale, though the sense of E as home weakens.
+
+After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+A random walk is a stateful process. Each new index depends on the previous index, and `clamp` enforces the scale boundary. The fixed random seed makes the run reproducible, which lets you compare one parameter change against the same sequence of choices.
+
+The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+
+Call it a scale with no wrong notes only as a description of this constrained drone experiment. Rhythm, register, repetition, and phrase ending can still make a weak line. The scale removes its own semitone clashes, while the walk supplies local continuity and the drone supplies a centre. That division of labour is the important model. Part 3 now freezes most pitch decisions and treats onset and duration as first-class data, beginning with fractions of a beat.
+
+Boundary handling influences the walk's shape. `clamp` causes outward steps at the top or bottom to stick on the boundary, increasing repeated edge notes. Reflection or wraparound would produce different melodic behaviour. The choice is part of composition, not housekeeping. Count visits to each index if the line seems biased toward its extreme pitches.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Create a ten-trial ear drill. Choose one random scale note in a one-octave window, play it, hum it, then search up or down with two keys or two edited offsets until they match. Log the target, your final guess, and the absolute semitone error.
+
+The ear-drill log should contain ten targets, ten guesses, and ten absolute errors. Keep `use_random_seed 42` while debugging, then audition the exercise in Sonic Pi 5 before treating its pacing as usable.

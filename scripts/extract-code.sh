@@ -40,6 +40,9 @@ for m in blocks:
 print(f"{src}: {n}")
 PY
   count=$((count + 1))
-done < <(find parts appendix -name '*.qmd' 2>/dev/null | sort)
+done < <(
+  [ -f setup.qmd ] && printf '%s\n' setup.qmd
+  find parts appendix -name '*.qmd' 2>/dev/null | sort
+)
 
 echo "Scanned $count files. Extracted to code/"

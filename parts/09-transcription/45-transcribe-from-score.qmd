@@ -4,42 +4,102 @@ subtitle: "35 min"
 part: "Transcription"
 concepts: [score, transcription, printed, measure, numbers, provenance]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Pick a short piece from the Lesson 42 shortlist.
-> - Encode pitch and duration exactly. Annotate with source measure numbers as comments.
-> - Separate what the score says from what you think it should sound like. Keep both, clearly labelled.
->
-> **Ends with: a score-faithful encoding with full provenance in comments.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+A printed score gives exact claims about pitch and duration, but it does not
+remove interpretation. The useful discipline is to preserve what the page says
+before adding what you think the performance needs. I keep two layers: a
+score-faithful event list and a renderer that supplies synth, amplitude shaping,
+and articulation.
+
+Measure references belong in the data or beside it. They form a coordinate
+system for review. "The third E is wrong" becomes "measure 2, beat 3 differs
+from the source." Record the source entry from Lesson 42 as well, because
+measure numbering can differ between editions.
+
+Enter one voice and one bar at a time. Resolve the time signature and key
+signature first, then rhythm, pitch, ties, and articulation. Do not correct a
+strange note because a recording plays something smoother. The score and the
+recording are separate witnesses.
 
 ## Run this
 
+The event hashes use the shared keys :note, :start, and :duration. Measure
+numbers are provenance. The strict renderer follows the starts exactly; the
+shaped renderer changes amplitude and release without changing the score.
+
 ```{.ruby audio=""}
-# TODO
+use_bpm 72
+use_synth :piano
+
+events = [
+  {measure: 1, note: :c4, start: 0.0, duration: 1.0},
+  {measure: 1, note: :e4, start: 1.0, duration: 1.0},
+  {measure: 1, note: :g4, start: 2.0, duration: 2.0},
+  {measure: 2, note: :f4, start: 4.0, duration: 1.0},
+  {measure: 2, note: :e4, start: 5.0, duration: 1.0},
+  {measure: 2, note: :d4, start: 6.0, duration: 1.0},
+  {measure: 2, note: :c4, start: 7.0, duration: 1.0}
+]
+
+define :play_events do |score, shaped|
+  cursor = 0.0
+  score.each_with_index do |event, index|
+    sleep event[:start] - cursor
+    phrase_amp = shaped ? 0.65 + (index * 0.05) : 0.8
+    release = shaped ? event[:duration] * 0.82 : event[:duration]
+    play event[:note], release: release, amp: phrase_amp
+    cursor = event[:start]
+  end
+  sleep score.last[:duration]
+end
+
+play_events events, false
+sleep 1
+play_events events, true
 ```
 
-What you just heard, in a sentence or two.
+The two statements have identical attacks and pitches. The second grows toward
+the end and leaves small gaps between notes. That difference belongs to the
+renderer, so the event list remains a claim about the page.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Change the duration of the G in measure 1 from 2.0 to 1.5. The second measure
+   still begins at start 4.0, so you hear a half-beat hole. Absolute starts make
+   the damaged bar visible instead of shifting later events.
+2. Change only the shaped amplitude formula to subtract index * 0.04. The score
+   now decrescendos in the second rendering. No provenance field changes.
+3. Add a source_page field to each event or to a surrounding score hash. Print
+   measure and page in the log before each note. The sound remains fixed while
+   review becomes faster.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+The score layer resembles immutable input. A renderer is a pure-enough
+transformation from that input to timed Sonic Pi calls. Keeping those concerns
+apart lets you compare interpretations without corrupting the transcription.
+It also lets validation operate on starts and durations before any synth choice
+is involved.
+
+Ties need special care. A tie joins durations for one sustained pitch; it does
+not create a second attack. Encode the sounding event, then retain a comment or
+field that explains the tied notation when review requires it. Slurs and phrase
+marks affect articulation rather than event count.
+
+Accidentals require the scoped resolver from Lesson 40. Apply the key signature
+default, then the bar-local accidental, then convert the result to a Sonic Pi
+note or MIDI number. Reset the local accidental map at the bar line. This is
+where a readable measure-by-measure representation earns its keep.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Choose a short public-domain score from your Lesson 42 inventory. Encode at
+least eight measures of one voice with exact pitch, start, and duration. Add
+source page and measure references, plus comments for ties and unclear print.
+Produce two renderings from the same array: score-strict and
+performance-shaped. The answer must show that changing articulation, dynamics,
+or synth leaves the transcribed event data unchanged.

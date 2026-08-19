@@ -4,42 +4,98 @@ subtitle: "35 min"
 part: "Chords and harmony"
 concepts: [diatonic, chords, roman, numerals, I, ii]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Take every other degree of a scale. Seven triads fall out, and their qualities are fixed by the scale.
-> - Roman numerals name a chord by its job rather than its pitch. That makes a progression key-independent data.
-> - Render [:I, :V, :vi, :IV] in four keys from one symbolic list.
->
-> **Ends with: a progression engine that takes numerals and a key and returns notes.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Take degrees 1, 3, and 5 of a major scale. Then start on degree 2 and take 2, 4,
+and 6. Repeating that operation builds seven triads without importing pitches
+from outside the key. Their qualities follow from the scale's uneven step
+pattern.
+
+These are *diatonic chords*. Roman numerals name them by degree and quality:
+uppercase for major, lowercase for minor, and a diminished marker for degree 7.
+The list `I, V, vi, IV` describes harmonic jobs rather than fixed notes. Give it
+a new key and the progression transposes while its relationships survive.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 96
+use_synth :piano
+
+define :diatonic_triads do |root|
+  notes = scale(root, :major).to_a
+  7.times.map do |degree|
+    [notes[degree], notes[(degree + 2) % 7], notes[(degree + 4) % 7]].
+      each_with_index.map { |pitch, i| pitch + (i > 0 && pitch < notes[degree] ? 12 : 0) }
+  end
+end
+
+define :render_progression do |root, numerals|
+  lookup = {I: 0, ii: 1, iii: 2, IV: 3, V: 4, vi: 5, vii_dim: 6}
+  chords = diatonic_triads(root)
+  numerals.each do |numeral|
+    play_chord chords[lookup[numeral]], release: 1.6
+    sleep 2
+  end
+end
+
+progression = [:I, :V, :vi, :IV]
+[:c3, :d3, :e3, :f3].each do |key|
+  puts "key #{key}"
+  render_progression key, progression
+end
 ```
 
-What you just heard, in a sentence or two.
+The four passes rise by key while retaining one harmonic contour. The first
+chord establishes home, V increases tension, vi diverts the expected return, and
+IV opens the route back toward I. The same symbolic array drives every pass.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Replace the progression with `[:I, :IV, :V, :I]`. The final return closes
+   more firmly because V points directly to I.
+2. Print every C-major triad as MIDI integers and inspect the third sizes. The
+   fixed quality pattern is major, minor, minor, major, major, minor, diminished.
+3. Change the renderer to arpeggiate each chord. The harmony stays fixed while
+   sequential attacks expose its constituent scale degrees.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+The scale array contains seven distinct degrees plus a repeated octave. Building
+a triad means selecting every other degree. Modular indexing wraps degrees 8 and
+9 to the start; octave correction keeps wrapped notes above the chord root.
+
+The resulting qualities require no separate quality table. They emerge from the
+major scale. Roman numerals then become keys into the seven-element chord array.
+This separates progression data from realisation, much as the course event model
+separates a score from its renderer.
+
+Uppercase and lowercase spelling carries information that a bare integer degree
+would omit. The symbol `:V` says both position and expected major quality. In a
+later chromatic progression, a chord may violate the diatonic default, so keeping
+the symbolic layer explicit gives that change somewhere to live.
+
+The numerals also make comparison across keys practical. A C-major `V` and an
+F-major `V` contain different pitch classes, yet both occupy the same position
+in a phrase and exert the same kind of pressure toward their tonic. This is a
+form of late binding: the progression stores intent, then `render_progression`
+resolves that intent against a key. If you store only MIDI arrays, transposition
+can move the sound while losing the names that explain why the chords follow
+one another.
+
+One limitation remains visible in the lookup. `:I` and `:i` would need different
+quality rules, and inversions need another field rather than a new numeral for
+every voicing. A fuller record might hold `:degree`, `:quality`, and `:bass`,
+leaving the renderer to choose concrete notes. The short symbol works for this
+diatonic comparison because its defaults are unambiguous.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Write `progression_notes(root, numerals)` that returns chord arrays without
+playing them. Feed `[:vi, :IV, :I, :V]` into the function for all twelve roots.
+Assert that each result contains four three-note chords and that every pitch
+class belongs to its key. Then render one chosen key with inversions selected by
+Lesson 27's `voice_near` idea.

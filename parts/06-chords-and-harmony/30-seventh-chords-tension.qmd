@@ -4,42 +4,105 @@ subtitle: "30 min"
 part: "Chords and harmony"
 concepts: [seventh, chord, dominant, maj7, min7, half]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Add a fourth note. Compare major 7, minor 7, dominant 7, and half-diminished on one root.
-> - The dominant seventh contains a tritone, and that tritone is what makes it demand resolution.
-> - Resolve V7 to I in four voices and follow each voice individually.
->
-> **Ends with: a V7 to I resolution audible voice by voice with a solo flag.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Add one more stacked third to a triad and the chord gains another internal line.
+C-E-G-B sounds spacious and unsettled in a different way from C-E-G-B-flat.
+Both contain a major triad, but their sevenths point in different directions.
+
+A *seventh chord* has four tones built in thirds. Major seventh, minor seventh,
+dominant seventh, and half-diminished seventh each have a distinct interval
+array. The dominant seventh is the useful pressure point: G-B-D-F contains B-F,
+a tritone whose two notes sit one semitone outside C and E.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 76
+use_synth :piano
+
+qualities = {
+  major_7: [0, 4, 7, 11],
+  minor_7: [0, 3, 7, 10],
+  dominant_7: [0, 4, 7, 10],
+  half_diminished_7: [0, 3, 6, 10]
+}
+
+qualities.each do |name, offsets|
+  notes = offsets.map { |offset| note(:c4) + offset }
+  puts name
+  play_chord notes, release: 1.7
+  sleep 2
+  notes.each { |pitch| play pitch, release: 0.35; sleep 0.4 }
+  sleep 1
+end
+
+dominant = [55, 59, 62, 65]
+tonic = [55, 60, 64, 67]
+
+define :play_resolution do |from, to, solo|
+  voices = solo.nil? ? (0...from.length).to_a : [solo]
+  voices.each do |index|
+    in_thread do
+      play from[index], release: 1.4, amp: 0.7
+      sleep 2
+      play to[index], release: 1.8, amp: 0.7
+    end
+  end
+  sleep 4
+end
+
+play_resolution dominant, tonic, nil
+4.times { |voice| play_resolution dominant, tonic, voice }
 ```
 
-What you just heard, in a sentence or two.
+The first section gives every quality as a block and then exposes its tones.
+The resolution follows G7 to C one line at a time. B rises to C while F falls to
+E. Those contrary semitone motions are the centre of the cadence.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Remove F from `dominant`. The remaining G major triad still points to C, but
+   the tritone and its downward resolution disappear.
+2. Resolve F upward to G instead of downward to E. The chord reaches C with a
+   suspended tone, delaying one part of the arrival.
+3. Lower B to B-flat. The tritone changes and the chord no longer acts as the
+   ordinary dominant of C major.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Seventh-chord quality is an offset set relative to a root. Major 7 and dominant
+7 differ only at the top note. Minor 7 lowers both third and seventh.
+Half-diminished 7 also lowers the fifth. Block labels hide these local changes;
+the arrays show them.
+
+Within G7, B and F span six semitones. Each lies one semitone from a stable tone
+in C major. Resolving B upward and F downward contracts the tritone into a major
+third. G can stay as a common tone, while D may move to C or E. Four simultaneous
+melodies produce what the ear groups as one harmonic event.
+
+The `solo` argument is a debugging switch. It isolates one indexed line without
+changing the score data. This is useful whenever a dense chord masks the motion
+that explains its effect.
+
+Root choice changes function as well as colour. C dominant seventh contains
+C-E-G-B-flat and points most readily toward F, while C major seventh contains B
+and can sit as a tonic colour in C major. One offset controls that distinction.
+The shared lower triad is therefore insufficient to name the chord's job. Hear
+the seventh before treating `major_7` and `dominant_7` as nearby dictionary keys.
+
+Doubling introduces another decision. The four-note arrays state each chord tone
+once, but a four-voice resolution may double the tonic and omit the fifth. That
+is a voicing policy applied after chord construction. Keeping those layers apart
+lets the same dominant-seventh record feed a keyboard block, an arpeggio, or four
+independent lines.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Add inversions of G7 and C to the candidate set from Lesson 27. Search for a
+resolution where B moves to C, F moves to E, no voice leaps more than five
+semitones, and voices never cross. Print the chosen pairs and total movement,
+then play the full resolution followed by each line alone.

@@ -1,0 +1,14 @@
+[project]
+name = "coding-harmony"
+version = "0.1.0"
+description = "Development checks for Music Theory Through Sonic Pi"
+requires-python = ">=3.11"
+dependencies = []
+
+[dependency-groups]
+dev = [
+  "pytest>=8.4.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

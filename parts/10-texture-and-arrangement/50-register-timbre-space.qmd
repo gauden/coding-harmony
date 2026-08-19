@@ -4,42 +4,110 @@ subtitle: "35 min"
 part: "Texture and arrangement"
 concepts: [orchestration, register, timbre, space, fx, reverb]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Two voices in the same register and timbre will fight. Separate them by pitch band, envelope, or panning.
-> - Use with_fx :reverb and :echo to place voices at different depths.
-> - Fixing a muddy arrangement with volume alone almost never works. Try it and confirm.
->
-> **Ends with: one harmonic skeleton arranged three ways: sparse, dense, and wide.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+An arrangement can be harmonically correct and still sound muddy. Two voices
+that occupy the same register, use similar envelopes, and sit in the same
+stereo position compete for the same perceptual space. Turning one down changes
+the balance, but it often leaves the overlap intact.
+
+*Register* is pitch height, *timbre* is the spectral character of a sound, and
+space includes stereo position and apparent depth. Separate voices along one or
+more of these dimensions. Move one part an octave, choose a shorter envelope,
+pan it away from its neighbour, or place it farther back with reverb.
+
+I treat volume as the final balance control. First give each musical role a
+place where it can be identified.
 
 ## Run this
 
+One harmonic skeleton is rendered three ways. The sparse version leaves roles
+out. The dense version crowds them into the middle register. The wide version
+spreads register, timbre, pan, and depth.
+
 ```{.ruby audio=""}
-# TODO
+use_bpm 78
+
+progression = [
+  chord(:c3, :minor),
+  chord(:ab2, :major),
+  chord(:eb3, :major),
+  chord(:bb2, :major)
+]
+
+define :render_skeleton do |chords, layout|
+  chords.each do |notes|
+    if layout == :sparse
+      use_synth :piano
+      play notes.first, release: 1.8, amp: 0.7
+      play notes.last + 12, release: 1.2, amp: 0.6
+    elsif layout == :dense
+      use_synth :saw
+      play_chord notes.map { |pitch| pitch + 12 }, release: 1.8, amp: 0.55
+      play_chord notes.map { |pitch| pitch + 15 }, release: 1.8, amp: 0.5
+    else
+      with_fx :reverb, room: 0.7, mix: 0.35 do
+        use_synth :hollow
+        play notes.first, release: 2.4, amp: 0.55, pan: -0.5
+      end
+      use_synth :pluck
+      play notes.last + 24, release: 0.7, amp: 0.65, pan: 0.55
+    end
+    sleep 2
+  end
+end
+
+render_skeleton progression, :sparse
+sleep 1
+render_skeleton progression, :dense
+sleep 1
+render_skeleton progression, :wide
 ```
 
-What you just heard, in a sentence or two.
+The dense pass piles related saw spectra into one band. The wide pass gives the
+low sustained tone and high pluck separate locations and envelopes.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. In the wide layout, remove + 24 from the pluck. Its attacks now overlap the
+   low part's register. Listen for pitch identity becoming harder to follow even
+   though the pan positions remain.
+2. Set both pans to 0. The parts return to the centre, but register and envelope
+   still separate them. This reveals how much work each dimension contributes.
+3. Raise the reverb mix to 0.75. The sustained voice moves farther back and
+   loses definition. Restore the value, then add a short echo to the pluck and
+   compare depth without changing notes.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Masking occurs when sounds compete in similar frequency bands at similar
+times. Register separation reduces spectral overlap. Contrasting envelopes
+separate attack and sustain. Panning gives the ears different level and timing
+cues, while reverb changes the ratio of direct to reflected sound.
+
+These controls interact. A low saw has many upper partials, so moving its
+fundamental down does not guarantee a clear middle register. A sine-like bass
+leaves more room. A long reverb can refill the gaps created by a short release.
+Change one dimension, listen, then inspect the next collision.
+
+The harmonic skeleton remains data. Layout is a rendering argument. This makes
+orchestration comparable: the same progression passes through sparse, dense,
+and wide configurations without duplicated chord arrays. It also keeps a muddy
+rendering from being mistaken for a harmony error.
+
+Effects create depth only in relation to a drier foreground. If every voice
+uses the same large room and mix, the entire image recedes. Assign space by
+role, and audition on headphones and speakers because low-frequency response
+changes the result.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Arrange one eight-bar harmonic skeleton in three versions: sparse, dense, and
+wide. Keep chord data identical. The sparse version may use two roles, the
+dense version at least four, and the wide version must separate every role by
+two of these dimensions: register, synth, envelope, pan, or effect depth.
+Write a one-line diagnosis for each collision you hear and fix it without
+changing chord roots or lowering the master amplitude.

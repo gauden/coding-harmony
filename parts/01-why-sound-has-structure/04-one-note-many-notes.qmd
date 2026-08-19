@@ -4,42 +4,61 @@ subtitle: "30 min"
 part: "Why sound has structure"
 concepts: [harmonic, series, overtones, partials, timbre, sine]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Build a tone by adding sine partials at 1f, 2f, 3f, 4f with falling amplitude. Add them one at a time and listen.
-> - Those partials are the harmonic series. Every pitched instrument produces some version of it.
-> - Change the amplitude profile and hear timbre change while pitch stays put.
->
-> **Ends with: an additive tone that fades from thin to rich as partials enter.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+A pitched note contains motion at more than one frequency. Start with a 220 Hz sine wave, then add 440, 660, and 880 Hz at falling amplitudes. The ear keeps one fundamental pitch while the colour grows brighter. Those integer multiples are *partials*. When their frequencies follow 1f, 2f, 3f, 4f, they form the *harmonic series*. The code represents each partial as a multiplier and amplitude pair. All four start together, which lets their waves combine into one compound tone.
+
+Treat the snippet as a controlled comparison. The shared notes, tempo, and envelope remove distractions, leaving one parameter exposed. That approach is slower than changing several values at once and produces a clearer result.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 60
+
+base_hz = 220.0
+partials = [[1, 0.8], [2, 0.35], [3, 0.2], [4, 0.12]]
+
+define :additive_tone do |base, profile|
+  profile.each do |multiple, level|
+    synth :sine, note: hz_to_midi(base * multiple), amp: level,
+      attack: 0.05, sustain: 1.5, release: 0.4
+  end
+  sleep 2.2
+end
+
+1.upto(partials.length) do |count|
+  additive_tone base_hz, partials.take(count)
+  sleep 0.5
+end
 ```
 
-What you just heard, in a sentence or two.
+The first tone is thin and almost featureless. Each later pass adds another upper partial. The perceived note stays near A3 while its edge and brightness increase.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Make every amplitude equal to `0.25`. The high partials become prominent and the tone grows harder.
+
+2. Remove the second partial while keeping the third and fourth. Listen for the hollow gap created by the missing octave component.
+
+3. Change the base from 220 to 165. All frequency relationships remain fixed, so the timbre survives at a new fundamental.
+
+After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Additive synthesis treats timbre as a weighted sum. Frequency multipliers are the components; amplitudes are their coefficients. The fundamental contributes the strongest pitch cue, while the amplitude profile of the upper components gives the compound wave its character.
+
+The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+
+The higher components do not enter as separate melody notes because they start together and share a fundamental relationship. Their combined waveform repeats at the base frequency, which supports one pitch percept. Real instruments contain inharmonic noise and evolving spectra as well, so this four-sine construction is a model rather than a catalogue of every timbre. It is enough to expose the mechanism that Lesson 5 uses next: when two fundamentals share low-number relationships, parts of their harmonic series coincide.
+
+Amplitude addition needs headroom. Four partials with amplitude 0.8 would sum to a large peak even though each synth call looks moderate. Falling levels reduce that risk and resemble many acoustic spectra. If an edit introduces distortion, lower the profile as a group before interpreting the timbre. Loudness can otherwise masquerade as brightness during the comparison.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Build two four-partial profiles over the same 220 Hz fundamental. Give one profile steeply falling amplitudes and the other strong third and fourth partials. Alternate them four times without changing pitch, and describe the timbral difference in concrete terms.
+
+Save both amplitude profiles and list the partial that differs most between them. Audition the alternation in Sonic Pi 5 at a safe level, since summed partial amplitudes can become louder than one sine.

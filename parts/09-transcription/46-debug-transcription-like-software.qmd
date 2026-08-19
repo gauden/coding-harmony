@@ -4,42 +4,114 @@ subtitle: "30 min"
 part: "Transcription"
 concepts: [debug, validation, assertions, bar, length, range]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Assert bar totals. Assert range. Flag leaps larger than an octave for manual review.
-> - Loop a single suspicious bar against the source until the wrong one is obvious.
-> - Most transcription errors are rhythmic, and most rhythmic errors are a missing tie.
->
-> **Milestone: a 30 to 60 second melody with source reference, bar-by-bar data, validation helpers, and an expressive rendering.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+A wrong transcription often sounds vaguely wrong long before the faulty event
+is visible. Validation turns that feeling into a smaller search space. Assert
+the duration of every bar. Assert a plausible range. Flag melodic leaps larger
+than an octave for human review. These checks do not prove the notes are right,
+but they remove whole families of mistakes.
+
+Most rhythmic faults I make come from a missing tie, a rest counted twice, or a
+dotted value entered without its dot. A bar-total failure catches all three.
+Pitch range and leap checks are weaker because music can exceed them on
+purpose. Treat those as warnings rather than automatic corrections.
+
+After the structural checks, loop one suspicious bar against the source. A
+four-second comparison reveals more than replaying the whole minute and hoping
+to notice the fault on the next pass.
 
 ## Run this
 
+The score uses one array per bar. Each event has a note, local start, and
+duration. The validator raises on bad meter and prints review messages for
+unusual pitch movement.
+
 ```{.ruby audio=""}
-# TODO
+use_bpm 80
+use_synth :piano
+
+bars = [
+  [
+    {note: 60, start: 0.0, duration: 1.0},
+    {note: 62, start: 1.0, duration: 1.0},
+    {note: 64, start: 2.0, duration: 2.0}
+  ],
+  [
+    {note: 67, start: 0.0, duration: 1.0},
+    {note: 79, start: 1.0, duration: 1.0}, # octave leap: review
+    {note: 76, start: 2.0, duration: 2.0}
+  ]
+]
+
+define :validate_bar do |events, expected_beats|
+  total = events.map { |event| event[:duration] }.sum
+  raise "bar totals #{total}, expected #{expected_beats}" unless total == expected_beats
+
+  events.each_cons(2) do |left, right|
+    leap = (right[:note] - left[:note]).abs
+    puts "REVIEW leap of #{leap} semitones" if leap >= 12
+  end
+end
+
+define :play_events do |events|
+  events.each do |event|
+    play event[:note], release: event[:duration] * 0.8
+    sleep event[:duration]
+  end
+end
+
+bars.each do |bar|
+  validate_bar bar, 4.0
+  play_events bar
+end
 ```
 
-What you just heard, in a sentence or two.
+Both bars occupy four beats. The log flags the octave in bar 2, and the sound
+makes that event easy to locate. The warning does not say the leap is wrong.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Change the final duration in bar 1 from 2.0 to 1.5. Run again. Playback stops
+   at the assertion, before a malformed bar can contaminate later review.
+2. Restore the duration and change note 79 to 80. The range rises and the leap
+   becomes thirteen semitones. Add a range warning for notes below 48 or above
+   84, then decide whether this event needs one or two review messages.
+3. Replace bars.each with three repetitions of play_events bars[1]. Compare
+   that short loop with the same source interval. Listen first for attack time,
+   then pitch, then release.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Assertions encode invariants. In 4/4, a complete bar normally accounts for four
+beats, including rests and tied continuations. If the representation stores
+rests separately, include them in the total. If a pickup is shorter, give that
+bar an explicit expected length. Avoid weakening the assertion globally to
+accommodate one exception.
+
+Absolute event starts support another check: sort events by start, reject
+negative durations, and detect overlaps that the source does not mark. A
+sequential array is easier to type, while start times are easier to compare
+against a timeline. Convert between them in one helper rather than maintaining
+two hand-edited copies.
+
+Warnings are evidence for manual review. A leap over an octave can be correct,
+especially in arpeggiated music. Range limits depend on instrument, voice, and
+transposition. The software narrows attention; the source settles the claim.
+
+The milestone for this part is a thirty-to-sixty-second melody with source
+reference, bar-level data, validation helpers, and a separate expressive
+renderer. Ruby syntax checks can inspect the program, but the sound still
+requires auditioning in Sonic Pi.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Add a validation report to the transcription from Lesson 45. It must list each
+bar total, overall note range, leaps of twelve semitones or more, and every
+REVIEW marker. Then choose one suspicious bar and create a temporary three-pass
+loop: neutral rhythm, strict pitch, expressive rendering. The target is a clean
+report with every surviving warning explained in a comment rather than deleted
+to make the output quiet.

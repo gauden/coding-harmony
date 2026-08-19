@@ -4,42 +4,102 @@ subtitle: "30 min"
 part: "Melody, phrase, and form"
 concepts: [contour, shape, melody, rhythm, separable, mutation]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Reduce a melody to up, down, same. Play the contour on a fixed rhythm.
-> - Play the original rhythm on a fixed pitch. Ask someone which version they recognise.
-> - Rhythm usually wins. That result shapes how you approach transcription in Part 9.
->
-> **Ends with: three controlled mutations of one tune and a verdict on what carries identity.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Recognise a tune tapped on one pitch and rhythm is carrying more identity than
+its notes. Recognise it when every duration is equal and pitch contour is doing
+the work. A melody combines both streams, which makes it easy to credit the
+wrong one.
+
+*Contour* reduces pitch motion to up, down, or same. It discards interval size
+and absolute register. Rhythm can be reduced separately to duration and onset.
+Treating them as independent arrays lets you make controlled mutations: retain
+the shape and replace the timing, retain the timing and flatten the pitches, or
+change interval sizes while keeping direction.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 104
+use_synth :pluck
+
+notes = [64, 64, 66, 64, 69, 68, 64, 64, 66, 64, 71, 69]
+durations = [0.5, 0.5, 1, 1, 1, 2, 0.5, 0.5, 1, 1, 1, 2]
+
+define :play_phrase do |notes, durations|
+  notes.zip(durations).each do |pitch, duration|
+    play pitch, release: duration * 0.75
+    sleep duration
+  end
+end
+
+define :contour do |notes|
+  notes.each_cons(2).map do |a, b|
+    b > a ? :up : (b < a ? :down : :same)
+  end
+end
+
+shape = contour(notes)
+contour_notes = [60]
+shape.each do |direction|
+  step = {up: 2, down: -2, same: 0}[direction]
+  contour_notes << contour_notes[-1] + step
+end
+
+play_phrase notes, durations
+sleep 2
+play_phrase Array.new(notes.length, 64), durations
+sleep 2
+play_phrase contour_notes, Array.new(notes.length, 0.75)
+sleep 2
+play_phrase contour_notes, durations
 ```
 
-What you just heard, in a sentence or two.
+The first version combines both streams. The second retains rhythm on one pitch.
+The third retains coarse contour on a fixed grid. The fourth reunites the
+original timing with a pitch sequence that shares direction and changes every
+interval size.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Replace every duration with `1`. Listen for how much identity survives in the
+   original pitches after the rhythmic profile is removed.
+2. Change contour steps from two semitones to one. Direction stays fixed while
+   the melody compresses into a narrow band.
+3. Reverse only `durations`. The notes keep their order, but accents created by
+   long values move to new pitches and the phrase boundaries shift.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+`zip` aligns two independent data streams by index. The renderer combines them
+at the last possible moment. That makes mutation local: a duration experiment
+does not rewrite pitch data, and a contour experiment does not disturb timing.
+
+Contour is a lossy encoding. Many melodies map to the same sequence of
+directions. That is useful because it exposes family resemblance, though it
+cannot reconstruct the source. Rhythm is also more than the duration array once
+meter and accent enter. The controlled versions here answer a narrower question:
+which preserved feature carries recognition for this phrase?
+
+The expected answer depends on the melody and listener. The curriculum's claim
+that rhythm often wins should be tested with another person rather than reported
+as a universal law. That uncertainty becomes important in transcription. A
+reliable rhythm with approximate pitches may identify the phrase sooner than
+exact notes placed at vague times.
+
+Contour can be enriched in stages. Replace `:up` with interval classes such as
+`:step_up` and `:leap_up`, or store signed semitone differences. Each richer
+encoding preserves more identity and reduces the number of melodies that share
+it. Begin with the coarsest representation that answers the listening question,
+then add detail only when two useful cases remain indistinguishable.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Choose an eight- to sixteen-note tune familiar to a willing listener. Produce
+three anonymous versions: original rhythm on one pitch, original contour with
+equal durations, and original rhythm with contour rebuilt in whole tones. Ask
+which version they identify first. Keep synth, tempo, register, and amplitude
+fixed, then record the result and the exact data arrays.

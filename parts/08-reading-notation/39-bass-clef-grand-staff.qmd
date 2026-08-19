@@ -4,42 +4,105 @@ subtitle: "25 min"
 part: "Reading notation"
 concepts: [bass, clef, grand, staff, two, hands]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Same system, different offset. Learn it as a constant added to the treble mapping.
-> - Middle C sits between the staves and belongs to both.
-> - Encode a simple two-hand keyboard texture as two voices in your event model.
->
-> **Ends with: an eight-bar bass-and-melody sketch read from a printed grand staff.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+The top line of a bass staff is A3. The bottom line of a treble staff is E4.
+Middle C sits in the gap between them, reachable by a ledger line from either
+side. The two staves are windows onto one continuous pitch coordinate system.
+
+The *bass clef* anchors F3 on its second line from the top. Relative to the middle
+C coordinate from Lesson 38, the bottom bass line G2 is `-10` and the top line
+A3 is `-2`. A *grand staff* joins bass and treble staves so low and high voices
+can share a timeline. The clefs change the displayed window, not the underlying
+pitch arithmetic.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 84
+
+letters = [:c, :d, :e, :f, :g, :a, :b]
+semitones = {c: 0, d: 2, e: 4, f: 5, g: 7, a: 9, b: 11}
+
+define :staff_midi do |position, letters, semitones|
+  letter = letters[position % 7]
+  octave = 4 + (position / 7).floor
+  12 * (octave + 1) + semitones[letter]
+end
+
+define :play_events do |events, synth_name|
+  use_synth synth_name
+  cursor = 0
+  events.each do |event|
+    sleep event[:start] - cursor
+    play event[:note], release: event[:duration] * 0.85,
+      amp: event.fetch(:amp, 0.7)
+    sleep event[:duration]
+    cursor = event[:start] + event[:duration]
+  end
+end
+
+bass_positions = [-10, -8, -6, -5, -7, -9, -10, -7]
+melody_positions = [2, 4, 5, 7, 6, 5, 4, 2]
+
+bass = bass_positions.each_with_index.map do |position, index|
+  {note: staff_midi(position, letters, semitones), start: index * 2,
+   duration: 2, amp: 0.55}
+end
+melody = melody_positions.each_with_index.map do |position, index|
+  {note: staff_midi(position, letters, semitones), start: index * 2,
+   duration: 2, amp: 0.75}
+end
+
+in_thread { play_events bass, :fm }
+play_events melody, :piano
 ```
 
-What you just heard, in a sentence or two.
+The bass and melody occupy separate ranges and share sixteen beats. Their event
+records use the same keys and their renderers start together. The coordinate
+lists can be copied from two printed staves before either is translated into
+MIDI.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Move every bass position up seven diatonic steps. The notes rise one octave
+   and begin to crowd the melody while preserving letter names.
+2. Swap the synths. Register remains separated, but timbre changes which voice
+   attracts attention.
+3. Add a middle-C event at coordinate zero to both voices on the final beat.
+   The identical MIDI value demonstrates that middle C belongs to the joined
+   system rather than exclusively to one clef.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Both clefs call the same `staff_midi` function because position zero has already
+been defined globally. Reading a bass note means measuring its diatonic offset
+from middle C, exactly as for treble. A clef-specific implementation would add
+an anchor offset and produce the same coordinate.
+
+The grand staff is also a concurrency model. Bass and melody are independent
+event arrays with one clock. `in_thread` starts one renderer while the main thread
+runs the other. Shared starts prevent drift; separate data keeps editing one
+voice from disturbing the other.
+
+Keyboard notation often associates bass with the left hand and treble with the
+right. Clef and hand are separate concepts. Either hand can cross the other, and
+other instruments use either clef without a keyboard. The code names voices by
+range instead of hand assignment.
+
+The event timelines also make vertical alignment testable. Notes with equal
+`:start` values sound together even when their source positions appear on
+different staves. A barline gives both voices the same metric boundary. Before
+playback, compare each voice's final start plus duration and reject a pair that
+ends on different beats unless the score explicitly contains that asymmetry.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Encode an eight-bar two-voice sketch from a printed grand staff. Store the
+original staff coordinate beside `:note`, `:start`, and `:duration` in every
+event. Assert that both voices end at the same beat. Include one ledger-line note
+in each clef and one shared middle C, then render the voices with contrasting
+synths.

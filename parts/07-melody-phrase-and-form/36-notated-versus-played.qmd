@@ -4,42 +4,105 @@ subtitle: "30 min"
 part: "Melody, phrase, and form"
 concepts: [articulation, dynamics, legato, staccato, accent, phrasing]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Add amp, articulation, and an onset offset to your event schema.
-> - Render one phrase legato, detached, accented, and shaped with a crescendo to its high point.
-> - A perfectly quantised performance of a good melody can sound worse than a sloppy one. Worth confirming firsthand.
->
-> **Ends with: two renderers over the same score: score-strict and performance-shaped.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Two performances can use the same pitches and nominal durations while sounding
+unrelated. One clips every note at half its slot. Another lets notes overlap,
+leans on the high point, and nudges an arrival late. The score states events;
+performance shapes their realisation.
+
+*Articulation* controls how notes connect. Dynamics control amplitude over time.
+Phrasing groups events into gestures through accents, timing, and contour. I
+found it useful to preserve a strict event layer and pass it to two renderers.
+Then expressive choices remain inspectable instead of leaking into the score.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 82
+use_synth :piano
+
+score = [
+  {note: :c4, start: 0, duration: 1},
+  {note: :d4, start: 1, duration: 1},
+  {note: :e4, start: 2, duration: 1},
+  {note: :g4, start: 3, duration: 2},
+  {note: :e4, start: 5, duration: 1},
+  {note: :d4, start: 6, duration: 1},
+  {note: :c4, start: 7, duration: 2}
+]
+
+define :play_events do |events, shaped|
+  cursor = 0
+  events.each_with_index do |event, index|
+    sleep event[:start] - cursor
+    high_point = event[:note] == :g4
+    amp = shaped ? (0.55 + index * 0.05 + (high_point ? 0.2 : 0)) : 0.7
+    ratio = shaped ? (high_point ? 1.05 : 0.82) : 0.5
+    offset = shaped && index == 4 ? 0.08 : 0
+    sleep offset
+    play event[:note], sustain: event[:duration] * ratio,
+      release: 0.08, amp: amp
+    sleep event[:duration] - offset
+    cursor = event[:start] + event[:duration]
+  end
+end
+
+play_events score, false
+sleep 2
+play_events score, true
 ```
 
-What you just heard, in a sentence or two.
+The strict renderer gives every event equal amplitude and detached length. The
+shaped renderer grows toward G, sustains the high point, and delays the following
+E by a small amount. Pitch and nominal event boundaries remain in one shared
+score.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Set the strict ratio to `1.05`. The notes overlap and the strict version turns
+   legato without changing any event.
+2. Move the accent from G to the final C. The phrase now reserves its strongest
+   amplitude for arrival instead of climax.
+3. Increase the onset offset from `0.08` to `0.3`. The expressive hesitation
+   becomes a timing error and compresses the remaining duration.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Each event follows the shared schema: `:note`, `:start`, and `:duration`. Start
+is an onset on the score timeline, while duration reserves a slot. The renderer
+chooses how much of that slot sounds and at what amplitude. This distinction
+prevents staccato from corrupting metric totals.
+
+Expression becomes a function from structural events to playback parameters.
+The high-point test derives emphasis from pitch. The crescendo derives it from
+index. The offset targets one event. These policies can be replaced without
+editing source notes.
+
+A perfectly quantised version may sound rigid, but the amount and direction of
+useful deviation depend on style. The code offers an audible comparison to
+assess in Sonic Pi. Syntax validation cannot establish that the shaped pass is
+better or that the offset is perceptible on a given system.
+
+Amplitude is also perceived relative to its neighbours. Setting every event to
+`0.9` makes the phrase louder without creating a high point. A crescendo creates
+direction because successive values form a slope. An accent creates a local
+contrast. These are different policies even when they produce the same amplitude
+on one note.
+
+The renderer currently sleeps through each event, so a positive onset offset
+reduces the available sounding slot. Another design could preserve duration and
+push all later starts, changing the whole timeline. Neither interpretation is
+hidden once score time and performance time have separate variables. Choose the
+policy that matches the musical instruction and state it in the renderer name
+or its input fields.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Add `:amp` and `:articulation` fields to selected score events. Support
+`:staccato`, `:legato`, and `:accent` in `play_events`, using renderer defaults
+when a field is absent. Produce three performances from the same score: detached,
+fully legato, and phrase-shaped. No pitch, start, or duration value may change.

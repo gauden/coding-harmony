@@ -4,42 +4,97 @@ subtitle: "30 min"
 part: "Scales and keys"
 concepts: [minor, natural, harmonic, melodic, scale, raised]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Natural minor is the major formula rotated. Harmonic minor raises degree 7 to restore the pull to the tonic.
-> - Melodic minor changes on the way up and back on the way down, for reasons audible in one bar.
-> - Diff the three as integer arrays and confirm the difference is one or two elements.
->
-> **Ends with: the same eight-bar tune in all three minors, plus a printed diff.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Play A minor on the white keys and the scale reaches A without a semitone below
+the final note. The arrival is softer than B to C in the previous lesson.
+Composers often alter the scale when they want that stronger pull. The result is
+a family of minor scales rather than one immutable list.
+
+*Natural minor* uses the major-scale step pattern rotated to begin on its sixth
+degree. *Harmonic minor* raises degree 7 on the way up and down. *Melodic minor*
+raises degrees 6 and 7 while ascending, then uses natural minor while descending.
+Those labels sounded like historical clutter to me until I diffed the arrays.
+One changed element supplies harmonic minor's leading tone; two changed elements
+smooth the melodic climb.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 108
+use_synth :piano
+
+define :play_phrase do |notes|
+  notes.each do |pitch|
+    play pitch, release: 0.35
+    sleep 0.5
+  end
+end
+
+natural = [57, 59, 60, 62, 64, 65, 67, 69]
+harmonic = [57, 59, 60, 62, 64, 65, 68, 69]
+melodic_up = [57, 59, 60, 62, 64, 66, 68, 69]
+melodic_down = natural.reverse
+
+puts "harmonic changes: #{natural.zip(harmonic).select { |a, b| a != b }}"
+puts "melodic changes: #{natural.zip(melodic_up).select { |a, b| a != b }}"
+
+[natural, harmonic, melodic_up].each do |notes|
+  play_phrase notes
+  play_phrase notes.reverse
+  sleep 1
+end
+
+play_phrase melodic_up + melodic_down.drop(1)
+
+tune_degrees = [0, 2, 4, 3, 2, 5, 6, 7, 4, 3, 2, 1, 6, 7, 0]
+[natural, harmonic, melodic_up].each do |scale_notes|
+  play_phrase tune_degrees.map { |degree| scale_notes[degree] }
+  sleep 1
+end
 ```
 
-What you just heard, in a sentence or two.
+Natural minor gives the tune an even, modal shape. Harmonic minor makes the last
+step to A more insistent and creates a wide three-semitone gap between F and
+G-sharp. Melodic minor fills that gap with F-sharp on the ascent. The printed
+diff shows how little data changes between the three versions.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Lower harmonic minor's G-sharp back to G in the final two notes only. The
+   tune still uses harmonic minor elsewhere, but its closing gesture loses the
+   leading-tone pull.
+2. Use `:prophet` instead of `:piano` and set `release: 0.8`. Sustained notes make
+   the augmented second between F and G-sharp overlap. Listen for the interval's
+   colour rather than treating it as an array difference.
+3. Transpose every array by adding 5. The scale family moves from A to D while
+   all internal differences remain fixed.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Natural minor begins from degree 6 of its relative major. Rotating the major
+formula produces `2, 1, 2, 2, 1, 2, 2`. Its seventh degree lies two semitones
+below the tonic. Raising that degree changes the last interval to one semitone,
+recreating the leading tone heard in major.
+
+That repair produces a new melodic issue: degree 6 to raised degree 7 spans
+three semitones. Harmonic writing can use the striking gap, while a rising melody
+often prefers smaller motion. Melodic minor raises degree 6 as well, producing
+whole-tone steps through 5, 6, and 7. On the descent, the leading tone has no
+upward destination, so the natural form returns.
+
+The code keeps each form as explicit data. That is clearer than burying the
+alterations inside a renderer. `zip` aligns positions, and `select` exposes the
+changed entries. The tune then consumes any compatible eight-note array, which
+separates melodic shape from scale choice.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Write `minor_forms(root)` that returns a hash with `:natural`, `:harmonic`,
+`:melodic_up`, and `:melodic_down`. Generate the values from step formulas rather
+than copying arrays. Verify that the natural and harmonic forms differ at one
+index and that natural and melodic-up differ at two. Play a two-octave ascent
+and descent in E minor using the correct melodic direction.

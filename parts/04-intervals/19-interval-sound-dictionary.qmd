@@ -4,42 +4,63 @@ subtitle: "30 min"
 part: "Intervals"
 concepts: [ear, interval, recognition, melodic, harmonic, sound]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Play each interval melodically, then harmonically. They feel like different things and you treat them as such.
-> - Describe each one in your own words before learning the standard label. Your description sticks better.
-> - Anchor the hard ones to tunes you already know, and write your anchors in the file as comments.
->
-> **Ends with: a personal reference file mapping each interval to a sound and an anchor.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+An interval heard as two successive notes behaves differently from the same pitches struck together. The first is melodic motion; the second is harmonic colour. I keep separate descriptions for both because recognition does not transfer automatically. The program walks through selected semitone distances, plays each melodically, pauses, then plays it harmonically. Write your own description before reading or printing the standard label. A phrase such as `open and stable` has more retrieval value when it came from your own hearing.
+
+The log and the sound answer different questions. Printed values expose the representation; playback exposes the musical consequence. Keep both visible while editing, since an arithmetic error can still produce a plausible noise.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 68
+use_synth :piano
+
+intervals = {1 => "minor second", 4 => "major third", 7 => "perfect fifth", 12 => "octave"}
+root = note(:c4)
+
+intervals.each do |distance, label|
+  play root, release: 0.7
+  sleep 1
+  play root + distance, release: 0.7
+  sleep 2
+
+  play root, release: 2
+  play root + distance, release: 2
+  sleep 3
+  puts "#{distance} semitones: #{label}"
+end
 ```
 
-What you just heard, in a sentence or two.
+Successive notes expose direction and distance. Simultaneous notes expose fusion, roughness, and beating. The octave and fifth settle differently from the minor second even before their labels appear in the log.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Reverse every melodic interval. Ascending and descending versions often need separate descriptions.
+
+2. Move the root from C4 to F-sharp3. The interval size stays fixed while register changes its surface colour.
+
+3. Use a sine synth for harmonic pairs and piano for melodic pairs. Notice how timbre changes the cues available.
+
+After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+The dictionary maps an interval distance to two perceptual records: melodic and harmonic. A tune anchor can become a comment beside a difficult entry, though the anchor should support your memory rather than replace direct recognition.
+
+Recognition improves when the prompt changes root and register while preserving distance. Otherwise the drill can teach one familiar pair of pitches rather than the interval relation. Keep the first reference set narrow, then vary the root only after the four selected distances have acquired distinct descriptions.
+
+The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+
+Tune anchors are vulnerable to a hidden assumption: the remembered excerpt may begin on a different scale degree or use a pickup. Record the exact two notes that supply the cue, and discard an anchor that repeatedly leads to the wrong interval. Personal adjectives also need stable meanings; `wide`, `beating`, or `settled` are more useful when attached to a specific register and synth. Lesson 20 converts this reference dictionary into a repeatable prompt-and-reveal routine.
+
+Random order is useful only after each reference can be recalled in a fixed order. Begin by comparing neighbouring entries in the dictionary, then shuffle the four-distance set. This separates learning from testing. During a test, delay the printed label until after your answer; during reference work, show it immediately so the sound and name remain paired.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Create a personal reference hash for semitone distances 0 through 12. Store a label, your melodic description, your harmonic description, and an optional tune anchor. Fill four entries first and add one only after you identify nine of ten trials twice.
+
+Begin with four complete dictionary entries rather than twelve vague ones. Audition melodic and harmonic forms in Sonic Pi 5, keeping separate notes for ascending, descending, and simultaneous presentations.

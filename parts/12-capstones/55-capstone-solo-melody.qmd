@@ -4,42 +4,108 @@ subtitle: "60+ min"
 part: "Capstones"
 concepts: [capstone, solo, melody, transcription, 32, bars]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - 32 to 64 bars from the shortlist.
-> - Pitches, rhythm, articulation, dynamics, and phrase marks, all as data.
-> - Keep measure references and a list of the passages you are unsure about.
->
-> **Deliverable: a faithful monophonic transcription plus an expressive renderer.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+This capstone turns one complete monophonic source into structured score data.
+Choose thirty-two to sixty-four bars from the shortlist built in Lesson 42.
+The piece needs enough length to contain several phrases, a high point, repeated
+material, and at least one passage that resists immediate transcription.
+Complete the four-pass pipeline in
+[Lesson 43](../09-transcription/43-four-pass-pipeline.qmd) and the debugging
+checks in [Lesson 46](../09-transcription/46-debug-transcription-like-software.qmd)
+on a short excerpt before committing to the whole source.
+
+The deliverable has two layers. The first is a faithful event list containing
+pitch, start, duration, articulation, dynamics, and phrase information. The
+second is an expressive renderer. Measure references and uncertainty markers
+stay attached to the data so every claim can be traced back to the score or
+recording.
+
+Avoid choosing a piece because its first four bars are easy. Inspect the whole
+range, fastest rhythm, accidentals, ornaments, and source quality. A clean
+thirty-two-bar melody produces a better capstone than a famous theme whose
+recording hides half its attacks.
 
 ## Run this
 
+The block is a two-bar model of the final representation. Starts are global,
+while measure and phrase fields support review. The renderer derives release
+and amplitude from the score rather than rewriting notes.
+
 ```{.ruby audio=""}
-# TODO
+use_bpm 74
+use_synth :piano
+
+score = [
+  {measure: 1, phrase: :a, note: :c4, start: 0.0, duration: 1.0, amp: 0.62, articulation: :legato},
+  {measure: 1, phrase: :a, note: :d4, start: 1.0, duration: 1.0, amp: 0.68, articulation: :legato},
+  {measure: 1, phrase: :a, note: :e4, start: 2.0, duration: 2.0, amp: 0.78, articulation: :accent},
+  {measure: 2, phrase: :a, note: :g4, start: 4.0, duration: 1.0, amp: 0.86, articulation: :accent},
+  {measure: 2, phrase: :a, note: :e4, start: 5.0, duration: 1.0, amp: 0.72, articulation: :detached},
+  {measure: 2, phrase: :a, note: :d4, start: 6.0, duration: 1.0, amp: 0.66, articulation: :legato},
+  {measure: 2, phrase: :a, note: :c4, start: 7.0, duration: 1.0, amp: 0.58, articulation: :legato}
+]
+
+define :play_events do |events|
+  cursor = 0.0
+  events.each do |event|
+    sleep event[:start] - cursor
+    release_ratio = event[:articulation] == :detached ? 0.48 : 0.9
+    accent_gain = event[:articulation] == :accent ? 0.12 : 0.0
+    play event[:note],
+      release: event[:duration] * release_ratio,
+      amp: event[:amp] + accent_gain
+    cursor = event[:start]
+  end
+  sleep events.last[:duration]
+end
+
+play_events score
 ```
 
-What you just heard, in a sentence or two.
+The phrase grows toward G4, then recedes. The detached E creates one short gap
+without changing the event's notated duration.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Set every amp to 0.7. The contour remains, while the phrase loses its dynamic
+   high point. Restore the data and decide whether dynamics belong to the source
+   or your rendering.
+2. Change the G articulation from :accent to :legato. The highest note remains
+   structurally important but receives less attack emphasis. Compare pitch
+   climax with performance emphasis.
+3. Add source_time or source_page to every event, plus a REVIEW field on one
+   uncertain note. Print those fields before playback. The sound stays fixed,
+   while the audit trail becomes inspectable.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+One event schema allows separate tools to agree. Bar-total checks use start and
+duration. Range checks use note. The renderer uses articulation and amp.
+Provenance tools use measure and source location. No helper needs to parse a
+special representation for one phrase.
+
+Absolute starts expose gaps and overlaps. Measure numbers preserve the source's
+coordinate system. Phrase labels reveal form without copying events into
+section-specific arrays. If a repeated phrase varies on its return, keep the
+new events and label the relationship rather than aliasing data that is no
+longer identical.
+
+The capstone is complete only after review at several scales. Validate each bar,
+loop each phrase, compare the whole contour, then audition the expressive
+rendering from beginning to end. Automated Ruby checks cannot confirm the
+source match or the intended sound, so keep the file at draft until a human
+works through it in Sonic Pi.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Complete the thirty-two-to-sixty-four-bar transcription. Include a source
+record, bar-by-bar validation report, global range, phrase labels, articulation,
+dynamics, and a list of every uncertain passage with source coordinates.
+Render the melody twice: score-strict and expressive. The structural constraint
+is one score array feeding both renderers. The target sound is a faithful
+monophonic performance whose phrase high points and cadences remain audible
+without changing any pitch or duration between versions.

@@ -4,42 +4,111 @@ subtitle: "35 min"
 part: "Reading notation"
 concepts: [sight, reading, decode, printed, melody, four]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Read in this order: time signature, key signature, rhythm, pitches, ties, articulation.
-> - Enter the whole thing as data before picking a synth. Sound design is a distraction at this stage.
-> - Run the bar-sum check, then listen and compare against a recording.
->
-> **Checkpoint: four bars read from notation and playing correctly, with no MIDI file involved.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+A printed melody presents several dimensions at once. Reading pitch before meter
+can produce correct note names in bars that have the wrong length. Choosing a
+synth before encoding the score adds another variable while the transcription is
+still unstable.
+
+Use a fixed pass order: time signature, key signature, rhythm, pitches, ties,
+then articulation. Each pass enriches the same event data. The order front-loads
+structural checks. By the time sound enters, every bar should already total the
+promised duration and every written accidental should have a recorded effect.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 92
+use_synth :piano
+
+# Four bars in 4/4, already resolved from a one-sharp key signature.
+bars = [
+  [[:g4, 1], [:a4, 1], [:b4, 1], [:d5, 1]],
+  [[:c5, 0.5], [:b4, 0.5], [:a4, 1], [:g4, 2]],
+  [[:d5, 1], [:c5, 1], [:b4, 0.5], [:a4, 0.5], [:fs4, 1]],
+  [[:g4, 1], [:a4, 1], [:g4, 2]]
+]
+
+bars.each_with_index do |bar, index|
+  total = bar.sum { |pitch, duration| duration }
+  raise "bar #{index + 1} totals #{total}" unless total == 4
+end
+
+score = []
+cursor = 0
+bars.each do |bar|
+  bar.each do |pitch, duration|
+    score << {note: pitch, start: cursor, duration: duration}
+    cursor += duration
+  end
+end
+
+define :play_events do |events|
+  cursor = 0
+  events.each do |event|
+    sleep event[:start] - cursor
+    play event[:note], sustain: event[:duration] * 0.82,
+      release: 0.08
+    sleep event[:duration]
+    cursor = event[:start] + event[:duration]
+  end
+end
+
+puts "#{score.length} events, #{cursor} beats"
+play_events score
 ```
 
-What you just heard, in a sentence or two.
+The bar check runs before playback. Bar two ends with one two-beat G event, so a
+tied pair from the source would produce one attack rather than two repeated Gs.
+F-sharp in bar three records the key signature's default after resolution. The
+renderer receives complete event data and adds no pitch decisions.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Change bar three's last duration from `1` to `0.5`. The assertion stops the
+   program before a malformed bar can be mistaken for a performance problem.
+2. Split bar two's final G into two one-beat events. The total still passes, but
+   you hear a second attack. This separates metric validation from tie handling.
+3. Change synth and release only after restoring the valid data. Sound design
+   alters interpretation while the decoded score remains inspectable.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+The time signature gives an invariant: every 4/4 bar totals four quarter-note
+beats. Rhythm can therefore be entered and checked before pitch. Key resolution
+then converts spelling plus defaults into playable notes. Ties merge durations
+across adjacent written values, and articulation becomes renderer metadata.
+
+The bars are a source-facing representation. They preserve measure boundaries
+for comparison with the page. The flattened score is renderer-facing and uses
+absolute starts. Both views derive from the same arrays, avoiding a second manual
+transcription.
+
+Listening remains a separate validation pass. Compare one suspicious bar in a
+loop against a lawful source recording when available. A bar total cannot detect
+a wrong pitch, and Ruby syntax cannot detect a mistaken rhythm that still sums
+to four. Structural assertions narrow the search; they do not certify fidelity.
+
+Provenance is part of the data path. Keep the edition, page, system, and measure
+number beside the transcription even when those fields never reach Sonic Pi.
+When a note sounds doubtful, that pointer is cheaper than searching the score
+again. It also separates a faithful encoding from an editorial change you make
+because another voicing or articulation sounds preferable.
+
+Part 9 begins by turning that pointer into a complete source record. Finish this
+lesson with page and measure coordinates in place; Lesson 42 adds the edition,
+rights statement, retrieval date, and redistribution decision before the
+transcription grows beyond four bars.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Choose four printed bars from a public-domain score whose edition you can record.
+Enter meter and rhythm first, and make every bar-total assertion pass. Add pitch
+spelling, key-signature resolution, ties, and articulation in separate commits
+or saved versions. Preserve source measure numbers in comments. Render the final
+events without using a MIDI file, then list every point that still requires
+manual comparison with the page or recording.

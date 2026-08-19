@@ -2,76 +2,101 @@
 title: "Before Lesson 1"
 ---
 
-Install Sonic Pi from [sonic-pi.net](https://sonic-pi.net/). The download page
-covers macOS, Windows, Linux, and Raspberry Pi, and the installer is the whole
-setup.
+Install Sonic Pi 5.0.0 from [sonic-pi.net](https://sonic-pi.net/). The download
+page covers macOS, Windows, Linux, and Raspberry Pi. This manuscript targets
+that version so a changed synth default does not become an unexplained musical
+difference.
 
-Open it, type this into the first buffer, and press **Run**.
+Open Sonic Pi, paste this into an empty buffer, and press **Run**.
 
-```ruby
+```{.ruby audio=""}
 play 60
 ```
 
-A note means you are ready.
+If you hear one note, the audio path works. If you do not, check the volume,
+selected output device, and Sonic Pi log before changing the code.
 
-Headphones or decent speakers do more for progress here than any other purchase,
-because half of this course is hearing small differences. Laptop speakers
-reproduce almost nothing below about 200 Hz, which is most of Part 1 and every
-bass line in Part 10.
+Headphones or speakers with usable bass response help throughout the course.
+Part 1 compares frequencies near 200 Hz, and Part 10 builds bass lines whose
+shape can disappear through small laptop speakers. Keep the level low enough
+that repeated drills remain comfortable.
 
 ## Which version
 
-Every example in this book was written and recorded against **Sonic Pi 5.0.0**.
+The examples are written for **Sonic Pi 5.0.0**. Their extracted Ruby has passed
+syntax checks. The complete manuscript has not received a Sonic Pi runtime and
+listening pass, so every lesson remains `draft`. There are no promised recordings
+for untested examples; empty audio attributes mark the places where recordings
+can be added after auditioning.
 
-Sonic Pi occasionally changes a synth default or a function signature between
-releases. When a snippet sounds different from its recording, check the version
-before assuming a typo. Help, About reports it, and so does
-`Contents/Resources/VERSION` inside the application bundle on macOS.
-
-Later versions will mostly behave identically. Earlier ones will not, and 5.0
-introduced changes that the examples here rely on.
+Sonic Pi can change synth defaults, samples, or function behaviour between
+releases. If your version differs, check **Help, About** and record the difference
+before adapting an example. A snippet that parses under Ruby may still call a
+Sonic Pi function incorrectly or produce an unbalanced sound. The log and help
+pane are the first diagnostic tools.
 
 ## The window
 
-Three areas matter. The **buffers** hold your code, and there are ten of them,
-which is more useful than it sounds once several voices are running. The **log**
-on the right prints every note as it plays, and it is the first place to look
-when something sounds wrong. The **help** pane at the bottom documents every
-synth, sample, and function, and it is faster than searching the web.
+Three areas carry most of the work. **Buffers** hold code. Use a fresh one for
+each example so definitions and live loops from an earlier lesson do not affect
+the next. The **log** prints messages, notes, and errors. Read it whenever the
+sound and the program disagree. The **help** pane documents synths, samples, and
+functions for the installed version.
 
-Two shortcuts worth learning now: `Cmd-R` or `Alt-R` runs the buffer, and
-`Cmd-.` or `Alt-.` stops everything.
+On macOS, `Cmd-R` runs the buffer and `Cmd-.` stops all sound. On Windows and
+Linux, use `Alt-R` and `Alt-.`. Learn the stop command before running the first
+live loop.
 
 ## A first sound
 
-Paste this in and run it. None of it needs to make sense yet. It is here so you
-know what the destination sounds like.
+Paste the following program into a fresh buffer. It introduces several constructs
+that Parts 0 through 3 unpack: tempo, synth selection, arrays, timed playback,
+and concurrent loops.
 
-```{.ruby audio="setup-1.mp3"}
-# Four bars that already sound like music.
-# Every construct here is explained by the end of Part 3.
-
+```{.ruby audio=""}
 use_bpm 96
 use_synth :pluck
 
-# E minor pentatonic. Five notes chosen so that any order sounds intentional.
+# E minor pentatonic keeps the first experiment focused on rhythm and timbre.
 melody = [:e4, :g4, :a4, :b4, :d5, :b4, :a4, :g4]
 
 live_loop :tune do
-  melody.each do |n|
-    play n, release: 0.4
-    sleep 0.25          # sixteenth notes at this tempo
+  melody.each do |pitch|
+    play pitch, release: 0.4
+    sleep 0.25
   end
 end
 
 live_loop :bass do
   play :e2, release: 1.8, amp: 0.7, cutoff: 70
-  sleep 2               # one bass note every two beats
+  sleep 2
 end
 ```
 
-Now change one thing. Set `melody` to `[:e4, :f4, :g4, :a4, :b4, :c5, :d5, :e5]`
-and run it again. Same rhythm, same bass, different feeling. Working out why is
-roughly what Parts 2 and 5 are for.
+Listen through two repetitions, then change one field. Replace `:pluck` with
+`:prophet` and run the buffer again. The pitches and timing remain fixed while
+the instrument changes. Restore `:pluck`, replace `melody` with
+`[:e4, :f4, :g4, :a4, :b4, :c5, :d5, :e5]`, and compare again. Parts 2 and 5
+explain why the second collection behaves differently over the E bass.
 
-Press `Cmd-.` to stop it.
+Press the stop shortcut before continuing. Live loops run until stopped, even
+after you move to another buffer.
+
+## How to use the draft
+
+Work through lessons in order. Later helpers and representations assume earlier
+ones, especially the event schema introduced before harmony and reused in
+notation, transcription, and arrangement. Each lesson follows the same five
+steps: hear the idea, run a complete program, change one input, connect the
+result to theory, then attempt a finite extension.
+
+Use the [solutions appendix](appendix/solutions.qmd) after making a real attempt.
+Use the [glossary](appendix/glossary.qmd) to recover a term and the [Sonic Pi
+cheat sheet](appendix/sonic-pi-cheatsheet.qmd) to recover a call. The [sources
+ledger](appendix/sources.qmd) records the provenance needed for transcription
+material.
+
+When a lesson surprises you, write down the version, the exact edit, the log
+output, and what you heard. A useful report distinguishes syntax failure, Sonic
+Pi runtime failure, timing trouble, and disagreement with the prose. Those notes
+are the evidence required to move a lesson from `draft` to `tested`.

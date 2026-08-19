@@ -4,42 +4,95 @@ subtitle: "25 min"
 part: "Reading notation"
 concepts: [treble, clef, staff, lines, spaces, middle]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Vertical position maps to letter name. One line-to-space step is one diatonic step, not one semitone.
-> - That last distinction is where most self-taught readers go wrong. Settle it early.
-> - Translate eight printed notes into Sonic Pi symbols and play them.
->
-> **Ends with: a one-octave treble cheat sheet, handwritten or generated.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+A note drawn one staff step higher moves to the next letter name. That step may
+span one semitone or two. The page uses a diatonic coordinate system, where lines
+and spaces count letters. MIDI uses a chromatic coordinate system, where every
+integer counts one semitone. Confusing the two turns a visual step into the wrong
+pitch.
+
+The *staff* has five lines and four spaces. A *treble clef* assigns G4 to the
+second line from the bottom. Once that anchor is known, every adjacent position
+follows the repeating letters A through G. Middle C sits on a short ledger line
+below the staff. Treat it as coordinate zero and the bottom treble line, E4,
+becomes coordinate two.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 90
+use_synth :piano
+
+letters = [:c, :d, :e, :f, :g, :a, :b]
+semitones = {c: 0, d: 2, e: 4, f: 5, g: 7, a: 9, b: 11}
+
+define :staff_record do |position, letters, semitones|
+  letter = letters[position % 7]
+  octave = 4 + (position / 7).floor
+  midi = 12 * (octave + 1) + semitones[letter]
+  {position: position, letter: letter, octave: octave, midi: midi}
+end
+
+# Eight printed positions: bottom line through the space above the staff.
+printed_positions = [2, 3, 4, 5, 6, 7, 8, 9]
+
+printed_positions.each do |position|
+  record = staff_record(position, letters, semitones)
+  puts "position #{position}: #{record[:letter]}#{record[:octave]} midi=#{record[:midi]}"
+  play record[:midi], release: 0.55
+  sleep 0.75
+end
+
+# One-octave cheat sheet from middle C to the next C.
+(0..7).each { |position| puts staff_record(position, letters, semitones) }
 ```
 
-What you just heard, in a sentence or two.
+The eight positions rise E4, F4, G4, A4, B4, C5, D5, F5 with E5 included at
+position nine? Read the log carefully: positions two through nine actually give
+E4 through F5 in consecutive letters. Their MIDI gaps alternate between one and
+two semitones even though every drawn move is one staff step.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Replace the positions with `[0, 2, 4, 6]`. These are middle C and every other
+   diatonic note. The visual skips produce a C-major seventh chord when played
+   together.
+2. Play positions `2` and `3` repeatedly. E to F is one staff step and one
+   semitone. Compare positions `3` and `4`, F to G, where the same visual step
+   spans two semitones.
+3. Add negative positions `-1` and `-2`. Ruby's modulo and floor division keep
+   the letter and octave sequence working below middle C.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+The letter cycle is a seven-element ring. Position modulo seven selects a letter.
+Floor division by seven counts completed letter cycles and adjusts the octave.
+The semitone hash performs the separate conversion from diatonic name to
+chromatic distance inside C major.
+
+Treble clef is an offset convention. It gives one printed line a known pitch,
+which determines all others. Memorising E-G-B-D-F and F-A-C-E can help with
+spot checks, but the coordinate model explains ledger lines and prevents lines
+and spaces from becoming unrelated tables.
+
+Accidentals and key signatures will modify the final semitone lookup in Lesson
+40. They do not move the note head to another staff coordinate. F-sharp and F
+occupy the same line or space because both retain the letter F.
+
+The printed shape also carries duration through note heads, stems, beams, and
+dots. This lesson deliberately ignores those marks so vertical position remains
+the only changing field. When rhythm returns in Lesson 41, pitch coordinate and
+duration will enter separate event keys. Keeping them separate prevents a dense
+eighth-note beam from becoming part of the pitch decoder.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Generate a Markdown cheat sheet for positions `-2` through `9`. Each row must
+contain coordinate, line-or-space classification, letter, octave, Sonic Pi
+symbol, and MIDI integer. Mark middle C and the five treble staff lines. Then
+enter eight note-head positions from a printed source and play the decoded
+sequence without copying note names from another transcription.

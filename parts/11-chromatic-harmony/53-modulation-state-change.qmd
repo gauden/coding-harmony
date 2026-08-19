@@ -4,42 +4,104 @@ subtitle: "35 min"
 part: "Chromatic harmony"
 concepts: [modulation, key, change, pivot, chord, state]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Hold the current key in a variable. Roman numerals become relative addresses against it.
-> - A pivot chord is a chord that is valid in both keys, so it can be reinterpreted mid-progression.
-> - Move to the dominant, sit there for four bars, then come home. Note the moment your ear accepts the new tonic.
->
-> **Ends with: a passage that changes key twice and returns.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+A *modulation* changes the key that gives chords and scale degrees their
+meaning. The notes do not announce a state change in one instant. A passage
+introduces evidence, confirms a new tonic, stays there long enough for the ear
+to accept it, and may later return.
+
+Store the current tonic as state. A Roman numeral is then a relative address
+against that state. Degree V means G in C major and D in G major. The symbol
+stays fixed while its resolved pitches change.
+
+A *pivot chord* belongs to both the old and new keys. It can be heard under one
+address, then reinterpreted under another. In a move from C major to G major, E
+minor is iii in C and vi in G. The following D major and G major make the new
+reading persuasive.
 
 ## Run this
 
+The schedule carries a key tonic beside each scale degree. The first section is
+in C, the middle adopts G for four bars, and the final cadence restores C.
+
 ```{.ruby audio=""}
-# TODO
+use_bpm 68
+use_synth :piano
+
+major_offsets = [0, 2, 4, 5, 7, 9, 11]
+qualities = [:major, :minor, :minor, :major, :major, :minor, :diminished]
+
+define :degree_chord do |tonic, degree, offsets, chord_qualities|
+  root = tonic + offsets[degree - 1]
+  chord(root, chord_qualities[degree - 1])
+end
+
+schedule = [
+  {key: note(:c3), degree: 1, label: "I in C"},
+  {key: note(:c3), degree: 3, label: "iii in C, pivot"},
+  {key: note(:g2), degree: 5, label: "V in G"},
+  {key: note(:g2), degree: 1, label: "I in G"},
+  {key: note(:g2), degree: 4, label: "IV in G"},
+  {key: note(:g2), degree: 5, label: "V in G"},
+  {key: note(:c3), degree: 5, label: "V in C"},
+  {key: note(:c3), degree: 1, label: "I in C"}
+]
+
+schedule.each do |event|
+  puts event[:label]
+  play_chord degree_chord(event[:key], event[:degree], major_offsets, qualities),
+    release: 1.8,
+    amp: 0.75
+  sleep 2
+end
 ```
 
-What you just heard, in a sentence or two.
+The E minor pivot does not force a new key. D major followed by repeated G
+functions supplies the state change, and G major before the final C cadence
+becomes the dominant of home again.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Remove the middle G-major tonic chord. The D dominant moves onward without a
+   confirmed arrival. Listen for tonicisation rather than a settled new state.
+2. Extend the G section by repeating IV, V, I twice. The ear has more time to
+   adopt G. Notice how the later G chord can sound like home before becoming V
+   of C at the return.
+3. Change the pivot from E minor to A minor. A minor is vi in C and ii in G.
+   Follow it with D major, then G. Compare the different route into the same
+   new tonic.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Key is context. The same pitch-class set can support several labels, and the
+label that predicts later motion wins. A pivot chord delays commitment because
+both contexts explain it. A dominant-tonic cadence in the new key reduces that
+ambiguity.
+
+The code makes the state explicit on every event rather than hiding it in a
+mutable global variable. That is useful while learning because the schedule
+shows where interpretation changes. A later helper could keep current_key and
+update it at named boundaries, but the output should remain inspectable.
+
+Roman numerals are relative addresses rather than fixed chords. Resolving them
+late allows one progression pattern to run in several keys. It also exposes a
+modulation bug: if a chord is resolved against the old tonic after the state
+change, its pitches may be diatonic somewhere while sounding functionally
+wrong here.
+
+The ear accepts a new tonic through repetition, cadential strength, duration,
+and melodic emphasis. A single secondary dominant can resemble the start of a
+modulation. The following bars decide whether the state changed.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Build a twelve-bar passage that begins in a major key, moves to its dominant,
+stays there for four bars, and returns. Use one pivot chord for each transition.
+Store key context and Roman numeral separately, then resolve pitches in a
+function. Print the active key and numeral before every chord. The target is
+two audible state changes, with comments naming the exact chord where your
+interpretation changes.

@@ -1,0 +1,130 @@
+# Development Record
+
+## Resume protocol
+
+When the user says `resume`, read `TODO.md`, this file, `STYLE.md`, and
+`git status --short`. Continue from the first unticked item without regenerating
+or overwriting completed prose. Run the focused tests for the files being changed
+before advancing to the next phase. If this first-draft checklist remains fully
+ticked, report that state and use the second-draft list below for any newly
+requested work.
+
+## Goal
+
+Produce a complete first draft of *Music Theory Through Sonic Pi*: 58 sequential
+lessons, the front matter, and five appendices. The manuscript must be coherent
+enough for an editor to read top to bottom, while clearly remaining a first draft
+until examples have been auditioned in Sonic Pi.
+
+## Roles
+
+- Coordinator: root Codex agent. Owns scope, tests, integration, progress records,
+  and final verification.
+- Writers: parallel agents assigned non-overlapping lesson ranges after the
+  curriculum map is complete.
+- Editor: a dedicated agent used after the draft ranges are integrated. Owns
+  continuity and style findings; the coordinator owns final application and QA.
+
+## Acceptance criteria
+
+- Exactly 58 lesson files remain in curriculum order.
+- Every lesson has `status: draft`, the standard five instructional sections,
+  substantive prose, and at least one non-placeholder Ruby example.
+- No generated syllabus planning callout or `TODO` placeholder remains in a lesson.
+- Prose clears `scripts/lint-prose.sh`.
+- Extracted Ruby clears `ruby -c` through `scripts/check-code.sh`.
+- Quarto can render the HTML edition without an error.
+- Any example not executed inside Sonic Pi remains honestly labelled as requiring
+  manual sound QA; `draft` is not silently promoted to `tested`.
+
+## Session log
+
+### 2026-08-19
+
+- Added a warning callout at the top of `index.qmd` identifying the manuscript as
+  AI-generated, under testing, and being completely rewritten by hand.
+- Linked the warning directly to the repository pull-request page and recorded
+  the author's limited capacity for individual replies.
+- Added a regression test requiring the disclosure to appear before the first
+  preface section. Final checks: six pytest tests pass, prose lint is clean, and
+  `git diff --check` is clean.
+- Rendered `_book/index.html` and confirmed Quarto emitted a titled warning
+  callout with the disclosure and pull-request link before the preface body.
+
+### 2026-08-18
+
+- Inventoried 58 outline lessons, five appendices, and two front-matter chapters.
+- Measured 14,352 words across the book sources; most lessons are about 200-word
+  generated stubs.
+- Read the project constitution, `STYLE.md`, Quarto configuration, and validation
+  scripts.
+- Started a persistent Codex goal for a complete, resumable first draft.
+- Began a graph-based curriculum analysis. Initial scan: 83 relevant files,
+  about 32,976 corpus words, no sensitive files skipped.
+- Added first-draft acceptance tests before changing lesson prose.
+- Added a minimal `uv` project with pytest and ran the red baseline: the lesson
+  structure test and placeholder test fail for the expected outline content;
+  the exact-58-lessons invariant passes.
+- Built the pre-draft curriculum graph in `graphify-out/`: 325 nodes, 270 edges,
+  and 72 labelled communities. The graph health check reported five dangling
+  endpoint edges; no endpoints were missing and no edges collapsed. Treat this
+  graph as a map of the scaffold that existed before parallel drafting began.
+- Assigned three non-overlapping drafting lanes: Lessons 1-20, 21-41, and 42-58.
+- Writer A completed Lessons 1-20 at 552-594 acceptance-test words and handed
+  them to the dedicated editor for expansion and continuity work.
+- Writer B completed Lessons 42-58 at 634-727 shell-counted words. All 17 Ruby
+  blocks clear syntax; Sonic Pi sound and concurrent timing remain manual QA.
+- Populated the glossary and sources ledger, and expanded the Ruby and Sonic Pi
+  reference appendices. The solutions appendix is now assigned as a separate
+  58-exercise pass.
+- The solutions pass is complete: 58 worked entries and 5,837 words, with finite
+  structural checks for open-ended listening and source-dependent exercises.
+- Editor Stage 2A completed Lessons 42-58 and the reference appendices. Those
+  lessons now span 650-773 words; renderer names and event keys match the shared
+  conventions. Fresh Ruby syntax checks passed for all 37 blocks in that scope.
+- The manuscript acceptance suite currently passes all five tests while the final
+  range validation and continuity edit continue.
+- Writer C handed off Lessons 21-41 at 609-685 regex-counted words. The full
+  five-test suite passed, and all Ruby fences in that range cleared `ruby -c`.
+- A fresh whole-book extraction produced 81 Ruby snippets; all 81 cleared syntax.
+- The full house-style linter currently passes across 71 prose files.
+- Revised the preface, setup chapter, and README against the finished manuscript.
+  They distinguish syntax checks from Sonic Pi auditioning and no longer describe
+  the book as an unwritten scaffold.
+- The dedicated editor completed a final pass across Lessons 21-41, both writing
+  boundaries, and all 58 solutions. Event keys, renderer names, source caveats,
+  prerequisite order, and exercise-solution agreement were checked together.
+- Extended code extraction to cover `setup.qmd`. The final extraction contains 83
+  Ruby snippets, all of which clear `ruby -c`.
+- Final manuscript size is 49,618 regex-counted words: 38,776 in the 58 lessons,
+  with individual lessons ranging from 609 to 773 words, and 5,958 in solutions.
+- Final automated checks: five pytest tests pass; prose lint is clean across 71
+  files; `git diff --check` is clean.
+- Quarto rendered 65 HTML pages to `_book/`. A local-target scan found zero
+  missing relative links or assets, and no generated TODO/planning placeholders
+  or empty HTML links were found.
+
+## Current state
+
+The whole first draft is complete. Every item in `TODO.md` is ticked. The
+manuscript, appendices, development record, tests, code checks, editor pass, and
+HTML build are present in the working tree. All lessons remain honestly marked
+`draft`.
+
+## Second-draft and manual QA
+
+- Run every lesson from a clean buffer in Sonic Pi 5.0.0. Record runtime errors,
+  timing behaviour, balance, and whether each sound description matches the
+  result. Revise before changing any status to `tested`.
+- Give extra timing attention to multi-loop and canon material in Lessons 47 and
+  51, and compare the notation/transcription examples in Lessons 38-46 with exact
+  printed or recorded sources.
+- Verify setup shortcuts and output-device guidance on each supported platform.
+- Replace the candidate-source worksheet only when an exact artifact and its
+  edition-level licence evidence have been selected.
+- Record audio after the corresponding lesson has passed the human test. Empty
+  `audio=""` attributes are deliberate until then.
+- Render and inspect PDF and EPUB editions when those formats enter scope. The
+  completed verification in this pass covers HTML.
+- The graph in `graphify-out/` maps the pre-draft scaffold and reports five
+  dangling endpoints. Rebuild it only when a post-draft content graph is useful.

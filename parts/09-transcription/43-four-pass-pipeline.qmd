@@ -4,42 +4,103 @@ subtitle: "30 min"
 part: "Transcription"
 concepts: [pipeline, passes, workflow, method, transcription, process]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Pass 1: tempo, meter, phrase boundaries. Pass 2: rhythm only. Pass 3: contour and anchor pitches. Pass 4: exact pitches and expression.
-> - Never skip forward. Every pass you skip gets paid for twice in debugging.
-> - Mark uncertain notes with a comment convention you can grep for.
->
-> **Ends with: a checklist and an event schema you apply unchanged to every transcription.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+A transcription error becomes expensive when pitch, rhythm, and expression are
+all uncertain at once. I first tried to capture a melody note by note in one
+pass. Every correction shifted the later events, so I could no longer tell
+whether a wrong entrance came from the source, my hearing, or an earlier edit.
+
+The four-pass pipeline keeps one class of uncertainty in view at a time. Pass 1
+records tempo, meter, and phrase boundaries. Pass 2 records rhythm without
+pitch. Pass 3 adds contour and a few anchor pitches. Pass 4 settles exact
+pitches, articulation, dynamics, and timing detail. Each pass produces data
+that the next pass can inspect.
+
+Do not skip forward because one note seems easy. A confident isolated pitch can
+hide a bar that is half a beat short. Mark uncertainty in the data with a
+searchable comment such as REVIEW. That marker is a work queue, not an
+admission of failure.
 
 ## Run this
 
+The example renders the same four-beat phrase after each pass. Integer notes
+stand in for MIDI pitches because pitch arithmetic is the point here.
+
 ```{.ruby audio=""}
-# TODO
+use_bpm 76
+use_synth :beep
+
+rhythm = [0.5, 0.5, 1, 0.5, 0.5, 1]
+contour = [0, 1, 2, 4, 2, 0]
+tonic = 60
+exact_notes = [60, 62, 64, 67, 64, 60]
+
+define :play_pass do |notes, durations, amp|
+  notes.zip(durations).each do |pitch, duration|
+    play pitch, release: duration * 0.75, amp: amp
+    sleep duration
+  end
+end
+
+# Pass 2: one repeated pitch exposes rhythm without melodic distraction.
+play_pass [tonic] * rhythm.length, rhythm, 0.6
+sleep 1
+
+# Pass 3: contour uses relative steps from a provisional anchor.
+play_pass contour.map { |step| tonic + step }, rhythm, 0.8
+sleep 1
+
+# Pass 4: the exact spelling replaces the provisional contour.
+play_pass exact_notes, rhythm, 1.0
 ```
 
-What you just heard, in a sentence or two.
+The first version sounds like a rhythm exercise. The second acquires a shape.
+The third changes two whole-tone guesses into exact pitches, while the duration
+sum remains four beats.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Change the last rhythm value from 1 to 0.5. All three renderings now end
+   early. Listen to how clearly a shared rhythmic fault survives later pitch
+   work.
+2. Change the fourth contour step from 4 to 3 without changing exact_notes. The
+   middle rendering reaches a lower high point, while the final pass stays
+   fixed. This is the gap between a contour hypothesis and a settled pitch.
+3. Add the comment REVIEW beside one exact note, then search the buffer for
+   REVIEW. Use the log or editor search as a queue for unresolved events.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Each pass is an interface with a narrow contract. The rhythm pass must account
+for the meter, but it does not need to name a pitch. The contour pass must
+preserve that rhythm and describe direction. Exact pitch entry can then compare
+candidate notes against known anchors without reopening the duration problem.
+
+Pass 1 often lives as comments or metadata rather than playable events. Write
+the meter, estimated tempo, pickup length, and phrase boundaries first. A
+phrase boundary is especially useful because it limits the damage from a wrong
+duration. You can validate four bars independently instead of allowing one
+missing eighth note to offset the rest of the piece.
+
+The event schema remains stable across passes. A reusable event eventually has
+:note, :start, and :duration, with optional :amp. During rhythm entry, :note can
+hold a neutral placeholder. During contour entry, it can hold a provisional
+value. The final pass replaces it. Stable keys make diffs readable and allow
+the same validation helpers to run throughout the work.
+
+This resembles a compiler pipeline. An early stage establishes structure,
+later stages enrich the representation, and diagnostics stay attached to the
+smallest useful unit. Skipped structure returns as ambiguous debugging.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Choose eight bars from one candidate in your source inventory. Create a
+transcription checklist with four signed-off passes and a fixed event schema.
+After each pass, save a separate version or commit. The target is an eight-bar
+event array whose durations validate before exact pitch entry begins. Leave
+every uncertain event marked REVIEW, and include a short note explaining what
+evidence would resolve it.

@@ -4,42 +4,117 @@ subtitle: "35 min"
 part: "Texture and arrangement"
 concepts: [canon, round, imitation, counterpoint, delayed, entry]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - One melody, two voices, a delay between entries. The oldest trick in Western music and still the most satisfying to code.
-> - Vary the delay and the transposition. Most combinations sound bad, which is the lesson.
-> - A melody that works as a canon has to harmonise with itself. Find out what that constrains.
->
-> **Checkpoint: a three-voice canon on your own subject that holds up for sixteen bars.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+A *canon* gives one melody to two or more voices and delays their entries. The
+code is small. The musical constraint is severe: later notes in the subject
+must make sense against earlier notes from the same subject.
+
+Entry delay decides which points overlap. Transposition changes the intervals
+between voices. Most arbitrary combinations produce exposed seconds, crowded
+registers, or cadences that never settle. That failure is the lesson. A subject
+for canon carries its accompaniment inside its own sequence.
+
+Begin with equal entries at one-bar distance and no transposition. Then change
+one parameter at a time. Keep each voice in an independent thread so the score
+data remains shared while timing and register belong to the entry specification.
 
 ## Run this
 
+The subject lasts four beats. Three voices enter four beats apart. Each repeats
+the subject sixteen times, so the full texture continues for sixteen bars after
+the last entry begins.
+
 ```{.ruby audio=""}
-# TODO
+use_bpm 96
+
+subject = [
+  {note: 60, start: 0.0, duration: 0.5},
+  {note: 64, start: 0.5, duration: 0.5},
+  {note: 67, start: 1.0, duration: 1.0},
+  {note: 65, start: 2.0, duration: 0.5},
+  {note: 64, start: 2.5, duration: 0.5},
+  {note: 62, start: 3.0, duration: 0.5},
+  {note: 60, start: 3.5, duration: 0.5}
+]
+
+define :play_events do |events, transpose_by, amp|
+  cursor = 0.0
+  events.each do |event|
+    sleep event[:start] - cursor
+    play event[:note] + transpose_by,
+      release: event[:duration] * 0.8,
+      amp: amp
+    cursor = event[:start]
+  end
+  sleep events.last[:duration]
+end
+
+entries = [
+  {delay: 0, transpose: 0, synth: :piano, amp: 0.85},
+  {delay: 4, transpose: 0, synth: :pluck, amp: 0.65},
+  {delay: 8, transpose: -12, synth: :hollow, amp: 0.5}
+]
+
+entries.each do |entry|
+  in_thread do
+    sleep entry[:delay]
+    use_synth entry[:synth]
+    16.times { play_events subject, entry[:transpose], entry[:amp] }
+  end
+end
 ```
 
-What you just heard, in a sentence or two.
+The entries are easy to identify because synth and register differ. Once all
+three are present, the same contour appears at three points in its cycle.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Change the second delay from 4 to 2. The follower enters halfway through the
+   subject. Listen for which note pairs now become exposed. Restore it before
+   changing transposition.
+2. Set the second transposition to 7. The follower enters a fifth higher. Some
+   vertical intervals open, while the register becomes more crowded near the
+   first voice.
+3. Change the subject's fourth note from 65 to 66. The chromatic pitch meets
+   several earlier subject notes. Mark every overlap that sounds unstable rather
+   than editing the whole phrase at once.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+At a four-beat delay, position one of a follower sounds against position one of
+the leader's next repetition. At a two-beat delay, position one sounds against
+the middle of the subject. The delay therefore selects a vertical interval map.
+You can calculate that map from indexes before rendering.
+
+Consonance alone does not make a good canon. Repeated stable intervals can
+sound static, and every voice may reach its cadence at the wrong moment. A
+useful subject balances recognisable contour, independent rhythm, and overlap
+points that imply changing harmony.
+
+Transposition adds another parameter to the map. A fifth may preserve many
+scale relationships but shift the tonal centre. An octave changes register
+without changing pitch class. Test delay first, then transposition, so the cause
+of a bad overlap stays visible.
+
+The shared subject array is immutable score data. Entry records contain delay,
+transposition, synth, and amplitude. This is the same separation used for form
+and rendering: one musical object, several calls with different arguments.
+
+The absolute `:start` values keep the subject compatible with `play_events`
+from the transcription and capstone chapters. Repetition resets the renderer's
+cursor at the start of each four-beat subject. Entry delay remains outside the
+subject because it belongs to the voice that imitates, not to the melody being
+imitated.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Write an eight-beat subject and build a three-voice canon that lasts at least
+sixteen bars. Test entry delays of two, four, and eight beats, then choose one.
+Test unison, octave, and fifth transpositions separately. The target is a
+version with no edit to the subject between voices, independently inspectable
+entry data, and comments naming the three most exposed overlaps and the implied
+chords at those moments.

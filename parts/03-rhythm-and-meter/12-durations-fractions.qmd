@@ -4,42 +4,59 @@ subtitle: "25 min"
 part: "Rhythm and meter"
 concepts: [duration, quarter, eighth, sixteenth, fractions, beat]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Quarter note is 1 beat, eighth is 0.5, sixteenth is 0.25. The names are historical, the arithmetic is not.
-> - Encode a rhythm as a bare duration array and play it on one drum sound.
-> - Clap along with the click while the pattern plays. Notice which durations you cannot yet feel.
->
-> **Ends with: a rhythm interpreter that takes durations and any percussion sample.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Rhythmic names carry historical fractions, while Sonic Pi needs beat values. In the system used here, a *quarter note* lasts 1 beat, an eighth lasts 0.5, and a sixteenth lasts 0.25. A duration array can therefore describe rhythm without pitches. The renderer below accepts that array and any percussion sample. Each value controls both the gap before the next event and the release space you hear. Clap with the click while it runs; the value you lose track of identifies the subdivision that still needs attention.
+
+Treat the snippet as a controlled comparison. The shared notes, tempo, and envelope remove distractions, leaving one parameter exposed. That approach is slower than changing several values at once and produces a clearer result.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 96
+
+durations = [1, 0.5, 0.5, 0.25, 0.25, 0.5, 1]
+
+define :play_rhythm do |lengths, sound|
+  lengths.each do |duration|
+    sample sound, amp: 0.9, finish: [duration * 0.35, 1].min
+    sleep duration
+  end
+end
+
+puts "#{durations.sum} beats"
+play_rhythm durations, :drum_tom_mid_soft
 ```
 
-What you just heard, in a sentence or two.
+One drum colour articulates a pattern of long and short gaps. Because pitch and timbre stay fixed, the duration sequence becomes the only changing information.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Replace every `0.5` with `0.25`. The phrase shortens and the subdivision doubles in density.
+
+2. Change the sample while preserving the array. Compare how a long tail can obscure the same timing data.
+
+3. Add `puts durations.sum`. Then alter one value and confirm that the printed total tracks the audible length.
+
+After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+Durations are rational values in a timeline. Their sum gives total phrase length, and each prefix sum gives an onset. Keeping the score as an array allows validation and transformation before rendering.
+
+The fraction also predicts where your hands meet the click. Two values of `0.5` occupy the same span as one value of `1`, while four values of `0.25` expose finer internal positions. Count the smallest active subdivision during the difficult bar, then return attention to the larger beat.
+
+The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+
+The array records inter-onset spans as well as sounding durations in this simple renderer. Later event scores separate `:start` and `:duration`, which permits overlaps and gaps without ambiguity. For now, one event follows the previous sleep, so prefix sums are enough to locate every onset. Keep that limitation visible rather than treating the array as a complete score format. Lesson 13 groups the same equal subdivisions into bars by applying accents and validating their total.
+
+Sample playback length and rhythmic duration should not be confused. The `finish` option changes how much of the source file is heard, while `sleep duration` schedules the next onset. A short sample may end well before a long rhythmic value. Listen to the onset pattern for timing and treat the sample tail as articulation, much like release in Lesson 7.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Write a rhythm interpreter that accepts a duration array and a sample symbol. Test it with quarter, eighth, and sixteenth values whose sum is four beats. Add a click on every whole beat in a separate thread and clap the rhythm against it.
+
+The interpreter should accept at least two sample symbols without changing its loop. Audition it with the click in Sonic Pi 5 and note which fractional value becomes difficult to clap accurately.

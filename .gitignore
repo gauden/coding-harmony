@@ -82,3 +82,8 @@ venv/
 
 # keep-tex output lands in the project root, not _book/
 /*.tex
+
+# Graphify keeps reproducible extraction caches and machine-specific interpreter
+# paths beside its portable report, JSON, and HTML outputs.
+graphify-out/cache/
+graphify-out/.graphify_*

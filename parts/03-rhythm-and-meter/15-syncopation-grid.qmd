@@ -4,42 +4,65 @@ subtitle: "30 min"
 part: "Rhythm and meter"
 concepts: [syncopation, offbeat, sixteenth, grid, accent, anticipation]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Build a 16-slot boolean bar. Fill the strong beats and listen. It sounds like a metronome.
-> - Move accents to the offbeats. Anticipate a downbeat by one sixteenth. Listen again.
-> - Encode one traditional clave pattern as a bit array and hear why it has outlived every genre that used it.
->
-> **Ends with: three rhythmic variants of one pitch sequence, from square to funky.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+A sixteen-slot bar makes sixteenth-note placement visible as data. Put attacks at slots 0, 4, 8, and 12 and the result behaves like a metronome. Move them between those anchors and the beat gains friction. *Syncopation* gives weight to normally weak positions or carries sound across a strong one. An *anticipation* arrives shortly before the beat it seems to belong to. The program renders three bit arrays against the same fixed pitch sequence: square beats, offbeats, and a clave-derived pattern.
+
+The log and the sound answer different questions. Printed values expose the representation; playback exposes the musical consequence. Keep both visible while editing, since an arithmetic error can still produce a plausible noise.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 100
+use_synth :pluck
+
+pitches = [:c4, :e4, :g4, :a4, :g4, :e4, :d4, :c4]
+patterns = [
+  [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0],
+  [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0],
+  [1,0,0,1, 0,0,1,0, 0,1,0,0, 1,0,1,0]
+]
+
+patterns.each do |grid|
+  pitch_index = 0
+  grid.each do |hit|
+    if hit == 1
+      play pitches[pitch_index % pitches.length], release: 0.15
+      pitch_index += 1
+    end
+    sleep 0.25
+  end
+  sleep 1
+end
 ```
 
-What you just heard, in a sentence or two.
+The first bar states every beat. The second shifts energy into the gaps. The clave pattern creates an uneven loop whose accents point forward across the four-beat grid.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Move the attack at slot 8 to slot 7. That one-sixteenth anticipation makes the middle of the bar lean forward.
+
+2. Keep the clave mask and replace all pitches with C4. The rhythmic identity remains without contour.
+
+3. Rotate the offbeat mask by one slot. Decide whether the new downbeat still feels like the start.
+
+After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+A rhythm grid is a Boolean mask over discrete time. The renderer advances by one sixteenth for every slot and consumes a pitch only when the mask contains 1. Separating mask from pitch data makes rhythmic mutation independent of melody.
+
+The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+
+The term clave names a family of organising patterns, not any arbitrary bit array. This lesson uses a clave-derived distribution to hear asymmetry without attempting a full account of a particular tradition. Preserve the pattern's cyclic identity and avoid claiming one grid represents every genre that uses related rhythms. The anticipation edit demonstrates the transferable mechanism. Lesson 16 then leaves the slot pattern intact and shifts events by amounts smaller than the grid.
+
+A syncopated attack gains meaning from the unplayed strong position around it. If every sixteenth receives the same weight, the grid becomes dense rather than syncopated. Compare the mask with a quiet quarter-note click in another thread. The click should reveal tension against the beat without becoming so loud that it replaces the pattern you are studying.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Create three masks for one eight-note pitch sequence: attacks on quarter-note beats, attacks on eighth-note offbeats, and a syncopated variant with one anticipated downbeat. Each mask must contain eight attacks so pitch consumption stays comparable.
+
+Each variant should consume the intended pitch count and last exactly four beats. Audition all three in Sonic Pi 5, then mark the single slot whose movement causes the strongest change in forward pull.

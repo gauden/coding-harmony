@@ -4,42 +4,58 @@ subtitle: "25 min"
 part: "Why sound has structure"
 concepts: [envelope, adsr, attack, decay, sustain, release]
 sonic-pi: []
-status: outline
+status: draft
 ---
-
-::: {.callout-note collapse="true" title="Planned, from the syllabus"}
-Delete this block once the lesson is drafted.
-
-> - Hold pitch and synth constant. Vary attack, decay, sustain, release.
-> - A slow attack turns a piano into a string section. A short release turns a pad into a percussion hit.
-> - Envelope is how you encode staccato, legato, and accent later, so build the vocabulary now.
->
-> **Checkpoint: given a recorded note, you can guess its rough envelope shape and reproduce it.**
-:::
 
 ## The idea
 
-What the musical concept is and what it does to sound. Two or three paragraphs.
-First person for me, second person for the reader, no encouragement. See
-STYLE.md.
+Pitch and oscillator do not identify an instrument on their own. The change in amplitude over time carries much of what the ear recognises. An *envelope* divides that change into attack, decay, sustain, and release. Attack measures the rise, decay the fall toward a held sustain level, and release the fade after the held part ends. The program fixes `:prophet` and C4, then plays four envelope hashes. Treat each hash as a compact description of a gesture rather than a set of cosmetic options.
+
+The log and the sound answer different questions. Printed values expose the representation; playback exposes the musical consequence. Keep both visible while editing, since an arithmetic error can still produce a plausible noise.
 
 ## Run this
 
 ```{.ruby audio=""}
-# TODO
+use_bpm 60
+use_synth :prophet
+
+envelopes = [
+  {attack: 0.0, decay: 0.05, sustain: 0.1, release: 0.1},
+  {attack: 1.2, decay: 0.2, sustain: 0.6, release: 0.4},
+  {attack: 0.01, decay: 0.5, sustain: 1.2, release: 0.3},
+  {attack: 0.02, decay: 0.2, sustain: 0.4, release: 2.0}
+]
+
+envelopes.each do |shape|
+  play :c4, **shape, amp: 0.8
+  sleep 3
+end
 ```
 
-What you just heard, in a sentence or two.
+The first note arrives immediately and stops quickly. The second swells into view. The third strikes, settles, and holds. The fourth leaves a long tail that overlaps the silence after its trigger.
 
 ## Change one thing
 
-Two or three directed experiments. Each says what to change and what to listen
-for.
+1. Set the slow envelope's attack to `2`. Its onset becomes so vague that the beat is harder to locate.
+
+2. Raise the percussive envelope's release from `0.1` to `1.5`. The attack stays sharp while the tail fills the following space.
+
+3. Set sustain level to `0.2` in the held shape. Listen for the drop after the initial peak.
+
+After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
 
 ## Why it works
 
-The explanation, now that the sound is in your ears.
+An envelope is a state machine over amplitude. Attack moves from zero to peak, decay moves to the sustain level, sustain holds, and release returns to zero. Staccato, legato, and accent later become choices about these durations and levels.
+
+The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+
+ADSR labels describe control segments rather than four independent sounds. A long attack consumes time before the peak, and release begins when the note is allowed to end. Sonic Pi's synth implementations may respond differently at extreme settings, so compare shapes on one synth before generalising. These envelope choices return throughout the book when a note needs to detach, overlap, or carry an accent. Part 2 now strips away timbre and organises pitch into a twelve-class address space.
+
+Duration and envelope are related but separate. `sleep` decides when the following event starts; release decides how long the present event continues fading. A release longer than the sleep creates overlap, while a shorter release creates space. Keep this distinction in mind when later rhythm examples use silence: an absent attack and a decaying tail can occupy the same beat differently.
 
 ## Take it further
 
-One optional harder exercise. Worked answer in the solutions appendix.
+Choose a recorded note nearby and estimate whether its attack is immediate or gradual, whether it holds, and how long it releases. Encode that estimate as a hash and alternate your version with the four references. The target is a recognisable amplitude shape, not an exact imitation.
+
+Store the estimated envelope beside the reference shapes and identify which segment controls each audible difference. Sonic Pi 5 auditioning is required because Ruby syntax cannot reveal a synth's actual response curve.
