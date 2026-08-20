@@ -9,15 +9,17 @@ status: draft
 
 ## The idea
 
-Play C, F, G, C as root-position chords. The harmony is clear and every upper
-part jumps with each root. Revoice the same chords so nearby notes stay put or
-move by step. The progression becomes four melodies that happen to form chords.
+Play C-F-G-C with every chord in root position. The harmonic route is clear, but
+the upper parts leap whenever the root moves. Revoice the same progression so
+that common tones remain and the other notes travel by small steps. The chords
+then reveal another identity: four melodies moving together.
 
-*Voice leading* is the control of those individual lines. A four-note texture can
-be stored as soprano, alto, tenor, and bass arrays. A useful first objective is
-small total movement, with penalties for crossed voices and rewards for common
-tones. The musical problem resembles constrained optimisation more than chord
-lookup.
+*Voice leading* is the shaping of those individual lines. A four-part texture
+can be stored as soprano, alto, tenor, and bass arrays, which preserves each
+voice's history across chord boundaries. Small total movement is a useful first
+objective, provided the system also rejects crossed voices and respects range
+and required tones. The problem is therefore closer to constrained optimisation
+than to choosing four independent chord symbols.
 
 ## Run this
 
@@ -61,47 +63,56 @@ play_lines led, nil
 [:bass, :tenor, :alto, :soprano].each { |name| play_lines(led, name) }
 ```
 
-Both versions spell the same C-F-G-C progression. The second keeps G in the
-tenor across several chords and holds C in the alto where possible. Muting one
-line changes the texture without changing the remaining data, which makes each
-path easier to follow.
+Both renderings contain the same C-F-G-C harmonies. In the led version, the tenor
+returns from G through A to G and then holds that G across the final boundary;
+C remains in the alto where the next chord permits it. The whole texture is
+smoother because the lines are smoother.
+The muted passes then remove one voice at a time, making it easier to follow the
+remaining paths without altering their pitches or timing.
 
 ## Change one thing
 
-1. Move the led soprano's G-chord note from 62 to 74. One twelve-semitone leap
-   raises the objective score and pulls attention away from the other lines.
-2. Swap tenor and alto on one chord. The pitch-class collection survives, but
-   the voices cross and their identities become harder to trace.
-3. Mute each line in turn. Notice which chord loses its root, third, or leading
-   tone, and which omission changes the cadence most.
+1. Move the led soprano's G-chord note from 62 to 74. The added octave raises the
+   movement score and draws the ear toward one conspicuous jump, even though the
+   chord's pitch classes remain unchanged.
+2. Exchange tenor and alto on one chord. The vertical harmony survives, but the
+   lines cross. Listen for the moment when their identities become harder to
+   trace from one event to the next.
+3. Mute each voice in turn. Identify which chord loses a root, third, or leading
+   tone, then compare which absence alters the cadence most. Distance alone does
+   not tell you which pitch performs the more important function.
 
 ## Why it works
 
-`movement` sums absolute differences between successive pitches in each voice.
-It is a cost function, not a complete theory. The lower score corresponds to
-smaller steps in this controlled comparison. A fuller search would reject voice
-crossing, keep each line inside a range, preserve required chord tones, and
-prefer contrary motion at cadences.
+`movement` adds the absolute pitch differences between consecutive notes in
+each line. A lower result means less travel in this controlled example, but the
+number is a cost function rather than a theory of good writing. A fuller search
+must also reject crossing, keep each voice within range, preserve required chord
+tones, and perhaps reward contrary motion at a cadence.
 
-Representing lines first changes the architecture. A chord-list model answers
-which pitches sound at one time. A voice model also answers where each pitch came
-from and where it goes. Transposing the data matrix gives either view.
+Storing lines first changes what the program can answer. A chord list describes
+the pitches present at one moment. A voice matrix also records where each pitch
+came from and where it goes next. Transpose that matrix and you can recover the
+vertical chord view, but you have not thrown away the horizontal histories.
 
-The greedy voicing from Lesson 27 minimised one transition at a time. A global
-search can evaluate the whole progression, because an inexpensive choice now
-may force a large leap later. Four voices and a small candidate set remain small
-enough for exhaustive enumeration.
+Lesson 27's greedy search chose the cheapest next chord at each boundary. A
+global search can assess the entire progression before deciding. A locally easy
+choice may leave no smooth route to a later chord, while a slightly larger move
+now may lower the total. Four voices with a bounded candidate set are still
+small enough for exhaustive enumeration, so the trade-off can be inspected
+rather than guessed.
 
-Common tones deserve a separate reward even though zero movement already lowers
-the cost. Holding a note changes articulation as well as distance: one voice can
-sustain through the chord boundary while the others move. The current renderer
-reattacks every pitch, hiding that distinction. A later version could merge
-equal adjacent events in one line and let the sustained common tone bind the
-harmonies together.
+Common tones also affect articulation. Zero movement already reduces the score,
+but holding a note through a boundary is not acoustically identical to striking
+it twice at the same pitch. The current renderer reattacks every event and hides
+that distinction. A more faithful version could merge equal adjacent notes in
+one line, allowing a sustained tone to bind the changing harmony around it.
 
 ## Take it further
 
-Generate every inversion of the four C-F-G-C chords within fixed bass, tenor,
-alto, and soprano ranges. Reject crossings and missing chord tones. Score each
-complete path by total movement, then play the cheapest path and the root-position
-baseline. Your report must print both scores and the four resulting voice arrays.
+Generate every inversion of C-F-G-C that fits fixed bass, tenor, alto, and
+soprano ranges. Reject candidates with crossings or missing chord tones, then
+score each complete four-chord path by total movement. Play the cheapest path
+beside the root-position baseline. Print both totals and all four resulting
+voice arrays so a low score can be checked against the musical constraints that
+gave it meaning.

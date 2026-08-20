@@ -9,15 +9,17 @@ status: draft
 
 ## The idea
 
-Take degrees 1, 3, and 5 of a major scale. Then start on degree 2 and take 2, 4,
-and 6. Repeating that operation builds seven triads without importing pitches
-from outside the key. Their qualities follow from the scale's uneven step
-pattern.
+Choose degrees 1, 3, and 5 of a major scale and you have its tonic triad. Begin
+on degree 2 and choose every other degree again; another chord appears without
+introducing a pitch from outside the key. Continue from all seven starting
+points and the scale itself determines a family of triads. Their different
+qualities emerge from its unequal spacing.
 
-These are *diatonic chords*. Roman numerals name them by degree and quality:
-uppercase for major, lowercase for minor, and a diminished marker for degree 7.
-The list `I, V, vi, IV` describes harmonic jobs rather than fixed notes. Give it
-a new key and the progression transposes while its relationships survive.
+These are *diatonic chords*. Roman numerals name their scale position and encode
+quality: uppercase for major, lowercase for minor, with a diminished marker on
+degree 7. A progression such as `I, V, vi, IV` therefore stores relationships
+instead of fixed note names. Bind it to another key and every pitch changes,
+while the sequence of harmonic jobs stays recognisable.
 
 ## Run this
 
@@ -49,53 +51,61 @@ progression = [:I, :V, :vi, :IV]
 end
 ```
 
-The four passes rise by key while retaining one harmonic contour. The first
-chord establishes home, V increases tension, vi diverts the expected return, and
-IV opens the route back toward I. The same symbolic array drives every pass.
+The four passes climb through different keys while tracing the same harmonic
+route. I establishes home; V raises the expectation of return; vi diverts that
+expectation toward a related minor chord; IV opens another path back toward I.
+Because one symbolic array drives every rendering, the common behaviour is
+easier to hear than it would be in four unrelated note lists.
 
 ## Change one thing
 
-1. Replace the progression with `[:I, :IV, :V, :I]`. The final return closes
-   more firmly because V points directly to I.
-2. Print every C-major triad as MIDI integers and inspect the third sizes. The
-   fixed quality pattern is major, minor, minor, major, major, minor, diminished.
-3. Change the renderer to arpeggiate each chord. The harmony stays fixed while
-   sequential attacks expose its constituent scale degrees.
+1. Replace the progression with `[:I, :IV, :V, :I]`. Hear how V now spends its
+   tension on an immediate tonic rather than on a diversion to vi. The final
+   boundary should close more firmly.
+2. Print the seven C-major triads as MIDI integers and compare the sizes of their
+   two thirds. The resulting pattern is major, minor, minor, major, major, minor,
+   diminished; it is derived rather than stored in the code.
+3. Arpeggiate each chord in the renderer. The progression and pitch content stay
+   fixed, while separate attacks reveal which alternating scale degrees make
+   each harmony.
 
 ## Why it works
 
-The scale array contains seven distinct degrees plus a repeated octave. Building
-a triad means selecting every other degree. Modular indexing wraps degrees 8 and
-9 to the start; octave correction keeps wrapped notes above the chord root.
+The scale array contains seven distinct degrees and a repeated octave. To build
+a triad, select every other degree. Modular indexing wraps the upper selections
+to the beginning of the seven-note collection; octave correction then restores
+their ascending order above the current chord root.
 
-The resulting qualities require no separate quality table. They emerge from the
-major scale. Roman numerals then become keys into the seven-element chord array.
-This separates progression data from realisation, much as the course event model
-separates a score from its renderer.
+No quality table is needed. The spacing already present in the major scale
+produces the familiar major-minor-minor-major-major-minor-diminished pattern.
+Roman-numeral symbols become keys into that generated chord array. Score data
+can then say what progression is intended, while the renderer decides which
+concrete notes express it in the current key.
 
-Uppercase and lowercase spelling carries information that a bare integer degree
-would omit. The symbol `:V` says both position and expected major quality. In a
-later chromatic progression, a chord may violate the diatonic default, so keeping
-the symbolic layer explicit gives that change somewhere to live.
+Case carries information that a bare integer degree would lose. `:V` states both
+position and the major quality expected in a major key. Later, a chromatic chord
+may alter that default, and an explicit symbolic layer gives the alteration a
+place to be represented. Reducing everything to zero-based indices too early
+would erase the distinction the notation is trying to communicate.
 
-The numerals also make comparison across keys practical. A C-major `V` and an
-F-major `V` contain different pitch classes, yet both occupy the same position
-in a phrase and exert the same kind of pressure toward their tonic. This is a
-form of late binding: the progression stores intent, then `render_progression`
-resolves that intent against a key. If you store only MIDI arrays, transposition
-can move the sound while losing the names that explain why the chords follow
-one another.
+Roman numerals also make comparison across keys practical. The dominant of C
+major and the dominant of F major contain different pitch classes, but both
+occupy the same formal position and direct energy toward their own tonic. This
+is late binding in a musical form: the progression stores intent, and
+`render_progression` resolves it against a root. A collection of MIDI arrays can
+be transposed, but it does not explain why one chord follows another.
 
-One limitation remains visible in the lookup. `:I` and `:i` would need different
-quality rules, and inversions need another field rather than a new numeral for
-every voicing. A fuller record might hold `:degree`, `:quality`, and `:bass`,
-leaving the renderer to choose concrete notes. The short symbol works for this
-diatonic comparison because its defaults are unambiguous.
+The lookup exposes the limits of the short symbol. Major `:I` and minor `:i`
+need distinct defaults, while inversion is better stored as another field than
+encoded in a proliferation of names. A fuller record could hold `:degree`,
+`:quality`, and `:bass`, leaving concrete voicing to the renderer. For this
+diatonic comparison, the compact symbols work because their defaults are clear.
 
 ## Take it further
 
-Write `progression_notes(root, numerals)` that returns chord arrays without
-playing them. Feed `[:vi, :IV, :I, :V]` into the function for all twelve roots.
-Assert that each result contains four three-note chords and that every pitch
-class belongs to its key. Then render one chosen key with inversions selected by
-Lesson 27's `voice_near` idea.
+Write `progression_notes(root, numerals)` so it returns chord arrays without
+playing them. Evaluate `[:vi, :IV, :I, :V]` in all twelve roots. Each result
+should contain four three-note chords, and every pitch class should belong to
+the corresponding major key. Once those structural checks pass, choose one key
+and render it with inversions selected using Lesson 27's `voice_near` idea. The
+same symbolic plan should survive both validation and voicing.

@@ -9,9 +9,11 @@ status: draft
 
 ## The idea
 
-Pitch and oscillator do not identify an instrument on their own. The change in amplitude over time carries much of what the ear recognises. An *envelope* divides that change into attack, decay, sustain, and release. Attack measures the rise, decay the fall toward a held sustain level, and release the fade after the held part ends. The program fixes `:prophet` and C4, then plays four envelope hashes. Treat each hash as a compact description of a gesture rather than a set of cosmetic options.
+Pitch tells you which note is sounding, and an oscillator supplies raw colour, but neither fully describes the gesture. A note that reaches full level at once behaves differently from one that swells slowly into view. A long fading tail occupies musical space differently from an abrupt stop. Much of what a listener recognises as instrumental character lies in this change of amplitude over time.
 
-The log and the sound answer different questions. Printed values expose the representation; playback exposes the musical consequence. Keep both visible while editing, since an arithmetic error can still produce a plausible noise.
+An *envelope* divides that change into attack, decay, sustain, and release. Attack is the rise toward a peak. Decay moves from that peak toward a held sustain level. Sustain describes the maintained portion, and release is the return to silence after the held portion ends. Sonic Pi exposes these segments as parameters, which makes an envelope readable as data.
+
+The program fixes the `:prophet` synth and C4, then plays four envelope hashes. Hear them as four gestures made from the same pitch and oscillator: a clipped sound, a swell, a held note, and a note with a lingering release.
 
 ## Run this
 
@@ -32,30 +34,32 @@ envelopes.each do |shape|
 end
 ```
 
-The first note arrives immediately and stops quickly. The second swells into view. The third strikes, settles, and holds. The fourth leaves a long tail that overlaps the silence after its trigger.
+The first envelope schedules a very short event, while the second takes more than a beat to reach its peak. The third begins sharply and maintains a longer body; because the hash does not lower `sustain_level`, its decay value does not create the pronounced drop that a lower plateau would. The fourth totals about 2.62 beats before any synth-specific tail, so it occupies most of the three-beat slot without necessarily crossing into the next one. Audition the four gestures before attaching stronger perceptual descriptions.
 
 ## Change one thing
 
-1. Set the slow envelope's attack to `2`. Its onset becomes so vague that the beat is harder to locate.
+1. Set the slow envelope's attack to `2`. The note now spends most of its slot approaching the peak. Listen for the difference between knowing when the code triggered and hearing when the note seems to arrive.
 
-2. Raise the percussive envelope's release from `0.1` to `1.5`. The attack stays sharp while the tail fills the following space.
+2. Restore the original and raise the percussive envelope's release from `0.1` to `1.5`. Its attack remains sharp, but the tail fills what was previously silence. This changes connection without moving an onset.
 
-3. Set sustain level to `0.2` in the held shape. Listen for the drop after the initial peak.
+3. Restore the envelopes and add `sustain_level: 0.2` to the held shape. Attend to the decay from the initial peak. A lower plateau makes that internal drop easier to hear.
 
-After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
+Keep pitch, synth, and the other envelope segments fixed during each edit. Attack, release, and sustain level then reveal three different parts of the note's history.
 
 ## Why it works
 
-An envelope is a state machine over amplitude. Attack moves from zero to peak, decay moves to the sustain level, sustain holds, and release returns to zero. Staccato, legato, and accent later become choices about these durations and levels.
+An envelope behaves like a state machine over amplitude. It moves from silence to peak, from peak to a sustained level, and from that level back to silence. The segments are related phases of one gesture, not four independent effects. Changing the attack alters how the listener locates the beginning; changing the release alters how the note gives up its space.
 
-The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+Scheduling and envelope time remain separate. `sleep 3` determines when the next event is triggered. It does not force the current sound to end at that boundary. A release longer than the sleep can overlap the next note, while a short envelope may leave silence before the next trigger. This difference will become important when rhythm examples distinguish an absent attack from a tail still fading through a rest.
 
-ADSR labels describe control segments rather than four independent sounds. A long attack consumes time before the peak, and release begins when the note is allowed to end. Sonic Pi's synth implementations may respond differently at extreme settings, so compare shapes on one synth before generalising. These envelope choices return throughout the book when a note needs to detach, overlap, or carry an accent. Part 2 now strips away timbre and organises pitch into a twelve-class address space.
+The four hashes make the shapes inspectable. You can compare their attack values, sort them by release, or copy one profile to another pitch without rendering anything. Playback supplies the missing perceptual information: synth implementations have their own response curves, and extreme settings may not sound proportional to their numbers. Compare envelope shapes on one synth before assuming another synth will behave identically.
 
-Duration and envelope are related but separate. `sleep` decides when the following event starts; release decides how long the present event continues fading. A release longer than the sleep creates overlap, while a shorter release creates space. Keep this distinction in mind when later rhythm examples use silence: an absent attack and a decaying tail can occupy the same beat differently.
+Later terms such as staccato, legato, and accent will draw on these same variables. A detached note usually combines a clear attack with a short sounding body. A connected line may overlap releases across successive onsets. An accent can involve amplitude, attack, or both. The vocabulary becomes more useful once you can hear which segment carries the effect.
+
+Part 2 will set timbre aside and organise pitches into a twelve-class cycle. The envelope does not disappear; it returns whenever those pitches need clearer separation or a different kind of connection.
 
 ## Take it further
 
-Choose a recorded note nearby and estimate whether its attack is immediate or gradual, whether it holds, and how long it releases. Encode that estimate as a hash and alternate your version with the four references. The target is a recognisable amplitude shape, not an exact imitation.
+Choose a short recorded sound available on your computer and listen to its amplitude shape rather than its pitch. Decide whether the attack is immediate or gradual, whether the level falls after the peak, whether a body remains, and how the sound returns to silence. Encode that estimate as a fifth envelope hash and alternate it with the four references.
 
-Store the estimated envelope beside the reference shapes and identify which segment controls each audible difference. Sonic Pi 5 auditioning is required because Ruby syntax cannot reveal a synth's actual response curve.
+The aim is a recognisable gesture, not an exact imitation of the recording's timbre. Record which envelope segment controls each audible difference and note any feature the four-stage model cannot express. Audition the result in Sonic Pi 5, because valid Ruby can establish the shape of the data but cannot reveal the synth's actual response curve.

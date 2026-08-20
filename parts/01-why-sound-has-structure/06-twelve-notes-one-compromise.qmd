@@ -9,9 +9,11 @@ status: draft
 
 ## The idea
 
-Twelve pure fifths almost return to the starting pitch class after seven octaves. Almost is the problem. Multiplying by 3:2 twelve times and comparing with 2 raised to the seventh leaves a small mismatch called the Pythagorean comma. *Equal temperament* distributes tuning error across twelve equal semitone ratios, each `2 ** (1.0 / 12)`. That compromise lets every key use the same keyboard. The program compares a just major triad, built from 1:1, 5:4, 3:2, with an equal-tempered triad at offsets 0, 4, 7.
+A tuning system chooses which frequency relationships remain exact and where small discrepancies will appear. Pure fifths make a tempting foundation: multiply a frequency by `3/2` twelve times and the resulting pitch comes close to seven octaves above the start. It does not arrive exactly. The small mismatch between those two routes is the Pythagorean comma.
 
-Run the unedited program twice before changing it. On the first pass, follow the pulse. On the second, attend to the feature named in the description. Repetition gives you a reference, and a single edit then has something definite to oppose.
+*Equal temperament* solves the keyboard's routing problem by dividing the octave into twelve equal multiplicative steps. Each semitone has the ratio `2 ** (1.0 / 12)`, and twelve such steps produce an exact `2:1` octave. The cost is that most intervals no longer use their pure small-number ratios.
+
+The program places that compromise beside a local alternative. One major triad uses the ratios `1:1`, `5:4`, and `3:2`; the other uses equal-tempered offsets of 0, 4, and 7 semitones. Hear each held chord twice if needed: once as a whole sonority, then with attention on the movement inside its major third.
 
 ## Run this
 
@@ -36,30 +38,30 @@ play_frequencies just
 play_frequencies equal
 ```
 
-The two triads have the same harmonic identity. The just version sits with less motion in its major third. The equal-tempered version carries a faint shimmer there, then works unchanged when transposed.
+Both triads implement a major-third and fifth structure, although the audible contrast may be subtler than the numerical formulas suggest. The ratio-built version is expected to have less internal motion around its third; the equal-tempered version may carry a faint shimmer. Those expectations still require audition on the stated synth and playback system. The tempering discrepancy buys a large structural advantage: the same interval offsets can move to any keyboard root.
 
 ## Change one thing
 
-1. Sustain each triad for six beats. The longer window makes slow beating easier to hear.
+1. Change `sustain: 3` to `sustain: 5` and `sleep 4` to `sleep 6`. Slow interaction needs time to unfold, so the longer envelope and observation slot may expose movement that passed unnoticed in the original pass.
 
-2. Change the root from 220 to 330 Hz. Compare whether the difference between systems becomes more exposed higher up.
+2. Restore the original duration and change the root from 220 to 330 Hz. The formulas remain unchanged, but the higher register may expose the tuning difference more clearly on your speakers.
 
-3. Transpose the equal-tempered offsets by adding 2. Then multiply every just frequency by the same equal-tempered whole-tone ratio and compare the new pair.
-
-After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
+3. Restore 220 Hz. Add 2 to each equal-tempered offset, then multiply every frequency in the ratio-built chord by the equal-tempered whole-tone ratio. Both chords move together, allowing you to compare the systems from a new root rather than comparing two different transpositions.
 
 ## Why it works
 
-Tuning is a choice of mapping from symbolic intervals to frequency ratios. Just intonation uses simple fractions local to a root. Equal temperament uses exponentiation so every semitone has the same multiplicative size and twelve steps close exactly at 2:1.
+Tuning maps symbolic intervals onto physical frequency ratios. Ratio-based intonation can make chosen local relationships exact. Equal temperament instead makes transposition uniform: moving four semitones always multiplies a frequency by the same amount, regardless of the starting pitch.
 
-The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+The formula closes because raising `2 ** (1.0 / 12)` to the twelfth power gives 2. A stack of pure `3:2` fifths preserves another invariant, and twelve applications do not equal seven exact doublings. Neither system is a failed version of the other. They satisfy different constraints.
 
-The twelve-step formula closes the octave because multiplying the semitone ratio by itself twelve times gives exactly 2. Pure fifths optimise a different requirement and therefore miss that closure. Neither mapping is a defective version of the other; each preserves a chosen invariant. In later lessons Sonic Pi note numbers imply equal temperament, while explicit hertz values let the examples step outside it. Lesson 7 holds tuning fixed again and moves attention from frequency relationships to amplitude over time.
+The major third offers the clearest numerical comparison in this chord. The ratio-built frequency is exactly `5/4` of the root, while the equal-tempered version is the fourth power of the semitone ratio. Those two third frequencies occur in separate passes, so they do not beat directly against one another. Instead, each third forms a slightly different relation with its own root and fifth. If the full triad hides that difference, play only the root and third in each pass, then restore all three tones. Isolation locates the relation under comparison; the complete chord restores its musical context.
 
-The major third gives the clearest local contrast in this triad because 5:4 is simpler than the equal-tempered four-semitone ratio. The fifth differs too, though by a smaller amount. Solo the root and third if the full triad hides the effect, then restore all three notes. Isolation identifies the source; the complete chord shows its musical scale.
+Sonic Pi note numbers use equal-tempered keyboard addresses. Explicit hertz values let a program step outside that mapping, as this one does. Keeping both representations visible prevents a common confusion: a symbol such as `:e4` names a keyboard location, not a guarantee of a pure `5:4` relationship with every possible C.
+
+The listening comparison depends on a stable synth and envelope. Change those alongside the tuning and new partials or attacks may conceal the gentle beating you are trying to hear. The next lesson holds pitch and oscillator steady and varies amplitude through time, turning that envelope into the main musical object.
 
 ## Take it further
 
-Print the frequencies of both triads to two decimal places, then calculate the difference between their third degrees. Add a pure fifth stack calculation and print `(1.5 ** 12) / (2 ** 7)`. Keep the listening comparison after the numeric output.
+Print both triads' frequencies to two decimal places and calculate the hertz difference between their third degrees. Add a pure-fifth stack calculation and print `(1.5 ** 12) / (2 ** 7)`. These values make the two kinds of discrepancy inspectable before the sound begins.
 
-The output should show the comma ratio, both frequency lists, and the third-degree difference. Audition the triads in Sonic Pi 5 through the same synth and envelope so timbre does not obscure the tuning comparison.
+Your log should contain the two frequency lists, the third-degree difference, and the comma ratio. Then audition both chords in Sonic Pi 5 through the same synth, amplitude, and envelope. If the contrast remains hidden, reduce each chord to root and third for one pass. Restore the complete triads afterward so the final comparison retains their harmonic context.

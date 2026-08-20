@@ -54,3 +54,15 @@ session should read this file and `DEVELOPMENT.md` before editing prose.
 - [x] Remove the book licence file, footer, README claims, and draft licence rows.
 - [x] Preserve third-party source and rights provenance guidance.
 - [x] Rebuild, inspect, commit, and push the transparent draft.
+
+## Second draft: expository rewrite
+
+- [x] Add acceptance coverage for the revised expository voice before changing the manuscript.
+- [x] Rewrite `STYLE.md` around clarity, humanity, rhythm, unity, and reader guidance.
+- [x] Rewrite the preface, setup chapter, and all 58 lessons without changing the curriculum or code contract.
+- [x] Rewrite the five appendices and align exercise solutions with the revised lessons.
+- [x] Run an independent continuity and tone audit across every reader-facing chapter.
+- [x] Pass pytest, prose lint, Ruby extraction and syntax checks, and `git diff --check`.
+- [x] Render the complete HTML book and inspect representative early, middle, late, and appendix pages.
+- [x] Update the README, changelog, and development record.
+- [ ] Commit and push the completed rewrite.

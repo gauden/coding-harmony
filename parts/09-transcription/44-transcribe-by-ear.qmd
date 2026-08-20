@@ -9,25 +9,31 @@ status: draft
 
 ## The idea
 
-Absolute pitch asks for a note name with no reference. Most transcription does
-not need it. Find one reliable pitch, then hear the rest as distances from that
-anchor. The strongest first anchor is often the *tonic*, the pitch that feels
-like home when the phrase stops moving.
+Absolute pitch identifies a note without a reference, but most transcription
+does not require that ability. One reliable note can become an *anchor*, and
+the surrounding melody can be heard as distances from it. The most useful first
+anchor is often the *tonic*: the pitch that makes the phrase feel at rest when
+motion has finished.
 
-I find it by pausing the source, humming the note that would make the music feel
-finished, and locating that note on a keyboard. The result is a hypothesis.
-Check it against phrase endings and the bass when one is audible. Once the
-tonic is stable, ask whether the next melody note is the same, higher, or lower,
-then measure the interval.
+Look for it by pausing the source, humming the note that would complete the
+phrase, and finding that pitch on a keyboard. The first answer is a hypothesis,
+not a verdict. Phrase endings should return to it or support it, and an audible
+bass may confirm or challenge it. Once the anchor is credible, each new note
+poses a smaller question. Does it repeat, rise, or fall? How far does it travel
+from the last secure pitch?
 
-Work on a short loop. Slowing a recording is useful when it preserves pitch.
-The goal is to reduce the amount of sound held in memory, not to turn the whole
-piece into a blurred crawl.
+Use a short loop long enough to contain one musical thought. Pitch-preserving
+slowdown can separate close attacks, though excessive slowing blurs envelopes
+and makes articulation less representative. The useful reduction is in memory:
+you should be comparing a few notes against an anchor, not carrying an entire
+verse in your head.
 
 ## Run this
 
-The drone keeps C in your ear while two versions of a four-note dictation play.
-The second adds rhythm after the pitch contour is familiar.
+The C drone supplies a persistent reference while the melody states the same
+four pitches several times. Equal durations first make the contour easy to
+retain. The last statement changes only the rhythm, allowing you to hear how
+duration reshapes a pitch sequence you already know.
 
 ```{.ruby audio=""}
 use_bpm 64
@@ -62,48 +68,57 @@ intervals.zip(rhythmic_durations).each do |distance, duration|
 end
 ```
 
-The pitch sequence stays C, D, E, D. The final statement feels different
-because the long notes move. Separating pitch order from duration makes that
-difference easier to name.
+Every melodic statement contains C, D, E, D. At first the notes rise and fall
+in even steps; in the final statement, D and the closing D receive more time.
+That redistributed weight makes the same contour speak differently. Because
+the pitch order is already familiar, your attention can move to the new
+durations without wondering whether the melody itself changed.
 
 ## Change one thing
 
-1. Do not look at intervals. Run the buffer, sing the four melody notes back,
-   then write only U, U, D for the directions between notes. Check the array
-   after your contour is fixed.
-2. Change tonic to note(:g3) and leave the intervals alone. The phrase moves to
-   G, A, B, A. Listen for the preserved shape. This is relative hearing made
-   audible.
-3. Extend intervals to six notes by adding 0 and -1. Keep equal durations for
-   the first attempt. Add a rhythm only after you can sing the six pitches
-   against the drone.
+1. Hide the `intervals` array before running the buffer. Sing the four melody
+   notes back, then record only the directions between them: U, U, D. Reveal
+   the array after the contour feels stable. A wrong interval is easier to
+   revisit once its direction is no longer in doubt.
+2. Change `tonic` to `note(:g3)` and leave the offsets untouched. The melody is
+   now G, A, B, A, yet its size and shape remain recognisable. Listen for that
+   preserved identity before naming the new pitches.
+3. Extend `intervals` to six notes by adding 0 and -1. Begin with equal
+   durations and sing the longer contour against the drone. Add a new rhythm
+   only after the pitch sequence can be recalled without the code in view.
 
 ## Why it works
 
-An interval is a difference, so it survives transposition. The array [0, 2, 4,
-2] describes a relation to an anchor, while [60, 62, 64, 62] fixes one register
-and key. During early ear work, the relative form contains the evidence you
-actually have. Convert it to exact notes after the anchor is checked.
+An interval is a difference between pitches, so it survives transposition. The
+array `[0, 2, 4, 2]` describes a shape relative to an anchor; `[60, 62, 64,
+62]` fixes that shape in one register and key. Early in an ear transcription,
+the relative form often matches the evidence you genuinely possess. Convert it
+to exact note numbers only after the anchor has survived comparison with the
+source.
 
-Use more than the tonic when the phrase is long. A clear high point, repeated
-note, cadence tone, or bass arrival can become another anchor. Fill the gaps
-between anchors in both directions. This avoids accumulating a one-semitone
-mistake across twelve uncertain notes.
+Longer phrases need more than one secure point. A conspicuous high note, a
+repeated pitch, a cadence tone, or an exposed bass arrival can serve as another
+anchor. Work outward from those notes in both directions. This limits error
+propagation: a one-semitone mistake near the beginning cannot silently pull
+twelve later guesses away from the source.
 
-Rhythm usually deserves a separate pass. Tap the attacks on a desk or replace
-every pitch with one neutral beep. A wrong pitch changes one event. A missing
-attack or tie can shift everything after it, which makes rhythmic errors harder
-to localise.
+Rhythm deserves its own hearing. Tap the attacks, or render every event as a
+neutral beep. A wrong pitch damages one event; a missed attack, tie, or rest can
+move everything that follows. Neutral playback exposes the spacing without the
+melodic contour competing for attention.
 
-For a recording, keep a small loop and write the source time beside the phrase.
-Make one claim per replay: attack count, contour, one anchor, or one interval.
-Repeated listening becomes useful when each repetition has a query.
+Write the source time beside every short loop. On each replay, ask for one kind
+of evidence: the number of attacks, the broad contour, one anchor, or one
+interval. Repetition becomes informative when the question changes deliberately
+instead of asking the ear to solve the whole phrase again.
 
 ## Take it further
 
-Transcribe sixteen bars of a familiar monophonic melody. Store each bar
-separately with source timestamps and use the four-pass checklist from Lesson
-43. Add a daily dictation drill over a drone: four notes on day one, six after
-four correct attempts, eight after four more, then rhythm. The target is a
-playable event list with every exact pitch derived from a named anchor or a
-checked interval, plus REVIEW comments wherever that chain is uncertain.
+Transcribe sixteen bars of a familiar monophonic melody, storing each bar with
+its source timestamp and following the four passes from Lesson 43. Alongside
+the project, make a short dictation drill over a drone: begin with four notes,
+move to six after four accurate attempts, then to eight, and introduce rhythm
+only after the pitch sequence is reliable. The resulting event list should be
+playable, and every exact pitch should trace back to a named anchor or checked
+interval. Mark any break in that chain with `REVIEW` and the listening question
+that remains.

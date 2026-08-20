@@ -9,9 +9,11 @@ status: draft
 
 ## The idea
 
-The *minor pentatonic scale* uses five pitch classes per octave and omits the semitone pairs that create the sharpest local friction. That does not guarantee a good melody. It removes one common way for a random choice to sound accidentally wrong against a stable drone. The useful move is to constrain the generator further. The code walks through an E minor pentatonic scale by steps of minus one, zero, or one. Repeated notes and small motions turn independent randomness into a line with memory.
+A random pitch generator knows nothing about melodic direction, repetition, or arrival. Giving it a scale removes some choices, but a useful line needs further constraints. The program below shows how a small amount of state can turn unrelated selections into connected motion.
 
-The log and the sound answer different questions. Printed values expose the representation; playback exposes the musical consequence. Keep both visible while editing, since an arithmetic error can still produce a plausible noise.
+The *minor pentatonic scale* contains five pitch classes per octave. It omits the semitone pairs that often create the sharpest local friction, which makes it forgiving above a stable tonic drone. That familiar description as a scale with “no wrong notes” needs a boundary: membership can reduce clashes, but it cannot supply rhythm, contour, register, or a convincing ending.
+
+Instead of choosing a fresh scale note on every event, the program keeps an index and moves it by minus one, zero, or one. Each choice begins from the previous result. Repeated notes and adjacent steps give the generated line a short memory.
 
 ## Run this
 
@@ -36,30 +38,32 @@ end
 end
 ```
 
-A low E drone fixes the centre. Above it, the walk changes direction gradually and sometimes repeats, so the sequence sounds shaped despite being generated from random choices.
+The long E drone establishes a centre before the first upper note has time to define one. Above it, the seeded walk repeats some notes and usually changes by one scale step, so its direction evolves gradually. The line is still generated, but its local continuity makes it easier to hear as one phrase rather than sixteen independent guesses.
 
 ## Change one thing
 
-1. Replace the steps with `[-2, -1, 1, 2]`. Larger motion makes the line more angular and removes repeated notes.
+1. Replace the step choices with `[-2, -1, 1, 2]`. The walk now skips more often and cannot repeat its current note. Listen for a more angular contour and count how frequently direction changes.
 
-2. Increase the zero entries in the step array. Repetition becomes a structural feature rather than an accident.
+2. Restore the original, then add more zero entries to the step array. Repetition becomes more probable. Notice when a repeated pitch begins to act like a rhythmic anchor rather than a stalled decision.
 
-3. Remove the drone. The pitches remain legal members of the scale, though the sense of E as home weakens.
+3. Restore the original step pool and remove the drone. Every generated note remains in the same scale, but E may no longer feel like a stable home. The edit separates pitch collection from tonal centre.
 
-After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
+The random seed fixes the underlying pseudo-random stream, but changing the step array changes how those draws map to values. Adding zeros therefore does not preserve the same realised choices; it makes the altered policy reproducible. Restore the original step pool when comparing the drone so that pitch generation stays fixed for that edit.
 
 ## Why it works
 
-A random walk is a stateful process. Each new index depends on the previous index, and `clamp` enforces the scale boundary. The fixed random seed makes the run reproducible, which lets you compare one parameter change against the same sequence of choices.
+A random walk is stateful. The index after each event depends on the index before it, so neighbouring outputs are related even though the chosen step is random. `use_random_seed 42` makes a given program reproducible. When the step pool changes, the same random stream is interpreted through a different collection, so the resulting steps need not match the reference run.
 
-The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+The scale, walk, and drone each solve a different part of the musical problem. The scale limits available pitches and avoids its own semitone pairs. The walk supplies continuity from one note to the next. The drone makes E persist as a reference beneath the changing line. None of these guarantees a phrase, but their combined constraints create material that can be judged and revised.
 
-Call it a scale with no wrong notes only as a description of this constrained drone experiment. Rhythm, register, repetition, and phrase ending can still make a weak line. The scale removes its own semitone clashes, while the walk supplies local continuity and the drone supplies a centre. That division of labour is the important model. Part 3 now freezes most pitch decisions and treats onset and duration as first-class data, beginning with fractions of a beat.
+Boundary handling also shapes the melody. `clamp` prevents the index from leaving the scale array by pinning an out-of-range result to the nearest end. An outward step at the top or bottom therefore repeats the boundary note. With enough trials, the extremes may receive extra visits. Reflection would send the walk back inward; wraparound would jump from one end of the array to the other. Those policies produce audible contours, so they belong to composition rather than hidden error handling.
 
-Boundary handling influences the walk's shape. `clamp` causes outward steps at the top or bottom to stick on the boundary, increasing repeated edge notes. Reflection or wraparound would produce different melodic behaviour. The choice is part of composition, not housekeeping. Count visits to each index if the line seems biased toward its extreme pitches.
+The fixed seed does not make the music non-random in method. It makes a particular run repeatable for debugging and comparison. Once the program behaves as intended, a new seed can produce another walk under the same policy. Keep the seed while learning what an edit does.
+
+Part 3 now holds most pitch decisions steady and makes onset and duration the data under examination. The same principle carries over: a useful generator needs a representation, boundaries, and a way to hear whether its constraints produce the intended result.
 
 ## Take it further
 
-Create a ten-trial ear drill. Choose one random scale note in a one-octave window, play it, hum it, then search up or down with two keys or two edited offsets until they match. Log the target, your final guess, and the absolute semitone error.
+Create a ten-trial pitch-matching drill within one octave of the E minor pentatonic scale. On each trial, choose and play one seeded random target, leave time to hum it, then let an index move up or down through the scale until the played guess matches what you intend. Reveal the target only after the final guess.
 
-The ear-drill log should contain ten targets, ten guesses, and ten absolute errors. Keep `use_random_seed 42` while debugging, then audition the exercise in Sonic Pi 5 before treating its pacing as usable.
+Log the target, final guess, and absolute semitone error for all ten trials. Keep `use_random_seed 42` while debugging so the same targets expose changes in control flow and pacing. Audition the complete exercise in Sonic Pi 5 before using it: the pause must allow a considered response, and the reveal must remain separate from the prompt.

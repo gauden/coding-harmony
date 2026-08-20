@@ -9,9 +9,11 @@ status: draft
 
 ## The idea
 
-A useful ear drill controls difficulty, records errors, and delays the answer long enough for a real decision. The program chooses a random root and interval from a configurable weighted array, plays the pair, leaves a pause, then reveals the name in the log and sounds the pair again. Missed intervals can appear more often by repeating their distances in the pool. That small data change is the reason to own the drill code. The same question, pause, reveal structure later works for scales, chords, and cadences.
+An ear drill should make a clear demand and produce evidence about the answer. If the prompt is too broad, the pause too short, or the trial distribution hidden, a final score says little about what you can recognize. Owning the code makes each of those conditions inspectable.
 
-Treat the snippet as a controlled comparison. The shared notes, tempo, and envelope remove distractions, leaving one parameter exposed. That approach is slower than changing several values at once and produces a clearer result.
+The program below chooses a seeded random root and an interval distance from a configurable pool. It plays the ascending pair, leaves four beats for an answer, then prints the standard name and replays the sound. The prompt comes before the label so recognition has to occur without visual help. The replay joins feedback to the exact sound that prompted the decision.
+
+The pool also controls emphasis. Repeating a distance makes it more likely to appear, allowing a difficult interval to receive extra trials without changing the playback loop.
 
 ## Run this
 
@@ -36,30 +38,36 @@ pool = [2, 4, 7, 12, 7]
 end
 ```
 
-Each trial presents an ascending interval without a label. Four beats of silence create answer time. The replay and log then attach the standard name to the sound you have already judged.
+Each trial presents an ascending interval at a root somewhere between C3 and B4. Four beats provide response time; at 72 BPM, that is a little over three seconds. The log then reveals the name and the pair sounds again. The fixed seed reproduces the session only while the random calls and their source collections stay unchanged. A pause edit preserves the sequence; a weighting edit changes the pool and can remap later draws.
 
 ## Change one thing
 
-1. Repeat the distance you miss most in `pool`. Its probability rises without changing the renderer.
+1. Repeat the distance you miss most in `pool`. Before running the drill, calculate its new share of the array. The extra copy raises probability without changing how a trial is rendered.
 
-2. Shorten the reveal pause from four beats to two. Decide whether the new limit causes guessing rather than recognition.
+2. Restore the pool and shorten the answer pause from four beats to two. Record whether you can still name the sound before the reveal or begin responding to time pressure instead of the interval.
 
-3. Restrict roots to one octave, then widen the range. Wider roots test whether you recognise distance independently of register.
-
-After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
+3. Restore the four-beat pause and restrict roots to one octave. After ten trials, widen the range again. Compare errors by distance to see whether recognition depends on a familiar register.
 
 ## Why it works
 
-The drill is a test runner with randomized fixtures. The interval pool defines scope, duplicate values define weights, and the reveal phase supplies feedback. A fixed seed makes a session reproducible while the training policy remains editable.
+The drill resembles a small test runner. The `names` hash defines the valid cases and their expected labels. The pool defines both scope and sampling weight. Root selection varies the fixture, the answer pause creates an unassisted response window, and the reveal supplies feedback.
 
-The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+A fixed random seed is development equipment. It makes chosen roots and distances repeat when the call order and collections are unchanged, so a timing edit can be assessed against known trials. Weighting or range edits alter those mappings and should be treated as newly reproducible sessions rather than identical prompts. For actual practice, different seeds broaden the material. Record the seed whenever you intend to reproduce a surprising error.
 
-Weighting by duplication is transparent for a small pool, though a larger trainer may store explicit counts or probabilities. More exposure is useful only when the reveal and score records distinguish genuine misses from accidental input errors. Keep the daily set narrow enough that progress changes the pool deliberately. Parts 5 and 6 can reuse this control flow by replacing the interval generator and reveal, while retaining seeded selection, answer time, and logged feedback.
+Weighting by duplication is transparent in a five-item pool: the fifth has two entries and is therefore chosen twice as often as each other distance. As the trainer grows, explicit counts or probabilities may communicate policy more clearly. Whatever representation you choose, print or log it. A score without its sampling distribution cannot explain the session's difficulty.
 
-A score of nine out of ten can still hide one interval that never appeared. Count results by distance as well as session total. When the weighted pool changes, compare like with like by retaining the old distribution in the log. Otherwise a higher score may reflect an easier sample rather than stronger recognition. The data should explain the training decision.
+Session totals are also insufficient on their own. A result of nine out of ten may contain no octave trial, or it may contain five fifths because the pool is weighted. Count prompts, correct answers, and misses by distance. When the pool changes, retain the old distribution beside the score so an apparent improvement cannot be explained by an easier sample.
+
+The reveal phase needs enough separation from the prompt to prevent accidental cueing, yet a very long pause makes each trial cumbersome. Treat the four-beat value as a parameter to audition. The right duration allows a complete decision and a recorded answer before feedback begins.
+
+The distance arrays in this interval drill also prepare the next construction.
+Lesson 21 will arrange interval steps into a scale formula, turning the same
+semitone arithmetic from isolated prompts into an ordered route through a key.
+Later drills for scales, chords, and cadences reuse the generator, response
+window, replay, and logged evidence even as their label sets change.
 
 ## Take it further
 
-Run ten ascending trials a day from a set of four intervals. Record answers outside Sonic Pi before each reveal. Add a fifth interval only after scoring at least nine of ten in two consecutive sessions. Preserve the seed and pool used for every logged score.
+Run a ten-trial session from four ascending intervals and write each answer before its reveal. Extend the program or use a nearby text record to capture the date, pool, seed, ten prompts, ten answers, correctness by distance, and total score. Keep accidental input errors distinguishable from genuine recognition misses.
 
-A session record should include date, pool, seed, ten answers, score, and whether the expansion rule fired. Audition the timing and reveal levels in Sonic Pi 5 before using the drill for training.
+Add a fifth interval only after scores of at least nine out of ten in two consecutive sessions under the same distribution. Record whether that expansion rule fired. Before treating the drill as training data, audition its answer pause, replay level, and root range in Sonic Pi 5. The resulting record should explain both what was tested and why the pool changed next.

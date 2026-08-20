@@ -9,27 +9,31 @@ status: draft
 
 ## The idea
 
-A printed score gives exact claims about pitch and duration, but it does not
-remove interpretation. The useful discipline is to preserve what the page says
-before adding what you think the performance needs. I keep two layers: a
-score-faithful event list and a renderer that supplies synth, amplitude shaping,
-and articulation.
+A printed score replaces some of the uncertainty of listening with visible
+claims about pitch and duration. It does not remove interpretation. The useful
+discipline is to preserve what the page says before deciding how Sonic Pi
+should perform it. Keep a score-faithful event list in one layer and let a
+renderer add synth choice, amplitude shaping, and articulation in another.
 
-Measure references belong in the data or beside it. They form a coordinate
-system for review. "The third E is wrong" becomes "measure 2, beat 3 differs
-from the source." Record the source entry from Lesson 42 as well, because
-measure numbering can differ between editions.
+Measure and beat references give that event list a coordinate system. "The
+third E sounds wrong" is hard to investigate; "measure 2, beat 3 differs from
+the source" points directly to a comparison. Keep the source record from Lesson
+42 nearby because the coordinate belongs to a particular edition. A pickup,
+editorial division, or variant measure can change the numbering elsewhere.
 
-Enter one voice and one bar at a time. Resolve the time signature and key
-signature first, then rhythm, pitch, ties, and articulation. Do not correct a
-strange note because a recording plays something smoother. The score and the
-recording are separate witnesses.
+Enter one voice and one bar at a time. Establish the time and key signatures,
+then account for rhythm, pitch, ties, and articulation in that order. If a
+printed note sounds strange beside a familiar recording, record the disagreement
+instead of smoothing the score to match your expectation. Page and performance
+are separate witnesses, and the transcription should say which one it follows.
 
 ## Run this
 
-The event hashes use the shared keys :note, :start, and :duration. Measure
-numbers are provenance. The strict renderer follows the starts exactly; the
-shaped renderer changes amplitude and release without changing the score.
+The event hashes use the book's shared `:note`, `:start`, and `:duration` keys,
+with measure numbers attached as provenance. The first rendering follows the
+data without shaping. The second derives amplitude and release from the same
+events, so you can hear an interpretation without confusing it with a change
+to the notated score.
 
 ```{.ruby audio=""}
 use_bpm 72
@@ -62,44 +66,57 @@ sleep 1
 play_events events, true
 ```
 
-The two statements have identical attacks and pitches. The second grows toward
-the end and leaves small gaps between notes. That difference belongs to the
-renderer, so the event list remains a claim about the page.
+Both statements attack the same pitches at the same times. In the second, each
+successive note is a little louder and its release is shorter, creating a
+gentle growth and narrow gaps. Those audible changes belong to the renderer.
+The event list remains a checkable claim about what appears on the page.
 
 ## Change one thing
 
-1. Change the duration of the G in measure 1 from 2.0 to 1.5. The second measure
-   still begins at start 4.0, so you hear a half-beat hole. Absolute starts make
-   the damaged bar visible instead of shifting later events.
-2. Change only the shaped amplitude formula to subtract index * 0.04. The score
-   now decrescendos in the second rendering. No provenance field changes.
-3. Add a source_page field to each event or to a surrounding score hash. Print
-   measure and page in the log before each note. The sound remains fixed while
-   review becomes faster.
+1. Shorten the G in measure 1 from 2.0 to 1.5. Measure 2 still begins at global
+   start 4.0, so a half-beat hole opens before F. The silence identifies a
+   damaged duration without shifting every later event.
+2. Restore the G, then make the shaped amplitude formula subtract `index *
+   0.04`. Only the interpreted rendering now recedes. Check the array afterward:
+   no pitch, start, duration, measure, or source claim should have changed.
+3. Add a `source_page` field either to every event or to a score object around
+   the array. Print measure and page before each attack. Playback remains the
+   same, while a disputed note becomes faster to locate on the original page.
 
 ## Why it works
 
-The score layer resembles immutable input. A renderer is a pure-enough
-transformation from that input to timed Sonic Pi calls. Keeping those concerns
-apart lets you compare interpretations without corrupting the transcription.
-It also lets validation operate on starts and durations before any synth choice
-is involved.
+The score layer behaves like immutable input. The renderer transforms that
+input into timed Sonic Pi calls, but it does not rewrite the evidence it was
+given. This separation lets several interpretations share one transcription.
+It also lets duration and alignment checks run before reverb, synth envelopes,
+or performance dynamics complicate what you hear.
 
-Ties need special care. A tie joins durations for one sustained pitch; it does
-not create a second attack. Encode the sounding event, then retain a comment or
-field that explains the tied notation when review requires it. Slurs and phrase
-marks affect articulation rather than event count.
+Ties reveal why notation and sounding events are not always one-to-one. A tie
+joins durations of the same pitch, producing one sustained sound rather than a
+second attack. Encode the sounding event, then retain a comment or field that
+describes the tie if later review needs the printed detail. A slur or phrase
+mark usually changes articulation instead of event count, so it belongs in a
+field that the renderer can interpret.
 
-Accidentals require the scoped resolver from Lesson 40. Apply the key signature
-default, then the bar-local accidental, then convert the result to a Sonic Pi
-note or MIDI number. Reset the local accidental map at the bar line. This is
-where a readable measure-by-measure representation earns its keep.
+Accidentals require the scoped resolver from Lesson 40. Begin with the key
+signature default, apply any accidental that governs the pitch within the bar,
+then convert the resolved spelling to a Sonic Pi note or MIDI number. Reset the
+bar-local accidental map at the bar line. A measure-by-measure representation
+makes that scope visible and prevents an F-sharp from leaking into the next
+measure because a mutable map was left uncleared.
+
+When score and recording disagree, preserve both observations in separate
+notes. A performer may alter rhythm, an edition may differ, or the recording
+may use an ornament omitted from the page. The aim is not to force the witnesses
+into agreement. It is to keep the source-faithful layer precise enough that an
+interpretive renderer can depart from it knowingly.
 
 ## Take it further
 
-Choose a short public-domain score from your Lesson 42 inventory. Encode at
-least eight measures of one voice with exact pitch, start, and duration. Add
-source page and measure references, plus comments for ties and unclear print.
-Produce two renderings from the same array: score-strict and
-performance-shaped. The answer must show that changing articulation, dynamics,
-or synth leaves the transcribed event data unchanged.
+Choose a short public-domain score from the inventory made in Lesson 42. Encode
+at least eight measures of one voice with exact pitch, global start, and
+duration. Attach source page and measure references, and annotate ties or
+unclear print where they affect your decisions. Produce a score-strict
+rendering and a performance-shaped rendering from the same array. Demonstrate
+the separation by changing articulation, dynamics, or synth in the renderer
+and confirming that the transcribed event data remains unchanged.

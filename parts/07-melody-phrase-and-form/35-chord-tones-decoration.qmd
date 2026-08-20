@@ -9,16 +9,16 @@ status: draft
 
 ## The idea
 
-Remove every short note between a melody's long arrivals and a plain harmonic
-skeleton appears. Put the short notes back and the line acquires momentum. The
-extra pitches may fall outside the current chord, but they are organised by
-where they come from and where they go.
+Remove the short notes between a melody's longer arrivals and a plain harmonic
+skeleton often appears. Restore them and the line regains momentum, delay, and
+small detours. Some restored pitches may not belong to the harmony sounding at
+that instant, yet their paths into and out of stable tones make them intelligible.
 
-A *passing tone* fills the step between two chord tones. A *neighbour tone*
-leaves a chord tone by step and returns. A *suspension* holds a previous chord
-tone into the next harmony before resolving downward. An *anticipation* arrives
-early on a tone belonging to the next chord. These are behaviours over time,
-not labels attached to isolated pitch classes.
+A *passing tone* fills a step between two chord tones. A *neighbour tone* leaves
+a chord tone by step and returns. A *suspension* carries a tone from the previous
+harmony into the next before resolving downward. An *anticipation* reaches a
+tone of the coming chord before that chord arrives. Each term describes behaviour
+across time; an isolated pitch class cannot tell you which role it is playing.
 
 ## Run this
 
@@ -50,51 +50,62 @@ decorated = [[:c4, 1], [:d4, 1], [:e4, 1], [:f4, 1],
 end
 ```
 
-The skeleton exposes four stable targets and little else. Passing notes connect
-targets by step. Neighbours create local motion around one target. The decorated
-version increases density toward the final C, so the same harmonic outline gains
-direction.
+The skeleton presents four long targets with little motion between them. In the
+array named `passing`, D fills the step from C to E; the later A introduces motion
+between G and C without completing every intervening step. Neighbours circle
+briefly away from a target and back. The most decorated line becomes
+denser as it approaches the final C, giving a directional shape to the same
+underlying harmonic outline.
 
 ## Change one thing
 
-1. Change D in the passing version to D-sharp. It still lies between C and E in
-   register, but the unequal steps give the connection another colour.
-2. Hold F across a change from an F-major accompaniment to C major, then resolve
-   it to E. Hear the suspension as prepared tension followed by a downward step.
-3. Move the final C half a beat early while the previous harmony continues.
-   That pitch becomes an anticipation only because the next chord makes C stable.
+1. Change D in the passing line to D-sharp. It still occupies the register
+   between C and E, but the route now consists of unequal semitone motions.
+   Listen for the new emphasis created by the chromatic approach to E.
+2. The program above contains no harmony timeline, so add one before testing a
+   suspension: hold F major for two beats, move to C major for two, sustain F
+   across that boundary, then resolve it down to E. F begins as a chord tone and
+   becomes dissonant only when the harmony changes.
+3. Use the same explicit timeline for an anticipation. Move the final C half a
+   beat before the C-major chord arrives. The early note becomes stable when the
+   harmony catches up; without the chord boundary, the label would be unsupported.
 
 ## Why it works
 
-Chord membership is evaluated against time. C can be a chord tone over C major,
-a decoration over D minor, or an anticipation before A minor. A melody event
-therefore needs an aligned harmony event before the category can be computed.
+Chord membership must be evaluated at a particular time. C is stable over C
+major, may decorate another harmony, and can anticipate a coming A-minor chord.
+To classify the melodic event, a program needs the harmony aligned with its
+onset and duration. The note value alone is insufficient.
 
-Reduction selects structurally stable notes, often those on strong beats or with
-long durations. Decoration then explains the paths between them. The process is
-lossy and interpretive. Two analysts can choose different skeletons when rhythm
-or harmony is ambiguous. Playing both versions makes the disagreement concrete.
+Reduction chooses notes that appear structurally stable, often because of their
+metric position, duration, or harmonic membership. Decoration then explains the
+routes between those points. The process is interpretive and loses information.
+When rhythm or harmony is ambiguous, two plausible reductions may preserve
+different skeletons. Playing both makes that analytical disagreement audible.
 
-The arrays keep pitch and duration paired. A classifier could add `:role` to an
-event, but the renderer would still consume the original note and timing. That
-annotation belongs to analysis data rather than playback logic.
+The example arrays keep pitch beside duration. A richer event record could add
+`:role`, but playback would still consume the original note and timing. The
+role belongs to the analytical description rather than to the physical act of
+rendering a pitch. Keeping those concerns apart allows an interpretation to
+change without silently rewriting the source melody.
 
-Metric position influences the reading. A dissonant passing tone on a weak
-half-beat can disappear into motion. Hold the same pitch across a strong beat and
-it demands an explanation, perhaps as a suspension. Duration has a similar
-effect. The classification arises from pitch, harmony, onset, and destination
-together. A set-membership check can identify non-chord tones, but it cannot name
-their behaviour without neighbouring events.
+Metric position changes the likely reading. A dissonant step on a weak half-beat
+can pass almost unnoticed. Sustain the same pitch across a strong beat and it
+asks for a stronger explanation, perhaps as a suspension. Duration, preparation,
+and destination contribute too. Set membership can flag a non-chord tone, but
+it cannot name the behaviour without examining neighbouring events in time.
 
-Reduction is also a compositional tool. Start from the skeleton and ask what each
-gap needs: directness, delay, or a small detour. Add one decoration and replay the
-line. When every gap receives a flourish, the stable notes lose their hierarchy.
-The alternating versions in the program keep that trade-off audible.
+Reduction also provides a way to compose. Begin with stable destinations and
+decide whether each gap needs direct motion, delay, or a brief departure and
+return. Add one decoration, then replay the phrase. If every opening receives an
+ornament, the destinations can lose their hierarchy. The program's alternating
+versions keep that trade-off available to the ear.
 
 ## Take it further
 
-Write a two-bar melody over C major then G major. Include and label one passing
-tone, one neighbour, one suspension, and one anticipation. Store each event as a
-hash with `:note`, `:start`, `:duration`, and `:role`. Write a renderer that
-ignores `:role`, then print a second reduction containing only events labelled
-`:chord_tone`.
+Write a two-bar melody over C major followed by G major. Include one passing
+tone, neighbour, suspension, and anticipation, and label each role in an event
+hash containing `:note`, `:start`, `:duration`, and `:role`. The renderer should
+ignore the analytical field. Then print and play a reduction containing only
+`:chord_tone` events. Compare the plain destinations with the full line and
+check that every decoration can be explained by its preparation and destination.

@@ -2,9 +2,11 @@
 title: "Glossary"
 ---
 
-This glossary points to the lesson where a term first does real work. Definitions
-describe how the book uses a word; they are compact reminders rather than a
-second theory course.
+Musical terms become useful when they help you hear or build something. This
+glossary therefore points back to the lesson where each term first does real
+work. The definitions describe how the book uses the word and recover the
+central idea; the named lesson supplies the sound, code, and surrounding
+argument.
 
 ### Accent
 
@@ -13,8 +15,9 @@ Meter becomes audible through a repeating pattern of accents. Lessons 13 and 36.
 
 ### Accidental
 
-A sharp, flat, or natural written beside a note. It overrides the key signature
-for the rest of its bar and voice. Lesson 40.
+A sharp, flat, or natural written beside a note. Within the notation model used
+here, it changes later occurrences of the same letter and octave in that voice
+until the bar ends. Lesson 40.
 
 ### ADSR
 

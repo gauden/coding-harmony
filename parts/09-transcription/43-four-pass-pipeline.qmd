@@ -9,26 +9,30 @@ status: draft
 
 ## The idea
 
-A transcription error becomes expensive when pitch, rhythm, and expression are
-all uncertain at once. I first tried to capture a melody note by note in one
-pass. Every correction shifted the later events, so I could no longer tell
-whether a wrong entrance came from the source, my hearing, or an earlier edit.
+Pitch, rhythm, and expression arrive together in a recording, but entering
+them together makes errors surprisingly hard to locate. If an early duration is
+wrong, every later entrance moves; correcting a pitch can then obscure whether
+the original fault belongs to the transcription, the source, or the latest edit.
 
-The four-pass pipeline keeps one class of uncertainty in view at a time. Pass 1
-records tempo, meter, and phrase boundaries. Pass 2 records rhythm without
-pitch. Pass 3 adds contour and a few anchor pitches. Pass 4 settles exact
-pitches, articulation, dynamics, and timing detail. Each pass produces data
-that the next pass can inspect.
+A four-pass transcription gives each kind of evidence its own turn. Pass 1
+maps tempo, meter, pickup, and phrase boundaries. Pass 2 enters attacks and
+durations on a neutral pitch. Pass 3 adds the contour and a few secure anchor
+pitches. Pass 4 resolves exact pitches, articulation, dynamics, and small
+timing details. The representation grows richer, but its established timing
+structure remains available for comparison.
 
-Do not skip forward because one note seems easy. A confident isolated pitch can
-hide a bar that is half a beat short. Mark uncertainty in the data with a
-searchable comment such as REVIEW. That marker is a work queue, not an
-admission of failure.
+This order is useful even when a particular note seems immediately clear. A
+confident pitch can sit inside a bar that is half a beat short. Keep uncertain
+events in the data and mark them with a searchable comment such as `REVIEW`.
+That label turns doubt into a concrete queue: it says what still needs evidence
+without asking the rest of the transcription to wait.
 
 ## Run this
 
-The example renders the same four-beat phrase after each pass. Integer notes
-stand in for MIDI pitches because pitch arithmetic is the point here.
+The example lets you hear the same four-beat phrase at three stages of the
+pipeline. Integer notes stand for MIDI pitches because the relationship between
+an anchor and an offset is easier to see as arithmetic. Pass 1 is represented
+by the fixed tempo and four-beat total around the playable data.
 
 ```{.ruby audio=""}
 use_bpm 76
@@ -58,49 +62,61 @@ sleep 1
 play_pass exact_notes, rhythm, 1.0
 ```
 
-The first version sounds like a rhythm exercise. The second acquires a shape.
-The third changes two whole-tone guesses into exact pitches, while the duration
-sum remains four beats.
+The repeated C in the first rendering strips away melodic distraction, so the
+six attacks and their spacing are exposed. The contour version then rises to a
+high point and returns. In the final version, provisional offsets give way to
+settled MIDI notes. Through all three statements, the bar still occupies four
+beats. That stable length is the thread connecting the passes.
 
 ## Change one thing
 
-1. Change the last rhythm value from 1 to 0.5. All three renderings now end
-   early. Listen to how clearly a shared rhythmic fault survives later pitch
-   work.
-2. Change the fourth contour step from 4 to 3 without changing exact_notes. The
-   middle rendering reaches a lower high point, while the final pass stays
-   fixed. This is the gap between a contour hypothesis and a settled pitch.
-3. Add the comment REVIEW beside one exact note, then search the buffer for
-   REVIEW. Use the log or editor search as a queue for unresolved events.
+1. Change the last rhythm value from 1 to 0.5. Each rendering now finishes half
+   a beat early because all three depend on the same duration array. Listen to
+   the abrupt ending. Later pitch detail cannot repair a timing error inherited
+   from an earlier pass.
+2. Restore the rhythm, then change the fourth contour step from 4 to 3 without
+   changing `exact_notes`. Only the middle rendering reaches a lower high
+   point. The separation shows how a contour hypothesis can be revised without
+   disturbing the final pitch claim.
+3. Put `REVIEW` beside one exact note and use the editor search to find it.
+   Write a short reason with the marker, such as "upper neighbour obscures
+   attack," so the next replay begins with a specific listening question.
 
 ## Why it works
 
-Each pass is an interface with a narrow contract. The rhythm pass must account
-for the meter, but it does not need to name a pitch. The contour pass must
-preserve that rhythm and describe direction. Exact pitch entry can then compare
-candidate notes against known anchors without reopening the duration problem.
+Each pass has a narrow contract. The rhythm pass must account for the meter,
+including rests and ties, but it need not name a pitch. The contour pass keeps
+that timing and describes direction: repeated, higher, or lower. Exact entry
+then tests candidate notes against known anchors without reopening every
+duration. When a disagreement appears, you know which layer contains it.
 
-Pass 1 often lives as comments or metadata rather than playable events. Write
-the meter, estimated tempo, pickup length, and phrase boundaries first. A
-phrase boundary is especially useful because it limits the damage from a wrong
-duration. You can validate four bars independently instead of allowing one
-missing eighth note to offset the rest of the piece.
+Pass 1 often lives in comments or metadata because its observations concern
+the whole excerpt. Write the meter, estimated tempo, pickup length, source
+times, and phrase boundaries before individual events. Phrase boundaries are
+especially valuable error boundaries. You can confirm four bars, reset your
+count, and begin the next phrase without allowing one missing eighth note to
+shift the remaining minute.
 
-The event schema remains stable across passes. A reusable event eventually has
-:note, :start, and :duration, with optional :amp. During rhythm entry, :note can
-hold a neutral placeholder. During contour entry, it can hold a provisional
-value. The final pass replaces it. Stable keys make diffs readable and allow
-the same validation helpers to run throughout the work.
+The event schema stays recognisable while the evidence changes. A reusable
+event eventually contains `:note`, `:start`, and `:duration`, with optional
+`:amp`. At the rhythmic stage, `:note` can carry a neutral placeholder. At the
+contour stage, it can hold a provisional value relative to an anchor. The final
+pass replaces that value with the settled pitch. Stable keys keep diffs
+readable and let duration checks run before the melody is fully known.
 
-This resembles a compiler pipeline. An early stage establishes structure,
-later stages enrich the representation, and diagnostics stay attached to the
-smallest useful unit. Skipped structure returns as ambiguous debugging.
+Programmers can think of the process as a compiler pipeline. An early stage
+establishes structure; later stages enrich the representation; diagnostics
+remain attached to the smallest useful unit. The analogy also explains the
+discipline of the order. If an early structural pass is skipped, the omitted
+information returns later as a debugging problem whose source is harder to
+name.
 
 ## Take it further
 
-Choose eight bars from one candidate in your source inventory. Create a
-transcription checklist with four signed-off passes and a fixed event schema.
-After each pass, save a separate version or commit. The target is an eight-bar
-event array whose durations validate before exact pitch entry begins. Leave
-every uncertain event marked REVIEW, and include a short note explaining what
-evidence would resolve it.
+Choose eight bars from one candidate in your source inventory and create a
+four-pass checklist around a fixed event schema. Save a separate version or
+commit after each pass so you can see what evidence was added and what remained
+stable. Before exact pitch entry begins, every bar duration should validate.
+Leave each unresolved event marked `REVIEW`, together with a note naming the
+evidence that would settle it: a slower loop, a clearer score page, a bass
+anchor, or another hearing of the attack.

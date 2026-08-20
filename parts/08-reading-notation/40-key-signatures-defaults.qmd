@@ -9,16 +9,18 @@ status: draft
 
 ## The idea
 
-In D major, every written F means F-sharp unless a mark beside that note says
-otherwise. The key signature establishes a persistent default. A natural sign
-can override it for the rest of the bar, and the default returns at the next
-barline.
+In D major, a written F sounds as F-sharp even when no sharp is printed beside
+that particular note. The key signature supplies the standing rule. A natural
+sign can override it locally, later Fs in the same bar inherit that override,
+and the signature's F-sharp returns after the barline. What the page omits is as
+important as what it marks explicitly.
 
-A *key signature* maps letter names to sharp or flat alterations. An
-*accidental* is a local override scoped to a bar and letter-octave position.
-Notation behaves like nested configuration: global defaults, bar-local state,
-and an explicit value on the current event. Reading becomes easier when those
-layers are resolved in order.
+A *key signature* maps letter names to default sharp or flat alterations. An
+*accidental* supplies a local override, scoped here to one bar and one
+letter-octave position. The notation behaves like nested configuration: a global
+default, mutable state within the bar, and an optional assignment on the current
+event. Resolving those layers in order prevents an unmarked note from being
+mistaken for a natural.
 
 ## Run this
 
@@ -62,46 +64,56 @@ bars.each do |bar|
 end
 ```
 
-The first F sounds sharp by default. The natural sign sets the local F4 override
-to zero, so the next F4 in that bar remains natural. The local hash resets before
-bar two, restoring F-sharp. C follows the same process with a flat override.
+The first F inherits one sharp from the signature. The explicit natural stores
+zero as the local F4 alteration, so the following F4 remains natural without
+another sign. When the next bar creates a new `local` hash, F-sharp returns. The
+C-flat example follows the same precedence in the other direction: an event can
+replace a sharp default with a flat local value.
 
 ## Change one thing
 
-1. Change the signature to `{b: -1, e: -1}` for B-flat major. The resolver needs
-   no other change because flat and sharp alterations share one integer field.
-2. Add F5 after the F4 natural. The local key includes octave, so F5 still uses
-   the signature's F-sharp. Remove octave from `scope_key` and compare.
-3. Put an explicit sharp after the natural within the same bar. The later
-   accidental replaces the earlier local value, as a new assignment in scope.
+1. Change the signature to `{b: -1, e: -1}` for B-flat major. Flats and sharps
+   use negative and positive values in one alteration field, so the resolver
+   needs no new control path.
+2. Add F5 after the F4 natural. Because the local key includes octave, F5 still
+   inherits F-sharp from the signature. Remove octave from `scope_key` and hear
+   the F4 natural incorrectly spread into another register.
+3. Add an explicit sharp after the natural in the same bar. The later sign
+   replaces the earlier F4 assignment, demonstrating that local accidental state
+   can change more than once before the barline resets it.
 
 ## Why it works
 
-The resolver searches from most local to most general. An accidental on the
-event updates bar state. Existing bar state overrides the key signature. The key
-signature overrides the natural pitch-class table. `fetch` makes those fallback
-levels explicit.
+The resolver searches from the most local information outward. An accidental on
+the current event first updates bar state. Existing bar state takes precedence
+over the key signature, and the signature takes precedence over the table of
+natural pitch classes. Nested `fetch` calls make that fallback order visible in
+the code rather than relying on a collection of special cases.
 
-Separating letter from alteration preserves spelling. F-sharp and G-flat can
-produce the same MIDI number while retaining different letters and accidental
-values. That distinction supports interval names, key logic, and faithful source
-annotation.
+Letter and alteration remain separate through the calculation. F-sharp and
+G-flat can resolve to the same MIDI number while preserving different source
+letters and signs. That difference supports correct interval names, key-aware
+analysis, and faithful comparison with a printed edition. Collapsing both notes
+to pitch class 6 too early would make later reconstruction guesswork.
 
-Actual notation has further rules, including cancellation conventions and
-accidentals tied across barlines. The small resolver covers the stated model and
-keeps its limits visible. It should be extended from examples rather than grown
-into a speculative notation engine.
+Published notation includes rules beyond this example, among them conventions
+for cancelling accidentals and special treatment of notes tied across a barline.
+The current resolver states a smaller model and exposes its boundary. Extend it
+when a real source supplies a case the model cannot express, so each new branch
+answers an observed notation problem rather than a speculative one.
 
-Key signatures describe defaults by letter, which is why the circle-of-fifths
-order matters again. D major sharpens F and C; it does not declare pitch classes
-6 and 1 without names. A G-flat in the same piece has another spelling path even
-when its MIDI value equals F-sharp. Preserve the source letter through resolution
-so later diagnostics can distinguish an intended enharmonic choice from a typo.
+Key signatures store defaults by letter, which brings the circle of fifths back
+into the data model. D major sharpens F and C; it does not announce anonymous
+pitch classes 6 and 1. A G-flat in the same passage reaches the same MIDI key as
+F-sharp through a different spelling. Preserve the written letter after
+resolution so a diagnostic can distinguish deliberate enharmonic spelling from
+an encoding error.
 
 ## Take it further
 
-Write `resolve_bar(events, key_signature)` that returns new event hashes with a
-`:note` MIDI field while preserving letter, octave, start, duration, and
-accidental data. Test it with a four-bar phrase containing one sharp signature,
-one natural override, a repeated affected note, an octave-displaced note, and a
-barline reset. Print source and resolved events side by side.
+Write `resolve_bar(events, key_signature)` so it returns new hashes with a MIDI
+`:note` while preserving letter, octave, start, duration, and any accidental.
+Use a four-bar phrase containing a sharp signature, a natural override, a
+repeated affected note, the same letter in another octave, and a barline reset.
+Print each source event beside its resolved form. The paired output should show
+both what the notation said and which layer supplied the final alteration.

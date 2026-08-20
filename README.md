@@ -4,25 +4,28 @@ Music theory for people who already write code.
 
 The audience is programmers who are at ease with arrays, functions, and threads
 and who cannot read a note. [Sonic Pi](https://sonic-pi.net/) is the laboratory.
-Each lesson takes one musical idea, encodes it as data, plays it, and asks you to
-change one input and listen again.
+Each lesson begins with one musical question, represents it as data, and makes
+the answer audible. A controlled change then gives the explanation something
+specific to account for.
 
 This is a music-theory course rather than a general Sonic Pi tutorial.
 Programming is assumed. Ruby idioms receive a short explanation when they first
 appear and a fuller reference in the appendices.
 
-The book uses a field-notes voice: first person for the writer, second person for
-the reader, with no motivational filler. The rules are in [`STYLE.md`](STYLE.md).
+The book uses an expository field-notes voice: first person for the writer,
+second person for the reader, and enough context to carry an unfamiliar idea
+from sound to code to theory. The rules are in [`STYLE.md`](STYLE.md).
 
 ## Status
 
-The complete first draft is present: 58 lessons across 13 parts, the preface and
-setup chapter, five reference appendices, and worked entries for all 58 optional
-exercises. Every lesson is marked `draft`.
+The complete first draft has received a book-wide expository rewrite: 58 lessons
+across 13 parts, the preface and setup chapter, five reference appendices, and
+worked entries for all 58 optional exercises. Every lesson remains marked
+`draft` until its code and listening claims pass documented human audition.
 
 The rendered draft is globally attributed to **GPT 5.6 Sol at High Reasoning**.
-It is being tested and completely rewritten by hand before any human-authored
-edition is claimed.
+It is undergoing revision and independent testing; no human-authored edition is
+claimed.
 
 `draft` means the planned lesson has substantive prose and a Ruby example, and
 the extracted Ruby clears syntax checks. It does not mean the examples have been

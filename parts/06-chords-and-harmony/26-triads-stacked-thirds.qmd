@@ -9,15 +9,17 @@ status: draft
 
 ## The idea
 
-Play C, E, and G together. Remove E and the chord loses the property that tells
-you whether it is major or minor. Remove G and the sound loses much of its
-weight. Three notes are enough to establish a compact harmonic identity.
+Sound C, E, and G together, then remove one note at a time. Without E, the chord
+no longer tells you clearly whether it is major or minor. Without G, it loses
+much of the stable frame around the other two pitches. Three notes can therefore
+carry a surprisingly compact harmonic identity, with each member contributing
+different information.
 
-A *triad* contains a root and two notes stacked a third apart. Count semitones
-instead of letter names for now. A major third spans four semitones and a minor
-third spans three. Stack them as 4 then 3 for a major triad, 3 then 4 for minor,
-3 then 3 for diminished, and 4 then 4 for augmented. The four qualities become
-four arrays rather than four diagrams.
+A *triad* contains a root and two notes stacked a third apart. For the moment,
+count those thirds in semitones: a major third spans four and a minor third spans
+three. Stack 4 then 3 for a major triad, 3 then 4 for minor, two 3s for diminished,
+or two 4s for augmented. Writing the qualities as step arrays lets one constructor
+make all four while keeping the audible difference close to the changed numbers.
 
 ## Run this
 
@@ -55,49 +57,55 @@ end
 puts "matches Sonic Pi: #{make_triad(60, [4, 3]) == chord(:c4, :major).to_a}"
 ```
 
-The major and minor chords differ at their middle note. Diminished compresses
-both thirds and sounds pinched. Augmented expands both and withholds a stable
-fifth. The block presentation gives the chord as one object; the arpeggio makes
-its interval construction easier to follow.
+Major and minor differ only at the middle pitch in this common-root comparison,
+so listen there first. The diminished triad compresses both thirds and closes
+its outer frame to a tritone. The augmented triad expands both and overshoots the
+stable perfect fifth. Each chord sounds first as a block, where the tones fuse,
+and then as an arpeggio, where you can trace the two stacked intervals.
 
 ## Change one thing
 
-1. Move the root from `:c4` to `:a3`. The quality remains intact because every
-   pitch receives the same offset.
-2. Reverse `[4, 3]` while the chord is sounding. One changed ordering turns major
-   into minor without moving the root or highest note by much.
-3. Change the synth to `:prophet` and use a longer release. Overlap makes the
-   arpeggio approach the block chord, while separate attacks remain audible.
+1. Move the root from `:c4` to `:a3`. Every pitch receives the same offset, so
+   the chord changes register and name without changing quality. Follow the
+   spacing rather than the absolute notes.
+2. Reverse `[4, 3]`. This makes the lower third smaller and the upper third
+   larger, turning major into minor while retaining the same seven-semitone
+   outer frame.
+3. Change to `:prophet` and lengthen the release. As neighbouring arpeggio notes
+   overlap, the separate intervals begin to fuse into a chord; the attacks still
+   reveal the order in which it was built.
 
 ## Why it works
 
-The root is the reference address. The first third is an offset from the root,
-and the second is an offset from the middle note. Cumulative addition produces
-absolute pitches. This is the same pattern used for scales, with three notes and
-two larger steps.
+The root acts as a reference address. The first third is an offset from it; the
+second is an offset from the middle note. Cumulative addition turns those local
+distances into playable pitches. This is the same operation used to build a
+scale, reduced to three notes and two larger steps.
 
-The outer interval also changes by quality. Major and minor triads both span a
-perfect fifth of seven semitones. Diminished spans six, the tritone from Lesson
-19. Augmented spans eight. That outer frame explains why changing one internal
-third affects stability as well as colour.
+Quality changes the outer interval as well as the inner arrangement. Major and
+minor both span a perfect fifth, seven semitones from root to top. Diminished
+contracts that frame to the six-semitone tritone from Lesson 19. Augmented opens
+it to eight. That is why the altered thirds affect the chord's stability, not
+merely a vague shade of colour.
 
-Spelling still carries musical information. C-E-G and C-F-flat-G can collapse
-to related piano keys under equal temperament, yet the stacked-third account
-depends on letter sequence as well as semitone distance. The constructor in this
-lesson deliberately works at the sounding-pitch layer. When these chords enter
-a key and a score, keep the spelled root and chord quality beside the generated
-integers. That gives later notation code enough information to print the chord
-without guessing how its pitches acquired their jobs.
+Semitone arrays do leave information behind. A written triad is also a stack of
+letter-name thirds; enharmonic spellings that share piano keys need not explain
+the same harmonic structure. This constructor deliberately works at the sounding
+pitch layer. When a chord enters a key or printed score, retain its spelled root
+and quality beside the generated integers so later notation code does not have
+to guess how each pitch acquired its role.
 
-`chord(:c4, :major)` provides a reference for one case. Extend that comparison
-to the other qualities before trusting a reusable constructor. Ruby syntax can
-confirm that the program parses. Sonic Pi auditioning still has to confirm
-balance, timing, and the claimed distinctions.
+The built-in `chord(:c4, :major)` call supplies a reference case for the local
+constructor. A reusable version should compare the remaining qualities as well.
+Passing those array checks shows that the pitch arithmetic agrees; auditioning
+still has another job, since syntax and equality say nothing about whether a
+chosen synth or release makes the contrasts easy to hear.
 
 ## Take it further
 
-Build a four-choice chord-quality drill from `qualities`. Start with
-`use_random_seed 42`, choose a quality and a root from MIDI 48 through 59, play
-the arpeggio followed by the block, wait four beats, then print the answer. Run
-ten trials and tally your answers outside the program. Each trial must use the
-same synth, rhythm, amplitude, and register span.
+Build a ten-trial drill from the four entries in `qualities`. Begin with
+`use_random_seed 42`; choose a quality and a root from MIDI 48 through 59, play
+the arpeggio and then the block, leave four beats for an answer, and print the
+name. Keep synth, rhythm, amplitude, and register span identical across trials.
+That consistency removes clues unrelated to interval structure and makes a tally
+of confusions useful evidence about what you can hear.

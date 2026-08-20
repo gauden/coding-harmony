@@ -9,15 +9,17 @@ status: draft
 
 ## The idea
 
-An eight-bar phrase can stop, pause, or turn aside depending on its last two
-chords. Keep the melody and rhythm fixed and change only that boundary. V to I
-lands at home. IV to I arrives with less pressure. A phrase ending on V hangs
-open. V to vi aims for home and swerves.
+The last two chords can make an eight-bar phrase stop, pause, or turn away from
+an expected destination. Hold the preceding material steady and the distinction
+becomes plain. V to I reaches home with pressure behind it. IV to I arrives more
+gently. A phrase that ends on V remains open, while V to vi aims toward tonic
+and changes course at the last moment.
 
-A *cadence* is a conventional harmonic gesture at a phrase boundary. The four
-behaviours above are authentic, plagal, half, and deceptive cadences. The names
-are useful after the boundary types are audible. Before that, they risk becoming
-four labels attached to silent arrows.
+A *cadence* is a conventional harmonic gesture at a phrase boundary. Those four
+behaviours are called authentic, plagal, half, and deceptive cadences. Learn the
+names alongside the sounds they organise. A cadence is not merely a two-chord
+arrow on a page; it describes how that arrow behaves after enough context has
+made a boundary audible.
 
 ## Run this
 
@@ -54,53 +56,59 @@ endings.each do |name, ending|
 end
 ```
 
-The first six chords establish enough context for the endings to behave as
-punctuation. Authentic and plagal both reach I, but V carries a leading tone and
-stronger forward pressure. The half cadence stops on V. The deceptive cadence
-shares two notes between I and vi, so the substitution is smooth and displaced.
+The common six-chord body gives each ending something to punctuate. Both
+authentic and plagal cadences reach I, but V carries the leading tone and creates
+stronger forward pressure than IV. The half cadence stops at that pressure point.
+The deceptive ending moves to vi instead; because I and vi share two tones, the
+substitution sounds connected even as the expected destination slips away.
 
 ## Change one thing
 
-1. Remove the six-chord body and play each ending alone. Cadential identity
-   weakens because a boundary needs preceding motion.
-2. Hold the final chord for four beats. Duration can make an open harmony sound
-   more deliberate, though the half cadence still lacks a return to tonic.
-3. Put E in the bass of the final I chord. The authentic cadence retains its
-   harmonic labels while the inverted tonic softens the arrival.
+1. Remove the shared body and play each ending by itself. The chord pairs remain
+   different, but their cadential identities weaken because there is less phrase
+   motion for them to complete or interrupt.
+2. Hold the final chord for four beats. Extra duration gives every boundary more
+   authority, though it cannot supply the tonic missing from a half cadence.
+3. Put E in the bass of the final I. The authentic labels remain V-I, yet the
+   inverted tonic carries less weight at the bottom and softens the landing.
 
 ## Why it works
 
-V contains B, the leading tone one semitone below C, and F is often added to form
-V7. Those tones resolve inward to C and E. IV supplies F moving to E and A moving
-to G, producing a gentler arrival. Both gestures rely on short voice movements,
-but their approach chords create different tension.
+V contains B, one semitone below C. Add F to make V7 and two active tones appear:
+B tends upward to C while F tends downward to E. IV approaches tonic through a
+different pair of short motions, F to E and A to G, without the dominant's
+leading-tone pressure. Both cadences use economical voice movement, but the
+approach harmony prepares a different kind of arrival.
 
-The half cadence ends after the question has been posed. V is stable enough to
-support a pause and directional enough to predict continuation. The deceptive
-cadence exploits that prediction. Instead of C-E-G, it gives A-C-E. Two expected
-tones appear while the bass moves elsewhere.
+A half cadence stops after the directional harmony has been stated. V can
+support a pause, but it still predicts continuation. The deceptive cadence uses
+that prediction against the listener. Instead of the expected C-E-G, it gives
+A-C-E. Two tonic tones arrive as promised while a new bass reinterprets them as
+vi.
 
-In code, a cadence is a two-symbol suffix appended to shared body data. That
-makes the controlled comparison visible. The renderer knows nothing about
-punctuation; it executes names. Meaning arises from order and tonal context.
+The program represents each cadence as a two-symbol suffix appended to common
+body data. That makes the comparison honest: only the ending varies. The
+renderer has no special instruction to sound conclusive or deceptive. It plays
+the named chords, and their order acquires meaning within the tonal context
+established beforehand.
 
-Melody can confirm or resist the chordal ending. Put C above the final tonic and
-the authentic cadence aligns bass, harmony, and melodic goal. Put E above it and
-the harmony closes while the upper line feels less rooted. End the melody on G
-and the chord is still I, though the top voice retains some openness. That is why
-cadence labels describe a harmonic skeleton rather than every detail of the
-heard boundary.
+Melody can reinforce or resist the harmonic boundary. A final C over tonic
+aligns bass, harmony, and melodic goal. An E allows the harmony to close while
+the upper voice sounds less rooted; G retains more openness still. Cadence names
+therefore describe a harmonic skeleton, not every detail a listener hears at
+the end of the phrase.
 
-Tempo and spacing also affect perception. A two-beat silence after V may make a
-half cadence feel like a deliberate question. Running immediately into the next
-phrase can make the same V behave as an internal connector. Keep those timing
-cues fixed during the four-way comparison, then vary them after the harmonic
-categories are distinct.
+Timing changes the result too. Silence after V can let a half cadence register
+as a deliberate question. Moving immediately into the next phrase turns the
+same chord into a connector. Keep pauses and durations fixed for the four-way
+comparison, then vary them once the harmonic difference is clear enough that a
+timing cue will not be mistaken for a new cadence type.
 
 ## Take it further
 
-Create a ten-trial cadence drill using the four endings. Begin with
-`use_random_seed 42`, choose an ending, play the shared body and cadence, wait
-four beats, then print the name. Use the same voicing and duration for every
-trial. Keep a separate tally of confusions, especially authentic versus plagal
-and half versus deceptive.
+Create a ten-trial drill from the four endings. Begin with `use_random_seed 42`,
+choose one ending, play the common body and cadence, leave four beats for an
+answer, and then print its name. Keep voicing, duration, synth, and pause length
+constant. Record confusions by pair, especially authentic versus plagal and half
+versus deceptive; those errors tell you which kind of boundary needs a slower
+comparison.

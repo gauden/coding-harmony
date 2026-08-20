@@ -9,24 +9,31 @@ status: draft
 
 ## The idea
 
-An arrangement can be harmonically correct and still sound muddy. Two voices
-that occupy the same register, use similar envelopes, and sit in the same
-stereo position compete for the same perceptual space. Turning one down changes
-the balance, but it often leaves the overlap intact.
+Correct chords do not guarantee a clear arrangement. When two voices occupy a
+similar pitch range, use comparable envelopes, and sit in the same stereo
+position, their identities can blur even if every note belongs to the harmony.
+Lowering one part changes the balance, but the quieter sound may continue to
+mask or be masked in the same region.
 
-*Register* is pitch height, *timbre* is the spectral character of a sound, and
-space includes stereo position and apparent depth. Separate voices along one or
-more of these dimensions. Move one part an octave, choose a shorter envelope,
-pan it away from its neighbour, or place it farther back with reverb.
+Three dimensions offer more informative choices. *Register* means pitch
+height. *Timbre* is the spectral character that distinguishes, for example, a
+hollow sustained tone from a bright pluck. Space includes stereo position and
+the apparent depth produced by direct sound and reflections. Move a part an
+octave, shorten its envelope, pan it away from a neighbour, or use reverb to
+place it behind a drier foreground.
 
-I treat volume as the final balance control. First give each musical role a
-place where it can be identified.
+Leave volume for the final balance pass. First each musical role needs a
+place where the ear can identify its attacks and follow its continuation. Once
+those places exist, amplitude can decide which role stands forward without
+having to compensate for unresolved overlap.
 
 ## Run this
 
-One harmonic skeleton is rendered three ways. The sparse version leaves roles
-out. The dense version crowds them into the middle register. The wide version
-spreads register, timbre, pan, and depth.
+One four-chord skeleton receives three treatments. The sparse pass states only a
+low root and high chord tone. The dense pass piles one saw voicing and a second
+copy transposed three semitones higher into the middle, changing pitch classes as
+well as density. The wide pass separates a sustained low voice from a high, short
+pluck and gives each a distinct stereo and depth position.
 
 ```{.ruby audio=""}
 use_bpm 78
@@ -67,47 +74,62 @@ sleep 1
 render_skeleton progression, :wide
 ```
 
-The dense pass piles related saw spectra into one band. The wide pass gives the
-low sustained tone and high pluck separate locations and envelopes.
+In the dense pass, related saw spectra and the added transposition occupy much of
+the same band. Listen for whether that overlap makes individual tones harder to
+trace. The wide pass schedules a low sustain on the left and a high pluck on the
+right; audition is still needed to determine how clearly register, envelope, pan,
+and reverb separate those roles on a particular playback system.
 
 ## Change one thing
 
-1. In the wide layout, remove + 24 from the pluck. Its attacks now overlap the
-   low part's register. Listen for pitch identity becoming harder to follow even
-   though the pan positions remain.
-2. Set both pans to 0. The parts return to the centre, but register and envelope
-   still separate them. This reveals how much work each dimension contributes.
-3. Raise the reverb mix to 0.75. The sustained voice moves farther back and
-   loses definition. Restore the value, then add a short echo to the pluck and
-   compare depth without changing notes.
+1. Remove `+ 24` from the pluck in the wide layout. Its attacks fall toward the
+   sustained part's register while the stereo positions remain separated.
+   Listen for pitch identity becoming less distinct; pan can locate two sounds
+   horizontally without preventing their spectra from competing.
+2. Restore the octave shift and set both pans to 0. Register and envelope still
+   distinguish the centred parts. This comparison reveals how much separation
+   survives when stereo position stops contributing.
+3. Raise the reverb mix to 0.75. The sustained voice recedes and its direct
+   attack loses definition as reflections become more prominent. Return to
+   0.35 before adding any echo to the pluck, so depth changes remain attributable
+   to one effect at a time.
 
 ## Why it works
 
-Masking occurs when sounds compete in similar frequency bands at similar
-times. Register separation reduces spectral overlap. Contrasting envelopes
-separate attack and sustain. Panning gives the ears different level and timing
-cues, while reverb changes the ratio of direct to reflected sound.
+*Masking* occurs when sounds make one another harder to perceive because they
+occupy similar frequency bands at similar times. Register separation reduces
+some of that spectral overlap. Contrasting envelopes keep attacks and sustains
+from competing continuously. Panning provides interaural level and timing cues,
+while reverb changes the balance between direct and reflected sound and thus
+the apparent distance of a source.
 
-These controls interact. A low saw has many upper partials, so moving its
-fundamental down does not guarantee a clear middle register. A sine-like bass
-leaves more room. A long reverb can refill the gaps created by a short release.
-Change one dimension, listen, then inspect the next collision.
+The dimensions interact. Moving a saw's fundamental downward does not remove
+its many upper partials from the middle register. A sine-like bass may leave
+more space above it. Likewise, a short release can open useful gaps, but a long
+reverb tail may immediately refill them. Change one dimension, listen for the
+specific collision it addresses, and then decide whether another dimension is
+still needed.
 
-The harmonic skeleton remains data. Layout is a rendering argument. This makes
-orchestration comparable: the same progression passes through sparse, dense,
-and wide configurations without duplicated chord arrays. It also keeps a muddy
-rendering from being mistaken for a harmony error.
+The harmonic skeleton remains input data; `layout` controls rendering. All three
+versions receive the same chord records in the same order, but the dense renderer
+adds three semitones rather than an octave and therefore changes the pitch-class
+content. Its cloudiness cannot be attributed to layout alone. Replace `+ 15`
+with `+ 12` or `+ 24` when you want a controlled comparison that preserves the
+harmony and varies only register, density, and sound design.
 
-Effects create depth only in relation to a drier foreground. If every voice
-uses the same large room and mix, the entire image recedes. Assign space by
-role, and audition on headphones and speakers because low-frequency response
-changes the result.
+Depth is relational. A reverberant voice sounds distant because a drier voice
+provides a foreground against which to hear it. If every part uses the same
+large room and wet mix, the whole image recedes together and the distinction
+disappears. Audition the layout on headphones and speakers at a moderate level;
+stereo cues and low-frequency response can differ enough to expose a collision
+that one playback system concealed.
 
 ## Take it further
 
-Arrange one eight-bar harmonic skeleton in three versions: sparse, dense, and
-wide. Keep chord data identical. The sparse version may use two roles, the
-dense version at least four, and the wide version must separate every role by
-two of these dimensions: register, synth, envelope, pan, or effect depth.
-Write a one-line diagnosis for each collision you hear and fix it without
-changing chord roots or lowering the master amplitude.
+Arrange the same eight-bar harmonic skeleton in sparse, dense, and wide
+versions, leaving the chord data untouched. Use two roles in the sparse
+arrangement and at least four in the dense one. In the wide version, distinguish
+each role from its nearest neighbour along two dimensions chosen from register,
+synth, envelope, pan, and effect depth. For every collision you hear, write a
+one-line diagnosis that names the competing roles and dimension. Address the
+collision without changing chord roots or reaching first for the master level.

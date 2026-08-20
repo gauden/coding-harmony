@@ -9,16 +9,16 @@ status: draft
 
 ## The idea
 
-Add seven semitones to C and you reach G. Repeat the operation modulo twelve and
-the sequence visits every pitch class before returning to C. Music books draw
-this cycle as the *circle of fifths*. The diagram is a visualisation of a tiny
-generator.
+Move seven semitones upward from C and you reach G. Repeat that operation modulo
+twelve and the path visits every pitch class before it returns to C. The familiar
+*circle of fifths* is a picture of this compact generator, but its musical value
+comes from what the order places next to what.
 
-The order earns its place because neighbouring major keys share six of their
-seven pitch classes. C major and G major differ only at F versus F-sharp. G and D
-differ only at C versus C-sharp. The circle therefore stores proximity as
-adjacency. It also predicts key-signature counts and gives each major key's
-relative minor three semitones below it.
+Neighbouring major keys share six of their seven pitch classes. C major and G
+major differ only in the choice between F and F-sharp; G and D differ only at C
+and C-sharp. Adjacency on the circle therefore represents a close relationship,
+not decorative geometry. The same ordering tracks the growth of key signatures
+and places each major key near its relative minor, three semitones below.
 
 ## Run this
 
@@ -45,51 +45,59 @@ circle.each_with_index do |pitch_class, index|
 end
 ```
 
-The roots move by a perfect fifth while the chords trace a long cycle back to
-C. The log reports six shared pitch classes for every adjacent pair. Near the
-end, enharmonic spelling becomes awkward because pitch-class integers cannot
-choose between F-sharp and G-flat. The `names` array carries that separate
-spelling decision.
+The root sequence advances by perfect fifth while the rendered three-note scale
+fragments mark the long return to C. In the log, every neighbouring pair reports six shared
+pitch classes. The integers remain tidy near the far side of the circle, but
+their spelling does not: pitch class 6 cannot decide whether the context calls
+for F-sharp or G-flat. The parallel `names` array preserves that distinct
+notational decision.
 
 ## Change one thing
 
-1. Change `7` to `5` in the circle generator. You travel by descending fifths,
-   or ascending fourths, and visit the same pitch classes in reverse order.
-2. Print the set difference between adjacent scales as well as the intersection.
-   Moving clockwise replaces degree 4 of the old key with the new leading tone.
-   Hear that changed pitch before each chord.
-3. Start the rendered chord tones one octave lower. The pitch-class structure
-   stays fixed while register changes the weight of the cycle.
+1. Change `7` to `5` in the generator. Five semitones upward is a fourth, which
+   reverses the fifths journey while visiting the same pitch classes. Compare
+   the printed order before listening for a new collection.
+2. Print the set difference as well as the intersection for neighbouring
+   scales. Moving clockwise replaces degree 4 of the old key with the new key's
+   leading tone. Play those two notes before each fragment so the six-note overlap
+   does not hide the single decisive change.
+3. Move the rendered scale fragments down an octave. None of the pitch classes or
+   adjacency results changes, but the cycle acquires more weight in the lower
+   register. This keeps structure and voicing from becoming the same question.
 
 ## Why it works
 
-Seven and twelve are coprime. Repeated addition of seven modulo twelve therefore
-visits all twelve residues before repeating. If the step shared a factor with
-twelve, the cycle would close early. Adding six, for example, alternates between
-two pitch classes.
+Seven and twelve are coprime, so repeated addition of seven modulo twelve visits
+all twelve residues before repeating. A step that shares a factor with twelve
+closes the cycle early. Add six, for example, and the generator can only alternate
+between two pitch classes. The full circle is therefore a consequence of the
+relationship between the step and the size of the pitch-class space.
 
-Major scales are also generated structures. Transposing the interval set
-`[0, 2, 4, 5, 7, 9, 11]` by seven changes only one member after reduction modulo
-twelve. That high overlap explains why adjacent keys offer smooth routes for
-modulation. It also explains the sharp sequence: each clockwise step preserves
-six notes and raises the remaining one.
+A major scale is generated too. Transpose `[0, 2, 4, 5, 7, 9, 11]` by seven and
+reduce modulo twelve: only one member changes. That large overlap explains why
+adjacent keys can provide a smooth route for modulation. It also produces the
+order of sharps. Each clockwise move retains six notes and raises the remaining
+degree to form the new key's leading tone.
 
-The relative minor calculation uses `root - 3`, reduced modulo twelve. Relative
-major and minor keys share a key signature and pitch collection, though they
-centre different tonics. The integer tells you the pitch class; a spelling table
-still has to decide whether `6` appears as F-sharp or G-flat. Lesson 10's second
-field remains necessary.
+Relative minor uses another small transformation, `(root - 3) % 12`. A relative
+major and minor share their pitch collection and key signature, although they
+organise those notes around different tonics. The resulting integer identifies
+a pitch class, but it cannot select an enharmonic spelling. As in Lesson 10, the
+system still needs a named field when F-sharp and G-flat have different musical
+meanings.
 
-The rendered chords in this program use the first three sorted pitch classes,
-which is a crude voicing rather than a faithful root-position triad. Modular sets
-lose octave order. For harmonic playback, recover each scale degree above the
-current root before selecting degrees 1, 3, and 5. The pitch-class version is
-kept here because intersection and adjacency are the objects under inspection.
+The playback code deliberately renders a rough object: the first three sorted
+pitch classes, lifted into one register. That is not guaranteed to be a faithful
+root-position triad because a modular set has forgotten octave order. For a
+harmonic renderer, rebuild the scale above its current root before selecting
+degrees 1, 3, and 5. Here the crude voicing keeps attention on intersection and
+adjacency, the structures the example is meant to expose.
 
 ## Take it further
 
-Write `key_record(index)` for positions from `-7` through `7`. Return the tonic
-spelling, accidental count, accidental type, relative minor spelling, and the
-two neighbouring keys. Generate the values from circle position rather than a
-fifteen-row lookup table. Print the records from seven flats through seven
-sharps, then play each key's tonic triad in that order.
+Write `key_record(index)` for circle positions `-7` through `7`. Each record
+should contain tonic spelling, accidental count and type, relative-minor
+spelling, and the two neighbouring keys. Derive those values from circle
+position instead of copying a fifteen-row table. Print the run from seven flats
+through seven sharps, then play each tonic triad in the same order. When spelling
+and playback disagree, inspect the representation before adjusting the synth.

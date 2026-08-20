@@ -2,8 +2,10 @@
 title: "Sonic Pi cheat sheet"
 ---
 
-The subset this book uses. The built-in help pane documents everything else, and
-it is faster than any web search.
+This is the working subset of Sonic Pi used by the book. It is arranged by the
+musical job each call performs, so you can recover an operation without knowing
+its exact name. The built-in help pane remains the authority for your installed
+version and is usually the fastest place to continue.
 
 ## Sound
 
@@ -15,7 +17,8 @@ it is faster than any web search.
 | `use_synth :prophet` | Set the instrument for what follows. |
 | `synth :pluck, note: :c4` | Play one note on a named synth without switching. |
 
-Common `play` options:
+The pitch begins the event; the following options determine how that event
+occupies acoustic space. These are the `play` options that recur most often:
 
 | Option | Meaning |
 |---|---|
@@ -46,8 +49,9 @@ control voice, note: :g4
 | `in_thread do ... end` | Run a block concurrently, once. |
 | `sync :name` / `cue :name` | Wait for, and send, a start signal. |
 
-One beat lasts `60.0 / bpm` seconds. Score durations stay in beats, so a tempo
-change does not require rewriting them.
+One beat lasts `60.0 / bpm` seconds. Score durations stay in beats, which lets a
+tempo change scale the whole performance without forcing you to rewrite every
+event.
 
 `at` schedules several offsets from the same starting point:
 
@@ -69,13 +73,16 @@ sleep 2
 | `set :name, value` | Store named Sonic Pi state. |
 | `get :name` | Read named Sonic Pi state. |
 
-Counters belong to a thread. Two live loops can tick rings independently without
-stealing positions from each other.
+Counters belong to their thread. Two live loops can therefore tick through rings
+independently without stealing positions from one another. When two rings inside
+the same loop need different counters, name those counters explicitly in the
+full Sonic Pi call.
 
 ## Envelope
 
-`attack`, `decay`, `sustain`, `release`, all in beats. `amp` scales loudness.
-`pan` places the sound between -1 and 1.
+An envelope describes the life of a synth node: `attack`, `decay`, `sustain`,
+and `release`, all measured in beats. `amp` scales its level, while `pan` places
+it between -1 on the left and 1 on the right.
 
 The total audible lifetime often extends beyond the following `sleep`. `sleep`
 advances the score cursor; envelope options describe the synth node. Long release
@@ -125,8 +132,10 @@ with_fx :reverb, room: 0.8 do
 end
 ```
 
-`:reverb`, `:echo`, `:lpf`, `:hpf`, and `:distortion` cover almost everything this
-book needs. Effects nest, and order changes the signal path.
+`:reverb`, `:echo`, `:lpf`, `:hpf`, and `:distortion` cover most of the signal
+shaping in the lessons. Effects can nest, and their order changes the signal
+path. Distortion followed by reverb distorts a dry note and then places it in a
+space; reversing the blocks also distorts the reverberant tail.
 
 ```ruby
 with_fx :distortion, distort: 0.2 do
@@ -145,13 +154,14 @@ end
 | `raise "message"` | Stop the current run with an explicit error. |
 | `assert condition` | Fail when a Sonic Pi assertion is false. |
 
-Print score data before blaming a synth. For a missing note, inspect pitch,
-onset, duration, and amplitude in that order. A duration or amplitude of zero can
-look like a scheduler problem while the scheduler is behaving correctly.
+When a note disappears, print the score data before changing the synth. Inspect
+pitch, onset, duration, and amplitude in that order. A zero duration or amplitude
+can look like a scheduler problem even while the scheduler is doing exactly what
+the event requested.
 
 ## Fresh-buffer checklist
 
-Before treating an example as self-contained, press Stop, switch to an unused
-buffer, paste the block, and run it. Confirm that every `define`, variable, synth
-selection, tempo, and random seed it requires appears above its first use. A
-successful second run in a dirty buffer does not prove that condition.
+A self-contained example should survive amnesia. Press Stop, switch to an unused
+buffer, paste the block, and run it. Every `define`, variable, synth selection,
+tempo, and random seed must appear above its first use. A successful second run
+in a buffer full of remembered definitions proves much less than it seems.

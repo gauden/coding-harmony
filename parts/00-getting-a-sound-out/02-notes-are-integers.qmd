@@ -9,9 +9,11 @@ status: draft
 
 ## The idea
 
-Sonic Pi accepts names such as `:c4`, then turns them into numbers. `note(:c4)` returns 60. Once pitch is numeric, transposition is addition, inversion is subtraction from an axis, and retrograde is ordinary array reversal. I keep note symbols at the boundary where spelling is useful, then use integers for the arithmetic. The phrase below becomes three related arrays before any sound is made. The original supplies the source data, the retrograde reverses its order, and the inversion reflects every pitch around the first note.
+Sonic Pi lets you write a pitch as `:c4`, a readable address that combines a note name with a register. Inside the program, however, pitch is numeric: `note(:c4)` returns 60. That conversion opens a useful door. Musical transformations that sound quite different can be expressed as familiar operations on integers and arrays.
 
-Run the unedited program twice before changing it. On the first pass, follow the pulse. On the second, attend to the feature named in the description. Repetition gives you a reference, and a single edit then has something definite to oppose.
+The program starts with five note symbols and immediately converts them. It then produces two relatives of the original phrase before playing anything. `reverse` creates a retrograde by changing order. Subtraction around an axis creates an inversion by changing direction: every interval above the first E is reflected the same distance below it.
+
+Hear the three forms as a family. The rhythm never changes, and all three begin from the same source data, but each transformation preserves a different property. The retrograde keeps the pitches and reverses their sequence. The inversion keeps the interval sizes and reverses their direction.
 
 ## Run this
 
@@ -38,30 +40,34 @@ play_phrase inversion, 0.5
 puts midi_to_hz(original.first)
 ```
 
-The first phrase climbs and bends back. The retrograde walks through the same pitches in reverse order. The inversion preserves the rhythm while every upward motion becomes downward motion around E4.
+The first phrase climbs from E and bends back from B. The retrograde begins on the original ending note and retraces the array backward. The inversion starts on E as well, but the original upward gestures now fall below it. The one-beat gap after each form gives the previous contour time to clear before the next comparison.
 
 ## Change one thing
 
-1. Add `12` to every item in `original`. The contour stays fixed one octave higher.
+1. Add `12` to every value in `original`. Every pitch moves up an octave, while the distances between adjacent notes remain unchanged. Listen for identical contour in a brighter register.
 
-2. Set `axis` to `note(:b3)`. The reflected intervals remain the same size, though the whole inversion occupies a lower register.
+2. Restore the original, then set `axis` to `note(:b3)`. Reflection still preserves interval size, but a lower mirror point moves the inverted phrase into a different range. Print the result before listening so you can compare the arithmetic with the contour.
 
-3. Print `midi_to_hz(original.first)` and pass the result back through `hz_to_midi`. The round trip should return the starting note number.
+3. Restore the program again. Print `midi_to_hz(original.first)`, pass that frequency through `hz_to_midi`, and compare the result with the first integer. This round trip connects a MIDI address with the frequency sent to the sound engine.
 
-After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
+Keeping the edits separate is part of the musical reasoning. If the axis and register move together, for example, the lower result no longer tells you which operation caused it.
 
 ## Why it works
 
-Pitch arithmetic works because adjacent MIDI note numbers are one semitone apart. Adding 12 moves a note one octave; adding 7 moves it a fifth in equal temperament. `midi_to_hz` and `hz_to_midi` cross between the keyboard address and physical frequency.
+Adjacent MIDI integers stand one semitone apart. Addition therefore performs transposition: `+ 12` raises a pitch by an octave, and `+ 7` raises it by an equal-tempered fifth. The arithmetic is uniform across the range, which makes a pitch array easy to inspect and transform.
 
-The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+Inversion uses a little more structure. For each pitch, the expression `pitch - axis` measures signed distance from the mirror note. Subtracting that distance from the axis puts the result on the other side. A pitch three semitones above E becomes one three semitones below E. The sign changes; the magnitude does not.
 
-Reflection needs an axis for the same reason geometry does. If E4 is the axis, a pitch three semitones above E becomes one three semitones below it. The operation preserves interval sizes and reverses direction. Retrograde changes order instead, so the two transformations answer different questions even when they occasionally produce the same note. Keep the array of integers visible in the log. Lesson 3 leaves those pitch transformations alone and changes their rate, establishing score data that can survive a new tempo.
+Retrograde answers a different question because it leaves every pitch value alone and changes when each one occurs. If the original array is `[64, 67, 69]`, its retrograde is `[69, 67, 64]`; its inversion around 64 is `[64, 61, 59]`. The distinction becomes clearer in the printed arrays than it may be on a first hearing, so keep the log visible while the forms play.
 
-The inversion may leave the comfortable range of the chosen synth. That is a consequence of the transformation rather than an arithmetic fault. Print the minimum and maximum of each form before playing it. If a later arrangement needs another register, transpose the finished form by twelve semitones instead of clipping individual pitches and damaging its interval pattern.
+Numbers are not the whole story of pitch. `midi_to_hz` crosses from a symbolic keyboard address to physical frequency, and `hz_to_midi` crosses back. Later lessons will also preserve note spellings when names carry harmonic meaning. Here, integers are the right working representation because arithmetic is the subject.
+
+An inverted phrase can fall outside the useful range of a chosen synth. That is an audible consequence of correct arithmetic, not evidence that the formula failed. Print the minimum and maximum of each form before playback. If you need to relocate an entire result, transpose it by twelve semitones. Clipping one offending note would damage the interval pattern the inversion is meant to preserve.
+
+Lesson 3 keeps these arrays intact and changes their tempo. That next separation is as useful as this one: pitch data survives a new rate in the same way that the original phrase survives reversal or reflection.
 
 ## Take it further
 
-Create a transposed form five semitones above the original and play four forms in this order: original, transposition, retrograde, inversion. Reuse `play_phrase`; do not copy its loop. Print each array before it sounds so the log becomes a numeric score.
+Create a transposed form five semitones above the original, then play four forms in this order: original, transposition, retrograde, inversion. Reuse `play_phrase` rather than copying its loop, and print each array immediately before it sounds. The log will become a compact numeric score you can follow during playback.
 
-The four forms should use one duration and one renderer. Check the printed arrays for the intended arithmetic, then audition their contours in Sonic Pi 5; syntax alone cannot confirm a convincing inversion.
+Use one duration and one renderer for all four forms so that order, direction, and register remain the audible variables. Check the arrays first: transposition should add five to every item, retrograde should contain the same items in reverse order, and inversion should preserve each distance from the axis with its sign reversed. Then audition the contours in Sonic Pi 5. A correct array proves the transformation; listening tells you whether the result retains a clear shape in the chosen register.

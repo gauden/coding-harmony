@@ -9,27 +9,34 @@ status: draft
 
 ## The idea
 
-The pieces in this book leave behind repeated code: event playback, bar
-validation, transposition, chord voicing, articulation, and source reporting.
-Extract a helper after you have written it more than twice and can name its
-stable inputs. Earlier extraction risks preserving guesses as an API.
-Begin this refactor after completing at least one of Lessons 55-57. A capstone
-provides real call sites, edge cases, and provenance fields; without them, the
-library design is still speculation.
+By the end of a capstone, several pieces of code have begun to recur: event
+playback, bar validation, transposition, chord voicing, articulation, and source
+reporting. Repetition is evidence for a library only after the helper's inputs
+and behaviour have become stable. Extracting it earlier can turn a provisional
+decision into an API that every later piece must work around.
 
-Settle on one event schema. The common keys are :note, :start, and :duration,
-with :amp when dynamics belong to score data. Migrate older pieces instead of
-teaching the library several aliases for duration.
+Complete at least one of Lessons 55–57 before this refactor. A finished project
+provides actual call sites, awkward events, and provenance fields against which
+an abstraction can be judged. Without those examples, a library design mostly
+records expectations about music you have not yet represented.
 
-Keep the framework small enough that the score remains visible. A helper should
-remove accidental machinery, not hide musical decisions. Write a README for
-the version of you who returns in six months and no longer remembers why
-events use absolute starts or where articulation is applied.
+Choose one event schema. Throughout the later lessons, `:note`, `:start`, and
+`:duration` form its centre, with `:amp` present when dynamics belong to score
+data. Migrate older pieces to that schema instead of asking every helper to
+accept `:duration`, `:dur`, and `:length`. Compatibility branches preserve
+short-term convenience by placing permanent ambiguity in future code.
+
+Keep the framework small enough that a score remains readable. A helper should
+remove repeated machinery while leaving musical decisions visible at the call
+site. Write the README for a future reader who remembers Ruby but no longer
+remembers why starts are absolute, how rests are represented, or which layer
+controls articulation.
 
 ## Run this
 
-This fresh buffer contains a compact library surface and one score. Validation,
-transposition, and rendering share the same event schema.
+This fresh buffer presents a small candidate library beside one theme that uses
+it. Validation, transposition, and rendering all accept the same event shape,
+so their contracts can be compared without adapters or duplicated score data.
 
 ```{.ruby audio=""}
 use_bpm 78
@@ -80,53 +87,69 @@ sleep 1
 play_events transpose_events(theme, 7), :pluck
 ```
 
-The second phrase moves up a fifth. The original hashes remain unchanged
-because transpose_events returns a new array.
+The piano states C, E, G, C in a rising arpeggio. The pluck repeats the same
+shape seven semitones higher. `transpose_events` returns new hashes through
+`merge`, so the original theme remains available for playback and comparison
+after the transformed version has been created.
 
 ## Change one thing
 
-1. Remove duration from one event. Validation reports the schema error before
-   playback. Restore it, then add an unknown key and observe that the helper
-   ignores extension data it does not need.
-2. Change transpose_events to mutate event[:note] in place. The first array now
-   changes after transposition, which makes later comparisons unreliable.
-   Restore the merge-based version.
-3. Add an articulation key and a narrow release helper that maps :legato,
-   :detached, and :accent to renderer options. Keep pitch, start, and duration
-   handling outside that helper.
+1. Remove `:duration` from one event. Validation reports the missing contract
+   field before playback begins. Restore it, then add an unrelated key such as
+   `:phrase`. A helper should ignore extension data it does not need while still
+   enforcing the fields on which its own result depends.
+2. Make `transpose_events` assign directly to `event[:note]`, then return
+   `event` explicitly from the `map` block. The transposed phrase may sound
+   correct, but the original array has also moved, so later playback no longer
+   offers a baseline. If you omit the explicit `event`, Ruby returns the assigned
+   number and the renderer receives integers instead of hashes. Restore `merge`
+   and confirm that transformation leaves source data intact.
+3. Add an `:articulation` key and a narrow helper mapping `:legato`, `:detached`,
+   and `:accent` to release or amplitude options. Keep note conversion, start
+   handling, and duration validation outside it. The helper's name and inputs
+   should describe one responsibility.
 
 ## Why it works
 
-A small library gives repeated representations one authority. When every piece
-uses :duration, a validation fix applies everywhere. When transposition always
-returns new events, callers know whether their source data is preserved.
-Predictable contracts are more useful than a large catalogue of wrappers.
+A small library gives repeated representations one authority. If every score
+uses `:duration`, a correction to duration validation can serve them all. If
+transposition always returns new events, callers know that their source array
+remains suitable for comparison. A few predictable contracts offer more value
+than a large collection of wrappers whose effects must be rediscovered at each
+call site.
 
-The helper names expose levels of abstraction. play_events handles the general
-timeline. play_phrase is appropriate for a sequential array where each event
-starts after the previous duration. A chord renderer can remain local until
-several pieces need the same voicing policy.
+Names should reveal the abstraction level. `play_events` renders a general
+absolute timeline. `play_phrase` suits a sequential array in which every event
+follows the previous duration. A voicing helper embodies a harmonic policy and
+should remain local until several pieces genuinely need that same policy. Code
+used once may be clear where it stands.
 
-README documentation should explain choices rather than restate names. Record
-why starts are absolute, whether amp belongs to score or performance data, how
-rests are represented, whether tied notes become one event, and which Sonic Pi
-version the examples target. Include one minimal fresh-buffer example and the
-manual audition steps.
+README prose should explain decisions rather than translate function names into
+sentences. Record why starts are absolute, whether amplitude belongs to score or
+performance data, how rests occupy time, how ties become sounding events, and
+which Sonic Pi version the examples target. Include one fresh-buffer program
+small enough to expose the complete workflow, followed by the manual listening
+checks that automated tests cannot perform.
 
-Version the library beside the pieces that use it. A schema migration should
-be visible in both helper code and score data. Avoid compatibility branches
-that allow :duration, :dur, and :length forever; they move complexity into
-every future function.
+Version the library beside the pieces that depend on it. A schema migration
+should be visible both in helper code and in the score data moved to the new
+shape. Supporting several aliases indefinitely avoids one explicit migration
+at the cost of branching in every validator, renderer, and transformation that
+follows.
 
-The final capability is practical: take a printed score or a short recording,
-turn it into editable code, and explain the theory represented by the data.
-The library supports that work. It is not the work itself.
+The capability at the end of the book remains musical and practical: take a
+printed score or short recording, represent it as editable code, render it, and
+explain the theory visible in the data. The library reduces the repeated work
+around that process. It should never obscure the pitches, timings, sources, and
+interpretive choices that constitute the process itself.
 
 ## Take it further
 
-Collect helpers used by at least three finished pieces. Produce one small
-library file, one README, and a migration of two older scores to the settled
-schema. Required helpers are event validation, play_events, transposition, and
-one articulation or voicing function. The constraint is that each migrated
-score remains readable without opening the helper definitions. Record Ruby
-syntax results and leave Sonic Pi auditioning as manual QA.
+Collect helpers that already appear in at least three finished pieces. Produce
+one small library file and one README, then migrate two older scores to the
+settled schema. Include event validation, `play_events`, transposition, and one
+articulation or voicing function. Read each migrated score without opening the
+helpers: its musical structure and important decisions should still be visible.
+Run and record Ruby syntax and automated validation results, and list the Sonic
+Pi comparisons that remain manual QA rather than describing them as already
+heard.

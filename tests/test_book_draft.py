@@ -88,9 +88,13 @@ def test_preface_opens_with_ai_draft_warning() -> None:
 
     assert 0 <= warning < first_section
     assert "AI-generated" in body[:first_section]
-    assert "tested and completely rewritten by hand" in body[:first_section]
+    assert "revised and independently tested" in body[:first_section]
+    assert "No human-authored edition is claimed" in body[:first_section]
+    assert "under revision and testing" in body[:first_section]
+    assert "under human rewrite" not in body[:first_section]
     assert "https://github.com/gauden/coding-harmony/pulls" in body[:first_section]
-    assert "limited capacity to respond" in body[:first_section]
+    assert "Individual responses may be" in body[:first_section]
+    assert "limited" in body[:first_section]
 
 
 def test_ai_draft_has_global_author_and_no_book_licence() -> None:
@@ -116,3 +120,45 @@ def test_ai_draft_has_global_author_and_no_book_licence() -> None:
         metadata = front_matter(path.read_text(encoding="utf-8"))
         match = re.search(r"^author:\s*(.+)$", metadata, re.MULTILINE)
         assert match is None or "GPT 5.6 Sol at High Reasoning" in match.group(1)
+
+
+def test_second_draft_uses_an_expository_voice() -> None:
+    style = (ROOT / "STYLE.md").read_text(encoding="utf-8")
+    required_principles = (
+        "lead the reader",
+        "unity",
+        "rhythm",
+        "humanity",
+        "concrete detail",
+    )
+    missing = [principle for principle in required_principles if principle not in style.lower()]
+    assert not missing, f"STYLE.md is missing expository principles: {', '.join(missing)}"
+
+    repeated_protocol = (
+        "After each edit, restore the original before trying the next one. "
+        "This keeps the comparisons independent. Write one sentence about the change"
+    )
+    offenders = [
+        str(path.relative_to(ROOT))
+        for path in LESSONS
+        if repeated_protocol in path.read_text(encoding="utf-8")
+    ]
+    assert not offenders, "canned lab-protocol prose remains in: " + ", ".join(offenders)
+
+
+def test_worked_solutions_match_their_exercise_contracts() -> None:
+    text = (ROOT / "appendix" / "solutions.qmd").read_text(encoding="utf-8")
+    required_evidence = {
+        "two distinct rhythms": "second pattern `[0.5, 0.5, 1, 0.25, 0.25, 0.5, 1]`",
+        "tie crosses beat four": "G4 begins at beat 3.5",
+        "enharmonic interval tests": "C-C-sharp as an augmented unison",
+        "tendency tones resolve by semitone": "[43,47,53,62]` to `[43,48,52,60]",
+        "contour is rebuilt": "contour = [60,60,62,62,64,64,62,60]",
+        "period fits eight events": "common five-event opening",
+        "decorations have harmonic context": "C5 at beat 3.5",
+        "middle C is coordinate zero": "middle C at coordinate 0",
+        "accidentals use letter-octave scope": "key = [event[:letter], event[:octave]]",
+        "secondary dominant has explicit voice leading": "F-sharp3 rises to G3",
+    }
+    missing = [name for name, snippet in required_evidence.items() if snippet not in text]
+    assert not missing, "solution regressions remain: " + ", ".join(missing)

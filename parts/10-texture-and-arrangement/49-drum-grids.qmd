@@ -9,25 +9,31 @@ status: draft
 
 ## The idea
 
-A drum groove is easier to inspect when each instrument has one row on a shared
-time grid. Sixteen steps give four subdivisions per beat in 4/4. A hit is true,
-a rest is false, and the column number is the event's time.
+A dense drum groove becomes easier to understand when each instrument occupies
+one row of a shared time grid. In 4/4, sixteen steps provide four subdivisions
+per beat. A `true` value means that the instrument attacks in that column; a
+`false` value leaves silence. The array index is therefore a visible time
+coordinate shared by every layer.
 
-Start with kick, snare, and closed hi-hat. More samples increase the number of
-decisions before the pulse is stable. Separate arrays also support the
-transcription method that works best for dense grooves: loop the source and
-listen for one instrument at a time.
+Begin with kick, snare, and closed hi-hat. Each added sample creates another
+pattern, balance, and timbral decision before the pulse has been established.
+Separate rows also support a reliable way to transcribe busy percussion: loop
+one bar, listen only for the snare, then repeat the process for kick and hat.
+You never have to hold the whole kit in attention at once.
 
-The grid captures attacks. Amplitude captures accents, and a small sleep offset
-can place an instrument ahead of or behind the exact subdivision. Those
-performance details should remain visible beside the pattern rather than being
-buried in a recorded loop.
+The Boolean grid records attacks, not the entire performance. Parallel
+amplitude data can show accents, while a small sleep offset can place one layer
+slightly behind or ahead of the strict subdivision. Keeping these details in
+code makes the groove inspectable. An opaque audio loop might preserve the
+feel, but it would conceal which part of that feel came from position, accent,
+or microtiming.
 
 ## Run this
 
-The hi-hat marks all sixteen steps. Kick and snare occupy selected columns.
-Accent arrays make the beat hierarchy audible, and the hat plays 0.02 beats
-late.
+The hi-hat marks all sixteen subdivisions. Kick and snare occupy fewer,
+structurally stronger columns. A four-value amplitude pattern gives each group
+of hats a clear first step, and the hat thread delays those attacks by 0.02
+beats while leaving kick and snare on the grid.
 
 ```{.ruby audio=""}
 use_bpm 100
@@ -53,47 +59,58 @@ hat_amp = [0.8, 0.35, 0.5, 0.35] * 4
 end
 ```
 
-The kick establishes beats 1 and 3 with an extra pickup before beat 3. The
-snare marks beats 2 and 4. The hat accents every beat and sits slightly behind
-the kick-snare grid.
+The kick establishes beats 1 and 3 and adds a pickup on the subdivision before
+beat 3. Snare attacks mark beats 2 and 4. Across them, the hat provides a
+continuous sixteenth-note surface whose accents reveal the four larger beats.
+Its tiny delay softens the alignment without changing any array index.
 
 ## Change one thing
 
-1. Set every hat amplitude to 0.5. The subdivision remains, but the bar loses
-   its four-beat shape. Restore the accent pattern before changing any hits.
-2. Move the second kick from index 6 to index 7. It now lands one sixteenth
-   before beat 3. Listen for a tighter pull into the downbeat.
-3. Change the hat offset from 0.02 to 0.06. The delayed layer becomes easier to
-   hear and may feel detached. Reduce it until the timing changes the pocket
-   without sounding like an error.
+1. Set every hat amplitude to 0.5. Sixteenth notes continue at the same speed,
+   but their grouping into four beats becomes less pronounced. Restore the
+   original accent array before moving a hit so accent and position do not
+   change in the same comparison.
+2. Move the second kick from index 6 to index 7. The attack now falls one
+   sixteenth before beat 3, leaving less space before the downbeat kick. Listen
+   for the stronger forward pull created by that smaller gap.
+3. Increase the hat delay from 0.02 to 0.06 beats. The hats separate more
+   clearly from the kick and snare and may begin to sound late rather than
+   relaxed. Reduce the value until you can hear a change in the pocket without
+   losing the sense of one coordinated kit.
 
 ## Why it works
 
-Each array is a Boolean function over step number. The renderer asks every
-instrument the same question at the same time: is there a hit in this column?
-That shared index keeps the layers aligned while allowing independent patterns.
-It also makes a paper transcription possible. Draw sixteen columns, mark the
-hits, then transfer rows into arrays.
+Each row behaves like a Boolean function over step number. At every column, the
+renderer asks kick, snare, and hat the same question: does this instrument
+attack now? A shared index aligns the layers while permitting different
+patterns. It also gives you a paper method for transcription. Draw sixteen
+columns, mark one instrumental row at a time, and transfer those marks directly
+into arrays.
 
-Amplitude is part of the pattern. Equal hi-hats can sound mechanical even when
-their positions match a performance. Stronger quarter-note accents reveal the
-meter, while weaker offbeats provide motion. Record the values explicitly so a
-later editor can see the intended hierarchy.
+Amplitude belongs to the pattern because identical attack positions can carry
+different metrical meanings. Equal hats preserve subdivision but can flatten
+the larger beat structure. Stronger quarter-note positions orient the ear;
+weaker subdivisions maintain motion between them. Explicit values allow a
+later reader to see that hierarchy instead of trying to infer it from a mixed
+recording.
 
-Microtiming belongs after the grid is correct. A late hat changes the relation
-between layers without moving the kick and snare anchors. If every instrument
-receives a different offset before the basic transcription is stable, timing
-errors become hard to distinguish from style.
+Microtiming comes after the strict grid is dependable. Delaying the hat changes
+its relation to stable kick and snare anchors. If all three rows receive
+independent offsets before their columns are settled, a misplaced attack and a
+stylistic delay can sound alike. Preserve a strict version so every feel edit
+has a known reference.
 
-Repeated listening works best by isolation. First mark the snare, then kick,
-then hats. Mute the rows you are not checking in Sonic Pi. When all rows are
-entered, listen for collisions and missing composite accents.
+Isolation also makes repeated listening productive. Mark the snare first, then
+the kick, then the hats, muting rows that are not under review. When the rows
+are combined, attend to composite accents: several instruments arriving
+together may create a weight that was not apparent in any isolated layer.
 
 ## Take it further
 
-Transcribe one bar of a groove you can legally inspect or record yourself.
-Create one sixteen-step array per instrument, plus a parallel amplitude array
-where accents differ. Work in separate listening passes and write a REVIEW
-comment above uncertain columns. The target is a readable grid that reproduces
-the attack pattern without an opaque audio loop. Add timing offsets only after
-the strict grid plays correctly, and preserve both versions for comparison.
+Transcribe one bar of a groove you may legally inspect, or record a groove of
+your own. Create one sixteen-step row per instrument and a parallel amplitude
+row wherever accents differ. Work through separate listening passes, placing a
+`REVIEW` comment above any uncertain column with the source time that prompted
+it. First produce a readable grid that reproduces the attacks. Then add timing
+offsets in a separate rendering path and keep the strict version available so
+you can identify which changes belong to feel rather than transcription.

@@ -9,15 +9,17 @@ status: draft
 
 ## The idea
 
-A printed melody presents several dimensions at once. Reading pitch before meter
-can produce correct note names in bars that have the wrong length. Choosing a
-synth before encoding the score adds another variable while the transcription is
-still unstable.
+A printed melody presents pitch, time, grouping, spelling, and expression in one
+compact image. Trying to decode all of them in a single pass makes errors hard
+to locate. You can copy every pitch correctly and still produce malformed bars;
+you can also spend time refining a synth while the underlying transcription is
+still changing.
 
-Use a fixed pass order: time signature, key signature, rhythm, pitches, ties,
-then articulation. Each pass enriches the same event data. The order front-loads
-structural checks. By the time sound enters, every bar should already total the
-promised duration and every written accidental should have a recorded effect.
+Use a stable sequence of passes: time signature, key signature, rhythm, pitches,
+ties, then articulation. Each pass enriches the same score data and leaves a
+specific kind of evidence to inspect. Structural checks come first, so every bar
+already has the promised duration and every written accidental has an explicit
+effect before sound design enters the work.
 
 ## Run this
 
@@ -62,53 +64,63 @@ puts "#{score.length} events, #{cursor} beats"
 play_events score
 ```
 
-The bar check runs before playback. Bar two ends with one two-beat G event, so a
-tied pair from the source would produce one attack rather than two repeated Gs.
-F-sharp in bar three records the key signature's default after resolution. The
-renderer receives complete event data and adds no pitch decisions.
+The program validates all four bar totals before producing a sound. Bar two ends
+with one two-beat G event, the event shape expected after two tied values have
+been merged, so only one attack occurs. F-sharp in bar three records the resolved
+key-signature default. By the time `play_events` receives the flattened score,
+no decision about pitch spelling or metric length remains hidden in the renderer.
 
 ## Change one thing
 
-1. Change bar three's last duration from `1` to `0.5`. The assertion stops the
-   program before a malformed bar can be mistaken for a performance problem.
-2. Split bar two's final G into two one-beat events. The total still passes, but
-   you hear a second attack. This separates metric validation from tie handling.
-3. Change synth and release only after restoring the valid data. Sound design
-   alters interpretation while the decoded score remains inspectable.
+1. Change the last duration in bar three from `1` to `0.5`. The assertion halts
+   before playback, identifying a metric defect before it can masquerade as a
+   tempo or phrasing problem.
+2. Split bar two's final G into two one-beat events. The total remains four, so
+   the metric check passes, but playback adds a second attack. Bar arithmetic
+   and tie interpretation are different validations.
+3. Restore the valid score, then change synth and release. The new timbre can
+   alter clarity and connection, while the decoded pitches and timing remain
+   available for direct inspection.
 
 ## Why it works
 
-The time signature gives an invariant: every 4/4 bar totals four quarter-note
-beats. Rhythm can therefore be entered and checked before pitch. Key resolution
-then converts spelling plus defaults into playable notes. Ties merge durations
-across adjacent written values, and articulation becomes renderer metadata.
+The time signature provides an invariant: each 4/4 bar totals four quarter-note
+beats. That allows rhythm to be entered and checked before pitch. Key resolution
+then combines source spelling with signature defaults to produce playable notes.
+Ties merge adjacent written durations into one event, and articulation remains
+a rendering choice. Every stage has a narrower responsibility than “read the
+music.”
 
-The bars are a source-facing representation. They preserve measure boundaries
-for comparison with the page. The flattened score is renderer-facing and uses
-absolute starts. Both views derive from the same arrays, avoiding a second manual
-transcription.
+The nested bars are source-facing data because they preserve the measure
+boundaries visible on the page. The flattened score is renderer-facing and uses
+absolute start times. Both views derive from the same arrays. There is no second
+manual transcription to drift away from the first, and a doubtful event can
+still be located in its original measure.
 
-Listening remains a separate validation pass. Compare one suspicious bar in a
-loop against a lawful source recording when available. A bar total cannot detect
-a wrong pitch, and Ruby syntax cannot detect a mistaken rhythm that still sums
-to four. Structural assertions narrow the search; they do not certify fidelity.
+Listening forms another validation pass rather than a reward at the end. Loop a
+suspicious bar and compare it with a lawful source recording when one is
+available. A correct bar total cannot detect a wrong pitch; valid Ruby cannot
+detect a wrong rhythm that happens to add to four. Assertions reduce the search
+space, while page and recording comparisons test kinds of fidelity the program
+cannot infer.
 
-Provenance is part of the data path. Keep the edition, page, system, and measure
-number beside the transcription even when those fields never reach Sonic Pi.
-When a note sounds doubtful, that pointer is cheaper than searching the score
-again. It also separates a faithful encoding from an editorial change you make
-because another voicing or articulation sounds preferable.
+Provenance belongs beside the score data. Record edition, page, system, and
+measure even if those fields never reach Sonic Pi. When a note sounds doubtful,
+that pointer leads directly back to the evidence. It also distinguishes a
+faithful encoding from an editorial change made later because another articulation
+or voicing serves your arrangement.
 
-Part 9 begins by turning that pointer into a complete source record. Finish this
-lesson with page and measure coordinates in place; Lesson 42 adds the edition,
-rights statement, retrieval date, and redistribution decision before the
-transcription grows beyond four bars.
+Part 9 expands that pointer into a complete source record. Leave this lesson
+with page and measure coordinates attached. Lesson 42 adds edition details,
+rights information, retrieval date, and a redistribution decision before the
+transcription grows beyond four bars and those facts become costly to recover.
 
 ## Take it further
 
-Choose four printed bars from a public-domain score whose edition you can record.
-Enter meter and rhythm first, and make every bar-total assertion pass. Add pitch
-spelling, key-signature resolution, ties, and articulation in separate commits
-or saved versions. Preserve source measure numbers in comments. Render the final
-events without using a MIDI file, then list every point that still requires
-manual comparison with the page or recording.
+Choose four bars from a public-domain score and record the exact edition. Enter
+meter and rhythm first, making all bar-total assertions pass before adding pitch.
+Add spelling, key-signature resolution, ties, and articulation in distinct saved
+versions or commits, and preserve source measure numbers in comments. Render the
+events without importing a MIDI file. Finish with a short list of every point
+that still needs manual comparison with the page or an authorised recording;
+uncertainty recorded now is easier to resolve than certainty invented later.

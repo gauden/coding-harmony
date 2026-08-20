@@ -41,6 +41,31 @@ until examples have been auditioned in Sonic Pi.
 
 ### 2026-08-20
 
+- Began the second-draft expository rewrite with a red acceptance test for the
+  new voice. Replaced the former brevity-led style guide with guidance on
+  clarity, unity, humanity, rhythm, concrete detail, and reader orientation.
+- Queried the existing curriculum graph before editing. The result confirmed the
+  sound-to-data progression and the score/renderer split as the conceptual spine
+  to preserve through the rewrite.
+- Split the 58 lessons into three non-overlapping rewrite ranges while revising
+  the preface, setup chapter, reference appendices, README, and contributor brief
+  in the coordinator pass. Ruby blocks remain unchanged pending syntax checks.
+- Completed the expository pass across all 65 reader-facing source files. The
+  manuscript now contains 62,244 regex-counted words, including 48,257 across
+  the 58 lessons and 8,216 in the worked solutions.
+- Ran an independent read-only editorial audit, corrected its prose/code and
+  continuity findings, then added regression coverage for ten solution contracts.
+  The auditor's final verification returned GO with no remaining blocker.
+- Corrected the disclosure to match the actual workflow: the manuscript is
+  AI-generated, under revision and independent testing, and no human-authored
+  edition is claimed. Removed unsupported personal listening history.
+- Final automated checks: nine pytest tests pass, prose lint is clean across 71
+  files, all 83 extracted Ruby snippets clear syntax, and `git diff --check` is
+  clean.
+- Quarto rendered all 65 HTML pages. Browser inspection found no horizontal or
+  code overflow on the preface, representative early/middle/late lessons, and
+  solutions appendix. A complete static scan found no missing local targets,
+  empty links, empty titles, or author-metadata mismatches.
 - Resumed the transparent-authorship milestone and found that Quarto's
   `book.author` metadata labelled the title page but did not propagate to every
   chapter. Added project-wide author metadata and a regression assertion for it.
@@ -60,7 +85,8 @@ until examples have been auditioned in Sonic Pi.
   the Codex execution approval service reported its usage limit. Resume after
   2026-08-20 07:30 Europe/Malta and continue from the sole unticked TODO item.
 - Added a warning callout at the top of `index.qmd` identifying the manuscript as
-  AI-generated, under testing, and being completely rewritten by hand.
+  AI-generated and under testing. Its former hand-rewrite wording was corrected
+  during the later agent-written expository pass.
 - Linked the warning directly to the repository pull-request page and recorded
   the author's limited capacity for individual replies.
 - Added a regression test requiring the disclosure to appear before the first
@@ -124,10 +150,10 @@ until examples have been auditioned in Sonic Pi.
 
 ## Current state
 
-The whole first draft is complete. Every item in `TODO.md` is ticked. The
-manuscript, appendices, development record, tests, code checks, editor pass, and
-HTML build are present in the working tree. All lessons remain honestly marked
-`draft`.
+The expository second-draft pass is complete and independently audited.
+`TODO.md` records only the final commit-and-push handoff. All lessons remain
+honestly marked `draft` until a human runs them in Sonic Pi and checks their
+listening claims.
 
 ## Second-draft and manual QA
 

@@ -9,9 +9,11 @@ status: draft
 
 ## The idea
 
-Eight identical eighth notes contain no audible bar lines. Amplitude can supply them. Accent every fourth eighth and the stream groups as 4/4; accent every third and it groups as 3/4. *Meter* is the recurring pattern of strong and weak beats that makes a bar audible. Six eighths expose a useful contrast: 3/4 groups them as three pairs, while 6/8 groups them as two sets of three. The event count stays six. Only the accent cycle changes.
+Equal clicks do not announce where a bar begins. A listener can count them in several plausible groups until a recurring difference gives one position more weight. An accent supplies that evidence without moving any event.
 
-Listen once for event placement, then again for colour and decay. Holding most variables fixed is what turns the example into an experiment. If two edits happen together, the cause of the audible change becomes unclear. The bounded changes below preserve that discipline.
+*Meter* is the recurring pattern of strong and weak beats through which a listener hears a bar. In a stream of eighth notes, accents every two subdivisions suggest quarter-note beats; accents every three suggest dotted-quarter beats. Six eighths therefore make a useful comparison. In 3/4, they fall into three groups of two. In 6/8, they fall into two groups of three. Both versions occupy three quarter-note beats, but their internal weight points to different meters.
+
+The program keeps the six durations fixed and changes the amplitude cycle. Follow the strong clicks, then notice how the weaker clicks fit around them.
 
 ## Run this
 
@@ -33,30 +35,32 @@ play_meter eighths, [1.2, 0.55, 0.55], 3.0
 play_meter eighths, [0.8], 3.0
 ```
 
-Each pass uses the same click and subdivision. The first leans on groups of four eighths, the second on groups of three, and the last two divide six eighths into incompatible shapes.
+Each pass uses the same sample, six eighth-note sleeps, and the same three-beat total. The first profile accents every other eighth and is designed to suggest three quarter-note groups. The second accents every third eighth and is designed to suggest two dotted-quarter groups. The final pass removes that amplitude evidence and leaves an even stream. Listening still determines how strongly each grouping comes across on the chosen sample and speakers.
 
 ## Change one thing
 
-1. Reduce the strong amplitude from `1.2` to `0.9`. The grouping becomes harder to infer although event placement stays fixed.
+1. Reduce the strongest amplitude from `1.2` to `0.9`. As the difference between strong and weak events narrows, the meter becomes harder to infer even though the six onset positions remain fixed.
 
-2. Make the 6/8 profile `[1.2, 0.5, 0.5, 0.9, 0.5, 0.5]`. The secondary accent clarifies its two-part shape.
+2. Restore the original and make the 6/8 profile `[1.2, 0.5, 0.5, 0.9, 0.5, 0.5]`. The secondary accent at the fourth eighth marks the second half while keeping the first half strongest.
 
-3. Give one bar a missing eighth and keep the assertion. Read the log error before restoring the duration.
-
-After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
+3. Restore the profiles and remove one eighth from the duration array. Keep the assertion. Read the error in the log and connect it to the half-beat missing from the promised three-beat bar.
 
 ## Why it works
 
-A meter is a repeating weight array applied by index. Modulo chooses the appropriate accent for each event. Validation is separate: the durations in a bar must sum to the beat total promised by the time signature.
+The accent array is a repeating weight function. For each event, `index % accents.length` chooses a level from that cycle. A two-value array repeats strong–weak; a three-value array repeats strong–weak–weak. Applied to the same eighth-note stream, these cycles create different perceptual boundaries.
 
-The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+Validation solves another problem. `durations.sum == expected` checks that the bar occupies the promised amount of musical time. It cannot say how the listener will group that time. Both 3/4 and 6/8 equal three quarter-note beats here, so both pass the same assertion. Their accent profiles partition the span differently.
 
-A time signature carries more information than a duration sum. Both 3/4 and 6/8 occupy three quarter-note beats in these examples, yet their primary accents partition that span differently. The assertion catches missing or surplus time; the accent profile supplies the audible meter. Keeping validation and interpretation separate prevents a correct sum from masquerading as correct grouping. Lesson 14 adds silent and sustained events while preserving the same bar arithmetic.
+This separation is useful beyond the example. A bar can have the correct duration sum and an unconvincing meter if its emphasis points elsewhere. Conversely, a compelling accent pattern can be cut short by a missing event. The log catches the arithmetic fault; playback reveals the grouping.
 
-Accent can come from timbre, pitch, or duration as well as amplitude, but amplitude gives this comparison one controlled variable. Later arrangements may layer a bass drum on strong beats or lengthen an accented note. Those choices reinforce meter and also change colour. Learn the weight pattern with one click before adding orchestration that can conceal it.
+Amplitude is one source of accent. A stronger attack attracts attention while leaving pitch, timbre, and duration unchanged, which makes it well suited to this comparison. Music can also create weight through a lower pitch, a different drum, a longer note, or a change in harmony. Those cues may reinforce one another, but they also add colour that makes the underlying pattern harder to isolate.
+
+The unaccented pass deserves attention because it shows that meter is not printed into equal subdivisions. You may continue hearing the previous grouping from memory, or impose another one. Replay the three profiles in a different order and notice how context affects the neutral stream.
+
+Lesson 14 adds rests and sustained events while keeping duration arithmetic intact. A bar does not cease to occupy time because one position has no attack, and a note can cross a boundary without striking it again.
 
 ## Take it further
 
-Create one six-eighth pattern that can render as 3/4, 6/8, and an unaccented control. Write a check that raises an error unless the duration sum equals three quarter-note beats. Flip between profiles by editing one symbol.
+Create one six-eighth duration array and three named accent profiles: 3/4, 6/8, and an even control. Select among them by editing one symbol. All three should pass one assertion that requires a total of three quarter-note beats.
 
-The three profiles must use one duration array and pass the same length assertion. Audition them in Sonic Pi 5 and identify the accent location that most clearly separates 3/4 from 6/8.
+Audition the profiles in Sonic Pi 5 without changing the sample or tempo. Mark the accent position that most clearly separates three groups of two from two groups of three. Then reduce that accent and listen again. The comparison should demonstrate both layers of the representation: a shared numerical span and different audible groupings.

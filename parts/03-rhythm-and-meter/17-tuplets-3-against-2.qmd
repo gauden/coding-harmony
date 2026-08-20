@@ -9,9 +9,11 @@ status: draft
 
 ## The idea
 
-Three equal events can occupy the time normally given to two. In beats, each triplet event lasts `2.0 / 3`, so arithmetic replaces visual approximation. A *tuplet* fits a chosen event count into another count's span. Run three subdivisions against two in separate threads and the attacks meet at the start of every two-beat cycle. This is a 3-against-2 polyrhythm. The main risk is drift from rounded values, which is why the code keeps the fraction as floating-point division.
+Two layers can share a beginning and ending without agreeing about the divisions between them. Divide a two-beat span into two equal parts and each event lasts one beat. Divide the same span into three equal parts and each event lasts `2.0 / 3` of a beat. Played together, the layers meet at the cycle boundary and disagree everywhere inside it.
 
-Listen once for event placement, then again for colour and decay. Holding most variables fixed is what turns the example into an experiment. If two edits happen together, the cause of the audible change becomes unclear. The bounded changes below preserve that discipline.
+A *tuplet* fits one number of equal events into a span normally associated with another number. Three events across the time of two create triplet divisions. When the three-part layer sounds concurrently with the two-part layer, the result is a 3-against-2 polyrhythm.
+
+The decimal should come from the fraction rather than a typed approximation. Over sixteen cycles, a small rounding error accumulates until a boundary that should be shared no longer is.
 
 ## Run this
 
@@ -39,30 +41,32 @@ end
 sleep 32
 ```
 
-The low sound marks two equal halves of the cycle while the high sound marks three thirds. At a slow tempo you can follow each stream. Faster, the six combined onset positions fuse into one repeating composite rhythm.
+The low drum marks the beginning and midpoint of every two-beat cycle. The higher tick divides the same span into thirds. At 72 BPM, try following one layer for several cycles before moving attention to the other. When you hear them together, their combined onsets form a repeating composite pattern, with both sounds coinciding at each new cycle.
 
 ## Change one thing
 
-1. Lower the tempo to 48 and tap one hand with each stream. The separate subdivisions become easier to track.
+1. Lower the tempo to 48 and tap one hand with each layer. Keep both hands moving through the shared two-beat span; the slower rate gives each internal attack more space.
 
-2. Raise the tempo to 132. Listen for the point where the two loops stop feeling independent.
+2. Restore the code, then raise the tempo to 132. Notice whether you still follow two concurrent streams or begin to hear one composite rhythm. The arithmetic does not change when perception reorganises the texture.
 
-3. Replace `2.0 / 3` with `0.67` for a long run. Watch how the approximation creates drift relative to the two-part layer.
-
-After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
+3. Restore 72 BPM and replace `2.0 / 3` with `0.67`. Let the full run continue and compare late boundary attacks with the beginning. The error is tiny per event but repeated addition makes it audible.
 
 ## Why it works
 
-Concurrent loops share a cycle duration and choose different partitions. Each thread advances its own local schedule, while exact sums make both return to the boundary together. Sixteen bars remain aligned because no truncated decimal accumulates.
+Each thread maintains its own local musical clock. The two-part thread sleeps `1.0 + 1.0`, while the three-part thread sleeps `2.0 / 3` three times. Both sums equal two beats, so the scheduler brings them back to the same boundary without either thread sending a message to the other.
 
-The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+This is concurrency coordinated by a shared invariant. In programming, independent workers can remain aligned when they agree on the duration of a cycle. In music, the internal subdivisions can conflict while the boundary supplies stability. A quiet marker at every two beats makes that invariant audible.
 
-The two threads do not communicate during a cycle. Their agreement comes from a shared invariant: both local duration sums equal two beats. This is concurrency without messages, coordinated by arithmetic and the scheduler. A boundary marker makes any accumulated error audible. After the rhythm section, Part 4 returns to pitch distance. Lesson 18 combines the semitone arithmetic from Lesson 2 with the spelling metadata retained in Lesson 10.
+Within one cycle, the combined attacks occur at beat 0, two-thirds, 1, and four-thirds, followed by the shared return at beat 2. Write those positions as fractions if the texture becomes hard to separate. Then mute the tick and follow the two-part layer, mute the drum and follow the three-part layer, and restore both. Isolation trains attention; the complete texture is still the subject.
 
-The composite attack pattern occurs at fractions 0, two-thirds, one, and four-thirds within each two-beat cycle, with both layers meeting again at two. Writing those positions on paper can help when the texture sounds fused. Follow the bass layer alone, then the tick layer, then the composite. Muting one thread is a listening tool, not a different rhythm. Restore both layers before checking their shared boundary over the full sixteen-cycle run.
+Replacing the fraction with `0.67` gives each three-part cycle a length of `2.01` beats. That hundredth-beat surplus seems negligible once, but sixteen cycles produce a displacement of `0.16` beats. Rounded display values are suitable for labels; repeated scheduling needs the more accurate expression.
+
+Sonic Pi ultimately represents the division with finite floating-point precision, yet `2.0 / 3` is far closer to the intended ratio than a two-decimal literal. The program also runs for a bounded duration, so the remaining numerical error is below the scale of this exercise.
+
+Part 4 returns from temporal distance to pitch distance. Lesson 18 combines the semitone arithmetic introduced in Lesson 2 with the spelling metadata preserved in Lesson 10, because an interval name depends on both.
 
 ## Take it further
 
-Render sixteen cycles of 3 against 2 and add a quiet marker at each two-beat boundary. Print the expected total of 32 beats. The final attacks must align with the boundary marker without a corrective sleep.
+Render sixteen cycles of 3 against 2 and add a quiet, distinct marker at the beginning of every two-beat cycle. Print the expected total of 32 beats before playback. Do not add a corrective sleep inside either layer; their own duration sums must produce the alignment.
 
-The final marker and both layers should coincide after sixteen cycles. Inspect the arithmetic, then audition the whole run in Sonic Pi 5; a Ruby parser cannot detect scheduler drift or a misleading balance.
+Inspect the arithmetic first, including the total for each thread. Then audition the complete run in Sonic Pi 5 and listen to early and late markers. The final cycle should begin with both rhythmic layers and the marker together. If the marker hides either pattern, reduce its amplitude: a boundary reference should expose drift without replacing the texture it measures.

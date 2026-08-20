@@ -9,31 +9,36 @@ status: draft
 
 ## The idea
 
-This project adds vertical responsibility. Choose a short song, hymn, or
-keyboard miniature with melody, bass, and inner harmony. Encode those roles as
-three independent structures on one shared timeline. The result should read
-like a score model, not a long sequence of play and sleep calls.
-It assumes the Roman-numeral engine from
+This project adds the vertical dimension. Choose a short song, hymn, or keyboard
+miniature in which melody, bass, and inner harmony can each be followed. Encode
+the three roles as independent structures on one shared timeline. The data
+should read like a score model: a reader can inspect what each part does and
+what sounds at a particular beat without tracing a long chain of `play` and
+`sleep` calls. The project builds on the Roman-numeral engine from
 [Lesson 28](../06-chords-and-harmony/28-diatonic-chords-roman-numerals.qmd),
 voice-leading checks from
 [Lesson 31](../06-chords-and-harmony/31-voice-leading-optimisation-problem.qmd),
 and independent timelines from
 [Lesson 47](../10-texture-and-arrangement/47-independent-voices.qmd).
 
-Every bar must satisfy the meter in each active voice. Every chord label must be
-checked against the notes that sound during its span. A non-chord tone can be
-correct, but it needs a rhythmic or melodic explanation rather than a silent
-change to the chord symbol.
+Meter applies independently to every active voice. The melody can divide four
+beats into a pattern unlike the bass, but each must account for the same bar.
+Chord labels also need comparison with the notes sounding during their spans.
+A passing tone, suspension, or anticipation may lie outside the chord and still
+be correct. Preserve the label and explain the melodic or rhythmic function
+instead of altering the analysis merely to silence a mismatch report.
 
-Start with strict alignment and plain synths. Arrangement choices come after
-the score plays from end to end. Otherwise a long release or heavy effect can
-hide an overlap that came from the data.
+Begin with strict alignment and plain synths. At this stage you need to hear
+attacks, rests, overlaps, and harmonic clashes without long releases or effects
+obscuring their source. Arrangement becomes useful after the score runs from
+beginning to end and the structural reports agree with the music.
 
 ## Run this
 
-The two-bar model stores melody, bass, and harmony separately. Global starts
-place them on one timeline. A thread renders each role, and a small check
-compares every final end time.
+The two-bar model stores melody, bass, and harmony in separate arrays. Global
+starts place all three on one coordinate system, threads allow the melodic and
+bass timelines to advance independently, and an end-time check confirms that
+the roles agree on the length of the passage.
 
 ```{.ruby audio=""}
 use_bpm 70
@@ -82,48 +87,59 @@ harmony.each do |event|
 end
 ```
 
-The melody moves above sustained roots and quiet triads. All parts end after
-eight beats, despite using different event counts and rhythms.
+The melody moves in two-beat values above bass roots and quieter four-beat
+triads. It changes more often than the harmony but less often than a walking
+line might. All three roles stop after eight beats. Their event counts differ,
+yet their final boundary is shared.
 
 ## Change one thing
 
-1. Change the final melody duration to 1.5. The alignment assertion fails
-   before playback. Restore it and add a half-beat rest event if the source
-   actually contains silence.
-2. Change the first melody note from E4 to F-sharp4. The event falls outside C
-   major while the chord symbol still says I. Listen to the clash, then decide
-   whether the note, chord, or analysis is wrong.
-3. Move the bass C up an octave. The harmony stays identical, but the inner
-   spacing tightens. Compare clarity before changing any amplitude.
+1. Shorten the final melody duration to 1.5. The alignment assertion stops the
+   program before playback because the melody now ends at 7.5 beats. If the
+   source contains a half-beat of silence, represent that time explicitly
+   rather than lengthening the preceding note or weakening the check.
+2. Restore the duration and change the first melody note from E4 to F-sharp4.
+   Against a C-major I chord, the new pitch produces a conspicuous clash and a
+   pitch-class mismatch. Use the source to decide whether pitch, chord label, or
+   analysis is wrong; the report alone cannot choose.
+3. Restore E4 and move the bass C up one octave. The chord identities and
+   durations remain fixed, but the space between bass and harmony narrows.
+   Compare the clarity of the inner register before changing any amplitudes.
 
 ## Why it works
 
-The shared timeline is an interface. Each part owns its score data, while starts
-and durations use the same units and origin. That permits independent
-renderers, bar checks, muting, and transposition. It also prevents one voice's
-sleep sequence from becoming the clock for every other voice.
+The shared timeline acts as an interface. Each part owns its events, while all
+starts and durations use the same origin and unit. This makes independent
+rendering, bar validation, muting, and transposition possible. It also avoids a
+fragile design in which the bass's sleeps become the clock for the melody and a
+single local edit silently moves every other voice.
 
-Chord checking is a pitch-class operation. Convert every sounding note with
-note % 12 and compare it with the chord's pitch classes at that time. A mismatch
-is a review item. Passing tones, suspensions, and anticipations will produce
-intentional mismatches, so record their function rather than forcing every note
-into the current triad.
+Chord checking reduces sounding pitches to pitch classes with `note % 12` and
+compares them with the active chord's pitch classes. A mismatch is an invitation
+to inspect the beat. Passing tones move between chord members; suspensions hold
+an earlier note into a new harmony; anticipations arrive before their chord.
+Each can create a deliberate mismatch whose timing explains its role. The
+validator should expose such notes, not flatten them into the triad.
 
-Metric integrity belongs at bar level as well as whole-piece level. Equal final
-end times can hide one short bar followed by one long bar. Partition events by
-measure, account for rests, and assert the expected total before combining
-parts.
+Whole-piece alignment is necessary but insufficient. Two voices can end at
+beat 32 even if one contains a three-beat bar followed by a five-beat bar.
+Partition each role by measure, include rests in the account of elapsed time,
+and assert the meter before combining the parts. Local integrity makes the
+shared final boundary meaningful.
 
-The structured representation also supports arrangement. Melody, bass, and
-inner harmony can receive different synths, registers, pans, and depth without
-changing the score. Keep that rendering layer separate until the harmonic and
-metric reports are clean.
+Once the reports are clean, the structured data supports arrangement without
+rewriting the source. Melody, bass, and inner harmony can receive distinct
+synths, registers, pans, envelopes, and effect depth. Mute one role during
+review to hear what the others contribute. The score remains an authority while
+the renderer explores ways of making its roles audible.
 
 ## Take it further
 
-Complete a sixteen-to-thirty-two-bar melody-and-accompaniment source. Deliver
-three separate score structures, one timeline, per-bar metric checks, and a
-report comparing chord pitch classes with every sounding note. Annotate each
-intentional non-chord tone. The target sound is a balanced three-part rendering
-whose melody, bass, or harmony can be muted independently and whose source data
-contains no synth or effect choices.
+Complete a sixteen-to-thirty-two-bar source containing melody and accompaniment.
+Deliver separate melody, bass, and harmony structures on one timeline, with
+metric checks for every active voice in every bar. Produce a report that
+compares each sounding pitch class with the active chord and annotate every
+intentional non-chord tone by function. Then arrange the parts so each remains
+traceable when all three sound. Melody, bass, and harmony should be independently
+mutable or muteable, and no synth, pan, or effect choice should enter the source
+score data.

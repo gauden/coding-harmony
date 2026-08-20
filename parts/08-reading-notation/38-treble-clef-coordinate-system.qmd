@@ -9,17 +9,18 @@ status: draft
 
 ## The idea
 
-A note drawn one staff step higher moves to the next letter name. That step may
-span one semitone or two. The page uses a diatonic coordinate system, where lines
-and spaces count letters. MIDI uses a chromatic coordinate system, where every
-integer counts one semitone. Confusing the two turns a visual step into the wrong
-pitch.
+Move a note head one staff position upward and its letter advances by one. The
+corresponding sounding pitch may rise by one semitone or by two. Printed notation
+therefore uses a diatonic coordinate system of letter steps, while MIDI numbers
+use a chromatic coordinate system in which every increment is a semitone. A
+decoder must translate between them rather than treating one visual step as one
+MIDI step.
 
-The *staff* has five lines and four spaces. A *treble clef* assigns G4 to the
-second line from the bottom. Once that anchor is known, every adjacent position
-follows the repeating letters A through G. Middle C sits on a short ledger line
-below the staff. Treat it as coordinate zero and the bottom treble line, E4,
-becomes coordinate two.
+The *staff* consists of five lines and the four spaces between them. A *treble
+clef* fixes G4 on the second line from the bottom; all nearby letters follow from
+that anchor in the repeating A-to-G cycle. Middle C sits on its own short ledger
+line below the staff. If middle C is coordinate zero, the bottom treble line E4
+is coordinate two, with the intervening D4 in the space below.
 
 ## Run this
 
@@ -51,48 +52,54 @@ end
 (0..7).each { |position| puts staff_record(position, letters, semitones) }
 ```
 
-The eight positions rise E4, F4, G4, A4, B4, C5, D5, F5 with E5 included at
-position nine? Read the log carefully: positions two through nine actually give
-E4 through F5 in consecutive letters. Their MIDI gaps alternate between one and
-two semitones even though every drawn move is one staff step.
+The eight positions rise in consecutive letters from E4 through E5. On the page,
+each move is exactly one line-or-space step. In the log, the MIDI differences
+alternate irregularly between one and two semitones, because E-F and B-C are
+smaller than the other natural-letter steps. This is the translation the
+coordinate function is responsible for making.
 
 ## Change one thing
 
-1. Replace the positions with `[0, 2, 4, 6]`. These are middle C and every other
-   diatonic note. The visual skips produce a C-major seventh chord when played
-   together.
-2. Play positions `2` and `3` repeatedly. E to F is one staff step and one
-   semitone. Compare positions `3` and `4`, F to G, where the same visual step
-   spans two semitones.
-3. Add negative positions `-1` and `-2`. Ruby's modulo and floor division keep
-   the letter and octave sequence working below middle C.
+1. Replace the list with `[0, 2, 4, 6]`. Starting at middle C and skipping every
+   other diatonic position selects C4, E4, G4, and B4. Play them together and
+   the regular visual skips become a C-major seventh chord.
+2. Alternate positions `2` and `3`: E to F is one staff step and one semitone.
+   Then alternate `3` and `4`: F to G occupies the same visual distance but spans
+   two semitones. Keep the tempo fixed so pitch distance carries the contrast.
+3. Add positions `-1` and `-2`. Ruby's modulo and floor division extend the
+   letter and octave cycles below middle C without requiring a second lookup
+   table for negative coordinates.
 
 ## Why it works
 
-The letter cycle is a seven-element ring. Position modulo seven selects a letter.
-Floor division by seven counts completed letter cycles and adjusts the octave.
-The semitone hash performs the separate conversion from diatonic name to
-chromatic distance inside C major.
+The seven letter names form a ring. Position modulo seven selects the letter;
+floor division counts completed letter cycles and adjusts the octave. Only after
+those diatonic coordinates are known does the `semitones` hash convert the name
+to a chromatic distance. The two spaces remain separate in the code because they
+measure different things.
 
-Treble clef is an offset convention. It gives one printed line a known pitch,
-which determines all others. Memorising E-G-B-D-F and F-A-C-E can help with
-spot checks, but the coordinate model explains ledger lines and prevents lines
-and spaces from becoming unrelated tables.
+Treble clef is an offset convention: by assigning a known pitch to one line, it
+determines every other position. Memorised line and space mnemonics can provide
+quick checks, but they split one continuous system into two lists. The coordinate
+model handles lines, spaces, and ledger lines with the same operation, which is
+more useful when a melody leaves the five-line staff.
 
-Accidentals and key signatures will modify the final semitone lookup in Lesson
-40. They do not move the note head to another staff coordinate. F-sharp and F
-occupy the same line or space because both retain the letter F.
+Accidentals and key signatures modify the chromatic result in Lesson 40 without
+moving the note head. F and F-sharp occupy the same staff coordinate because
+both retain the letter F; the sharp changes the final semitone lookup. This is
+another reason not to infer MIDI distance directly from vertical spacing.
 
-The printed shape also carries duration through note heads, stems, beams, and
-dots. This lesson deliberately ignores those marks so vertical position remains
-the only changing field. When rhythm returns in Lesson 41, pitch coordinate and
-duration will enter separate event keys. Keeping them separate prevents a dense
-eighth-note beam from becoming part of the pitch decoder.
+Printed notation carries time as well as pitch through note heads, stems, beams,
+rests, and dots. Those marks are deliberately absent from the decoder here so
+vertical position is the only changing field. Lesson 41 restores rhythm by
+placing pitch coordinate and duration in separate event keys. A beam can then
+change timing without becoming entangled in pitch translation.
 
 ## Take it further
 
-Generate a Markdown cheat sheet for positions `-2` through `9`. Each row must
-contain coordinate, line-or-space classification, letter, octave, Sonic Pi
-symbol, and MIDI integer. Mark middle C and the five treble staff lines. Then
-enter eight note-head positions from a printed source and play the decoded
-sequence without copying note names from another transcription.
+Generate a Markdown table for positions `-2` through `10`. Include coordinate,
+line-or-space classification, letter, octave, Sonic Pi symbol, and MIDI integer,
+and mark middle C plus the five treble lines. Then choose eight note heads from
+a printed source, enter their coordinates, and play the decoded sequence without
+copying note names from an existing transcription. Use the source page to check
+the coordinates and the log to check the conversion; they catch different errors.

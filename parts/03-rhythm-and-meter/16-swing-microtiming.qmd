@@ -9,9 +9,11 @@ status: draft
 
 ## The idea
 
-Straight eighths divide each beat into equal halves. Swing delays the second eighth, creating a long-short pair without changing the beat boundary. A delay of one third of an eighth's straight length approaches a triplet-derived feel. *Microtiming* covers smaller onset changes that sit below the written grid. The program sweeps a swing amount from zero to 0.33, then adds seeded jitter to timing and amplitude. The seed is fixed so each edit faces the same random deviations.
+Straight eighth notes divide each beat into two equal halves. *Swing* keeps the beat boundary fixed but moves the internal division: the first span grows longer and the second grows shorter. The result is a recurring long–short pair rather than a new bar length.
 
-Treat the snippet as a controlled comparison. The shared notes, tempo, and envelope remove distractions, leaving one parameter exposed. That approach is slower than changing several values at once and produces a clearer result.
+The `amount` parameter below controls that displacement. At zero, the two sleeps are `0.5` and `0.5`. At `0.16`, they become `0.66` and `0.34`, close to a two-thirds/one-third division. At `0.33`, they become an exaggerated `0.83` and `0.17`; that final pass tests the point where the long-short relation may stop reading as ordinary swing.
+
+*Microtiming* describes smaller onset deviations beneath the written grid. The program adds bounded, seeded jitter to both timing and amplitude. Swing remains the systematic displacement; jitter introduces small variations around it. The seed reproduces a comparison only while the order and mapping of random calls remain unchanged.
 
 ## Run this
 
@@ -34,30 +36,32 @@ end
 [0.0, 0.16, 0.33].each { |amount| swing_bar amount, 0.01 }
 ```
 
-The first pass is mechanically even. Later passes make the second note of each pair arrive late. Mild jitter loosens repeated attacks; the largest swing and jitter values begin to disturb the pulse.
+The first pass keeps each C–G pair close to even, apart from its very small jitter. In the later passes, G arrives progressively later within each beat. Because the same `late` value is added to one sleep and subtracted from the next, the following C lands exactly on the next scheduled boundary. Whether the amount reads as mild swing or exaggerated displacement remains a listening judgement.
 
 ## Change one thing
 
-1. Set swing to `0.16`, then `0.33`. Compare a mild lilt with the more explicit long-short pair.
+1. Compare only `0.16` and `0.33`. Tap the quarter-note beat rather than following every note. The first amount gives a moderate lilt; the second makes the long–short proportions explicit.
 
-2. Raise jitter from `0.01` to `0.08`. Find the point where variation stops reading as a player and starts reading as inaccurate timing.
+2. Restore the three amounts and raise jitter from `0.01` to `0.08`. Listen for the quarter-note boundaries. Record the point where they cease to feel stable rather than assigning the variation a human cause.
 
-3. Set amplitude variation to zero while keeping timing jitter. This separates dynamic looseness from onset looseness.
-
-After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
+3. Restore the original jitter and set amplitude variation to zero while leaving timing variation intact. The attacks now vary only in placement. Compare that result with the original, where changing level can draw attention to a timing deviation.
 
 ## Why it works
 
-Swing is a deterministic transformation of paired durations: `0.5 + delay` followed by `0.5 - delay`. Their sum remains one beat. Humanization is bounded noise added around that schedule, and bounds prevent the perturbation from reversing events.
+Swing is a deterministic transformation of paired durations. Adding `late` to the first half and subtracting the same value from the second guarantees that their sum remains one beat. The internal onset moves, but every following pair begins at the original quarter-note boundary.
 
-The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+The small random offset complicates that guarantee. In this function, one `late` value still appears with opposite signs, so each jittered pair also sums to one. Bounds remain important because a sufficiently negative or positive value could collapse one duration or place the inner attack implausibly close to a boundary. Keep the perturbation far smaller than the shortest intended subdivision.
 
-The code protects the beat boundary because each long-short pair still sums to one. Jitter has no such musical guarantee unless it is bounded, and large negative values can make an intended delay collapse. Keep perturbations much smaller than the shortest subdivision. Swing is also a style-dependent continuum rather than one universal percentage. Lesson 17 replaces these displaced pairs with exact concurrent subdivisions, where shared cycle length prevents drift.
+Swing has no single correct percentage. Performers and styles use different proportions, and those proportions can change with tempo. The sweep is a listening map, not a ranking. Describe where the second onset falls and how firmly the beat boundary survives.
 
-Milliseconds and beats meet through tempo. At 120 BPM, 0.01 beats is five milliseconds; at 60 BPM it is ten. This program expresses jitter in beats so its scale follows tempo. If you intend a fixed physical delay, convert explicitly with `milliseconds * bpm / 60000.0` and document why the exception should ignore musical rate.
+Timing and amplitude variation also need separate interpretations. A louder event can seem earlier or more important even when its scheduled onset has not moved. Removing amplitude jitter helps locate the timing effect; removing timing jitter would expose dynamic variation on an exact grid. Data that stores both fields allows either comparison.
+
+Beat values convert to milliseconds through tempo. At 120 BPM, `0.01` beats lasts 5 milliseconds; at 60 BPM it lasts 10. This program expresses jitter in beats, so the physical deviation grows at slower tempos. If you need a fixed physical delay, convert it explicitly with `milliseconds * bpm / 60000.0` and document why it should ignore musical rate.
+
+Lesson 17 replaces displaced pairs with two exact subdivisions running concurrently. The shared cycle boundary will again prevent drift, but each layer will divide the span by a different count.
 
 ## Take it further
 
-Program a four-beat pattern that chooses durations from only 0.5 and 1.0, plays it once, waits four beats for you to clap it back, then prints the hidden array. Add swing only after the straight version is reproducible.
+Program a hidden four-beat pattern whose durations use only `0.5` and `1.0`. Generate and validate the complete array before playback, play it once, leave four beats for a clap-back response, and print the array only after that response window.
 
-The hidden rhythm must total four beats before the reveal pause begins. Audition the straight and swung versions in Sonic Pi 5; use the same seed for comparisons and do not infer human performance from syntax success.
+Keep the straight version until the prompt, response pause, and reveal are reproducible. Then apply swing to paired eighths without changing the four-beat total. Use one seed for direct comparisons and audition both versions in Sonic Pi 5. The code can verify sums and repeatability; your listening notes should describe onset placement without claiming that randomized variation reproduces a human performer.

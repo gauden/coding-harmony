@@ -9,24 +9,30 @@ status: draft
 
 ## The idea
 
-A *canon* gives one melody to two or more voices and delays their entries. The
-code is small. The musical constraint is severe: later notes in the subject
-must make sense against earlier notes from the same subject.
+A *canon* asks one melody to accompany itself. A second voice enters with the
+same subject after a delay, and later voices may follow in turn. The program can
+express this in a few lines, but the melody carries an unusual burden: its later
+notes must form convincing vertical intervals against its earlier ones.
 
-Entry delay decides which points overlap. Transposition changes the intervals
-between voices. Most arbitrary combinations produce exposed seconds, crowded
-registers, or cadences that never settle. That failure is the lesson. A subject
-for canon carries its accompaniment inside its own sequence.
+Entry delay decides which positions in the subject overlap. Transposition then
+changes the interval produced at every one of those meetings. An arbitrary
+pair of values may expose repeated seconds, crowd the voices into one register,
+or cause every cadence to arrive against ongoing motion. Such a result is
+useful evidence. It shows that a canonic subject contains the seeds of its own
+accompaniment rather than becoming contrapuntal through delay alone.
 
-Begin with equal entries at one-bar distance and no transposition. Then change
-one parameter at a time. Keep each voice in an independent thread so the score
-data remains shared while timing and register belong to the entry specification.
+Begin with untransposed entries one full bar apart. Once that baseline is
+audible, vary delay and transposition separately so their effects do not become
+confused. Each voice runs in its own thread. The subject array remains shared
+score data, while entry time, register, synth, and amplitude belong to the
+description of each follower.
 
 ## Run this
 
-The subject lasts four beats. Three voices enter four beats apart. Each repeats
-the subject sixteen times, so the full texture continues for sixteen bars after
-the last entry begins.
+The subject occupies four beats. Three voices enter at four-beat intervals,
+with the third placed an octave lower. Every voice repeats the same data sixteen
+times, so after the final entry the complete three-part texture continues long
+enough for its overlapping pattern to become familiar.
 
 ```{.ruby audio=""}
 use_bpm 96
@@ -68,53 +74,64 @@ entries.each do |entry|
 end
 ```
 
-The entries are easy to identify because synth and register differ. Once all
-three are present, the same contour appears at three points in its cycle.
+The piano begins alone, the pluck follows one bar later, and the lower hollow
+voice arrives after another bar. Their synths and registers help you keep the
+entries distinct. Once all three are sounding, the same rising-and-returning
+contour occupies three successive positions in the cycle.
 
 ## Change one thing
 
-1. Change the second delay from 4 to 2. The follower enters halfway through the
-   subject. Listen for which note pairs now become exposed. Restore it before
-   changing transposition.
+1. Change the second delay from 4 to 2. Its first C now enters halfway through
+   the leader's subject instead of against the next repetition. Identify the
+   note pairs that become newly exposed, then restore the delay before testing
+   another variable.
 2. Set the second transposition to 7. The follower enters a fifth higher. Some
-   vertical intervals open, while the register becomes more crowded near the
-   first voice.
-3. Change the subject's fourth note from 65 to 66. The chromatic pitch meets
-   several earlier subject notes. Mark every overlap that sounds unstable rather
-   than editing the whole phrase at once.
+   intervals widen in pitch-class terms, yet the follower now competes with the
+   leader in a closer register. Listen separately for harmonic fit and for your
+   ability to follow each contour.
+3. Change the subject's fourth note from 65 to 66. Because every voice reads the
+   same array, the chromatic pitch appears in several overlaps and at several
+   times. Mark each unstable meeting before deciding whether the source note or
+   the entry plan needs revision.
 
 ## Why it works
 
-At a four-beat delay, position one of a follower sounds against position one of
-the leader's next repetition. At a two-beat delay, position one sounds against
-the middle of the subject. The delay therefore selects a vertical interval map.
-You can calculate that map from indexes before rendering.
+With a four-beat delay, the follower's first position sounds against the first
+position of the leader's next repetition. At two beats, that same entry sounds
+against the middle of the subject. Delay therefore selects a whole map of
+vertical intervals, not one isolated relationship. From the absolute starts,
+you can calculate the active pair at each attack before hearing it.
 
-Consonance alone does not make a good canon. Repeated stable intervals can
-sound static, and every voice may reach its cadence at the wrong moment. A
-useful subject balances recognisable contour, independent rhythm, and overlap
-points that imply changing harmony.
+Consonance is only one test of that map. A long sequence of stable thirds can
+sound motionless, while individually agreeable intervals may lead both voices
+to cadence at unhelpful times. A workable subject balances recognisable
+contour, rhythmic life in each voice, and overlap points that imply changing
+harmony across the cycle.
 
-Transposition adds another parameter to the map. A fifth may preserve many
-scale relationships but shift the tonal centre. An octave changes register
-without changing pitch class. Test delay first, then transposition, so the cause
-of a bad overlap stays visible.
+Transposition alters every interval in the selected map. Entry at a fifth may
+preserve several scale relationships while making another tonic plausible. An
+octave leaves pitch classes unchanged but clarifies register. Test delay first
+and transposition second; when a collision appears, this order tells you which
+parameter introduced it.
 
-The shared subject array is immutable score data. Entry records contain delay,
-transposition, synth, and amplitude. This is the same separation used for form
-and rendering: one musical object, several calls with different arguments.
+The subject array acts as immutable score data. The entry records carry delay,
+transposition, synth, and amplitude because those properties describe how a
+particular voice presents the subject. This is the same division used earlier
+between musical form and rendering: one object remains identifiable while
+several calls place it in different contexts.
 
-The absolute `:start` values keep the subject compatible with `play_events`
-from the transcription and capstone chapters. Repetition resets the renderer's
-cursor at the start of each four-beat subject. Entry delay remains outside the
-subject because it belongs to the voice that imitates, not to the melody being
-imitated.
+Absolute `:start` values also keep the subject compatible with `play_events`
+from the transcription and capstone chapters. Each repetition resets the local
+cursor at the subject boundary. Entry delay remains outside the subject because
+it belongs to the imitating voice, not to the melody being imitated.
 
 ## Take it further
 
-Write an eight-beat subject and build a three-voice canon that lasts at least
-sixteen bars. Test entry delays of two, four, and eight beats, then choose one.
-Test unison, octave, and fifth transpositions separately. The target is a
-version with no edit to the subject between voices, independently inspectable
-entry data, and comments naming the three most exposed overlaps and the implied
-chords at those moments.
+Write an eight-beat subject and use it unchanged in a three-voice canon lasting
+at least sixteen bars. Compare delays of two, four, and eight beats while all
+voices remain at unison. After choosing a delay, compare unison, octave, and
+fifth transpositions. Keep each entry specification independently inspectable.
+In comments, identify the three overlaps where the vertical relationship is
+most exposed and name the implied chord or interval at each moment. The final
+choice should arise from those comparisons, not from editing a separate copy of
+the subject for every voice.

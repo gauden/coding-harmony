@@ -9,15 +9,17 @@ status: draft
 
 ## The idea
 
-Hold C underneath the notes of C major. Some notes settle into the drone. Some
-seem to lean toward a neighbour. The pitches belong to one scale, yet they do
-different work because the drone gives them a shared centre.
+Hold a low C beneath the notes of C major and the scale stops behaving like an
+undifferentiated list. Some notes blend with the drone. Others seem to lean
+toward a neighbour, even when you hold them still. The drone supplies a centre,
+and that centre gives each note a job.
 
-A note's position in a scale is its *scale degree*. Degree 1 is the *tonic*, the
-pitch that feels like home. Degree 7 is the leading tone because it sits one
-semitone below the tonic and presses upward. Degree 5, the dominant, is stable
-enough to pause on while leaving the phrase open. I needed the drone to hear
-these roles. An isolated B sounded like a pitch; B over C sounded like a request.
+A note's position relative to the centre is its *scale degree*. Degree 1 is the
+*tonic*, the pitch that most readily feels like home. Degree 7 is the leading
+tone: it lies one semitone below the tonic and presses upward toward it. Degree
+5, the dominant, can support a pause while still leaving the phrase open. These
+roles are difficult to infer from isolated notes. A B by itself is a pitch; B
+held against C can sound like a sentence waiting for its last word.
 
 ## Run this
 
@@ -52,43 +54,51 @@ stem = [:c4, :e4, :g4, :a4, :g4, :e4]
 end
 ```
 
-The first pair, B to C, makes the clearest arrival. F to E also relaxes, though
-with less force. G repeated over the drone feels balanced and unfinished. The
-four versions of the phrase change only their last pitch. Their different
-degrees make one sound closed while the others keep the boundary porous.
+Listen first to the direction of each two-note pair. B to C makes the clearest
+arrival because the semitone closes against the drone. F to E relaxes by a
+similar small motion, though with less force. Repeated G can rest without fully
+arriving. The four longer phrases hold their opening constant and change only
+the ending, so the different kinds of closure can be attributed to the final
+degree rather than to rhythm or contour elsewhere.
 
 ## Change one thing
 
-1. Replace the C drone with `:a2` while leaving the melody untouched. The notes
-   now orbit A, and their roles change. Listen to C become a colour inside A
-   minor rather than the point of arrival.
-2. Change the B ending to `:bb4`. The pitch now sits a whole tone below C. Hear
-   how reducing the half-step weakens the upward pull.
-3. Raise the final G to `:g5`. It remains degree 5, yet register alters its
-   weight. Decide whether the high dominant sounds more open or more final than
-   the lower one.
+1. Replace the C drone with `:a2` and leave the melody untouched. The same MIDI
+   addresses now orbit A. Notice how C becomes a colour inside A minor instead
+   of the most convincing point of rest.
+2. Change the B ending to `:bb4`. B-flat stands a whole tone below C, so the
+   tight upward pull is gone. Compare the two endings at the same tempo before
+   assigning the difference to the accidental.
+3. Raise the final G to `:g5`. It is still degree 5, but its new register changes
+   its weight and brightness. Listen for whether height makes the boundary seem
+   more exposed, even though the scale-degree function is unchanged.
 
 ## Why it works
 
-Scale degree is an index interpreted relative to a tonic. The same MIDI number
-can have another degree after the tonal centre changes. This resembles an offset
-inside a data structure: the raw value is less informative than its position in
-the current context.
+Scale degree is an index interpreted against a tonic. Change the tonic and the
+same MIDI number acquires another index and another tendency. The raw address
+has not changed; its meaning within the current musical structure has. This is
+much like reading an array offset only after you know which array is in scope.
 
-Several forces combine. Small melodic distance encourages motion to a neighbour.
-The semitone from degree 7 to 8 is especially tight. The tonic drone also shares
-overtones with several scale notes, so degrees differ in roughness and stability.
-Repeated musical use strengthens those expectations. No single rule assigns a
-complete stability score, which is why listening over one fixed drone is useful.
+No single mechanism produces the entire sense of stability. Short melodic
+distance encourages motion to a neighbour, and the semitone from degree 7 to 8
+is especially tight. The drone changes the acoustic relation of every scale
+note to the bass. Long habits of hearing tonal music add another layer of
+expectation. Holding the drone fixed does not separate all those causes, but it
+does give them a stable reference against which their combined effect is easy
+to compare.
 
-The phrase experiment controls its variables. Rhythm, synth, register, and first
-six notes stay fixed. The ending becomes the input under test. A longer melody
-would hide the effect behind other changes. Here the degree has nowhere to hide.
+The longer phrase is a controlled experiment. Synth, rhythm, register, and the
+first six notes remain fixed; only the ending changes. That economy is useful
+because a richly varied melody can hide the effect under several simultaneous
+changes. Here, if one ending closes more firmly, the changed scale degree is the
+best explanation available.
 
 ## Take it further
 
 Create a hash that maps degrees 1 through 7 to your own tension rating from 0 to
-5. Write a program that plays each degree over a tonic drone in a shuffled order,
-prints its number after a two-beat pause, and then resolves it by the route you
-chose. Seed the shuffle with `use_random_seed 42`. Your finished exercise must
-cover every degree once and keep the drone unchanged throughout.
+5. Then play all seven degrees over one unchanged tonic drone in a shuffled
+order. For each trial, leave two beats for a judgement, print the degree, and
+play the resolution route you chose. Begin with `use_random_seed 42` so a second
+run presents the same order. The ratings are observations rather than official
+answers; the useful result is the pattern you can hear and reproduce.

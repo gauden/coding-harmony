@@ -9,9 +9,11 @@ status: draft
 
 ## The idea
 
-C to E spans three letter names and four semitones. The letter count gives interval size, a third; the semitone count gives quality, major. An *interval* therefore carries two measurements. C-sharp to E and D-flat to E reach the same sounding distance in equal temperament, while their spellings produce different named sizes. This is why the spelling field introduced earlier survives numeric conversion. The interval namer below accepts hashes containing a letter, accidental, and MIDI pitch, then returns size and quality.
+The distance from C to E has two coordinates. Count letter names inclusively, C–D–E, and the interval is a third. Count equal-tempered semitones and the distance is four. The letter count supplies size; the semitone count determines quality. Together they name a major third.
 
-Run the unedited program twice before changing it. On the first pass, follow the pulse. On the second, attend to the feature named in the description. Repetition gives you a reference, and a single edit then has something definite to oppose.
+An *interval* therefore carries two measurements. Careful listening may suggest chromatic distance, but the program calculates it; sound cannot report how the notes were spelled. C-sharp to E and D-flat to E both span three semitones in equal temperament, yet C–D–E is a third and D–E is a second. This is the practical reason Lesson 10 kept a label beside the MIDI pitch.
+
+The first interval-naming function handles a deliberately narrow domain: simple ascending examples whose expected forms are major or perfect. Read its result as a first join between letter space and semitone space, not as a complete theory library.
 
 ## Run this
 
@@ -35,30 +37,32 @@ puts interval_name(c, e, letters, base_distance)
 play c[:pitch]; sleep 1; play e[:pitch]
 ```
 
-Each pair sounds through the same piano envelope. The log distinguishes names that playback alone collapses, exposing the separate roles of diatonic spelling and chromatic distance.
+The program prints “major 3,” then plays C followed by E. The two notes provide the four-semitone distance; the hashes provide the letters needed to count a third. If you changed only `:letter` while retaining the numeric pitches, playback would stay the same and the calculated size would change. That separation is the central evidence of the lesson.
 
 ## Change one thing
 
-1. Add C to F and C to F-sharp. Their size stays fourth while quality changes from perfect to augmented.
+1. Add C–F and C–F-sharp. Both pairs span the letter names C–D–E–F and therefore remain fourths. The extra semitone in F-sharp changes the quality from perfect to augmented; the current helper will report that second result as `altered`.
 
-2. Compare C-sharp to E with D-flat to E. Verify the equal sound distance and different letter span.
+2. Restore the original example, then compare C-sharp–E with D-flat–E. Print both MIDI differences and letter sizes. The playback distance should coincide while the sizes differ.
 
-3. Reverse one pair. Decide how the helper should represent descending direction before changing its arithmetic.
-
-After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
+3. Restore C–E and reverse the pair. Before editing the function, decide whether its output should preserve direction as a separate field or normalise the notes into an ascending interval. The choice changes the interface, so state it before changing the arithmetic.
 
 ## Why it works
 
-Interval naming is a join between two coordinate systems. Letter indices wrap modulo seven and yield ordinal size. MIDI subtraction yields semitones. A lookup table maps the expected major or perfect distance to quality.
+Interval naming joins two coordinate systems. The `letters` hash maps seven letter names onto a cycle. Subtracting their indices modulo seven and adding one gives an inclusive ordinal size: equal letters form a unison, adjacent letters form a second, and so on. MIDI subtraction independently supplies the semitone distance.
 
-The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+The `base_distance` table says how many semitones an unaltered major or perfect interval of each simple size contains. Sizes 1, 4, 5, and 8 belong to the perfect family; sizes 2, 3, 6, and 7 belong to the major/minor family. The current function recognises only an exact baseline and calls every deviation `altered`. That limitation is explicit enough to guide the extension.
 
-The first helper handles only baseline major and perfect cases plus a generic `altered` result. That limitation is visible in the return value and should remain visible in the exercise. A complete namer must compare the semitone count with the expected size and derive diminished, minor, major, perfect, or augmented quality as appropriate. Lesson 19 shifts from calculating those labels to building perceptual memories for the distances they name.
+A full quality calculation compares the actual semitone count with the baseline. For a third, four semitones is major, three is minor, five is augmented, and two is diminished. For a fourth, five semitones is perfect, six is augmented, and four is diminished. The letter-derived family determines which quality names are available.
 
-Compound intervals extend beyond the octave by continuing the letter count and semitone distance, but the first implementation stays with simple ascending cases. Constraining the domain keeps the quality table inspectable. Add descending direction and compound size as separate later features; combining both changes at once makes failures harder to locate and names harder to verify.
+The pitch hashes keep the join honest. If you retained only MIDI values, the helper could calculate four semitones but would have to invent a spelling before calling the result a third. If you retained only letters, it could count a third but would not know whether the sound was major, minor, diminished, or augmented.
+
+Compound intervals continue the inclusive letter count beyond an octave, and descending intervals add a direction policy. Both features are useful, but the first implementation remains within simple ascending pairs so its lookup and failure modes stay visible. Extend direction and compound size separately; otherwise one incorrect result may have several plausible causes.
+
+Lesson 19 leaves calculation behind and builds perceptual records for selected distances. The name will come from this two-coordinate system, while recognition must develop from repeated melodic and harmonic hearing.
 
 ## Take it further
 
-Extend `interval_name` to all simple ascending pairs within an octave. Generate test pairs from C to every chromatic pitch, carrying a chosen spelling for each. Print size plus quality and compare each label with its semitone distance.
+Extend `interval_name` to return diminished, minor, major, perfect, and augmented qualities for simple ascending intervals within an octave. Create explicitly spelled test pairs from C to every chromatic pitch you need, including enharmonic alternatives where a semitone distance can have more than one size.
 
-The extended namer should cover every simple ascending interval and include explicit expected labels. Run its assertions in Ruby, then audition representative pairs in Sonic Pi 5; naming correctness and sound recognition are separate checks.
+For every case, assert an expected label and print the semitone distance beside it. Run those assertions as a data check, then audition representative pairs in Sonic Pi 5. A correct name proves that spelling and distance were joined according to the rules. Recognising that interval by ear is a separate ability, and it is the subject of the next lesson.

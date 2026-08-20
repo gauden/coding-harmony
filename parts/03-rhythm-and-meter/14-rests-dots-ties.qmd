@@ -9,9 +9,11 @@ status: draft
 
 ## The idea
 
-Silence belongs in the score. A *rest* is a timed event with no attack, so representing it explicitly keeps bar arithmetic intact. A *dot* adds half of a duration to itself: 1 becomes 1.5, 0.5 becomes 0.75, and 2 becomes 3. A *tie* joins duration across a boundary into one sustained event. Two repeated notes create two attacks. One tied note creates one attack and a longer body. The event array below uses `nil` for a rest and ordinary beat values for all durations.
+A score needs to account for time even when no new sound begins. Rests, dots, and ties all change the relationship between attacks and elapsed beats, which makes them more than marks attached to notes.
 
-Run the unedited program twice before changing it. On the first pass, follow the pulse. On the second, attend to the feature named in the description. Repetition gives you a reference, and a single edit then has something definite to oppose.
+A *rest* is a timed event with no attack. Representing it explicitly allows the clock and bar totals to advance without inventing a pitch. A *dot* adds half of a duration to itself, so 1 beat becomes 1.5 and 2 beats become 3. A *tie* joins a note across a boundary without a second attack. Two written segments may therefore behave as one sounding event.
+
+The array below uses `nil` to mark a rest and ordinary beat numbers for every duration. Follow the attacks first. On a second run, keep counting through the silent event and the long final sound. The clock continues through both.
 
 ## Run this
 
@@ -38,30 +40,32 @@ puts events.sum { |event| event[:duration] }
 play_events events
 ```
 
-The phrase leaves a deliberate hole after its opening note. Its dotted middle note delays the following event. The final tied note crosses the imagined bar line without a second attack.
+The opening C sounds for one event slot, followed by a full beat with no new attack. G then occupies a dotted 1.5-beat span, delaying the final E until beat 3.5. That E continues for 2.5 beats as one event. If you imagine a boundary inside its span, the sound crosses it without being struck again.
 
 ## Change one thing
 
-1. Replace the `nil` rest with `:e4`. The bar length stays fixed while the silence becomes an attack.
+1. Replace `nil` with `:e4`. The total remains six beats and every later onset keeps its place, but the former gap now contains an attack. Listen for changed phrasing without changed arithmetic.
 
-2. Split the final duration of `2.5` into `1.5` and `1.0` repeated notes. Listen for the new attack at the boundary.
+2. Restore the rest, then split the final `2.5` duration into repeated E notes lasting `1.5` and `1.0`. Preserve the total. The new attack makes the boundary audible even though pitch and elapsed time remain unchanged.
 
-3. Change the dotted value from `1.5` to `1`. The next onset arrives half a beat earlier and the phrase total shrinks.
-
-After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
+3. Restore the original event and change the dotted value from `1.5` to `1`. Predict the new onset of E and the new phrase sum. Playback should confirm that the final attack arrives half a beat earlier.
 
 ## Why it works
 
-A score event separates presence from duration. `nil` changes the renderer's action, while the duration advances the clock in both cases. A tie is best normalized before playback by merging adjacent linked events into one longer event.
+Each event separates sound presence from elapsed time. When `event[:note]` is `nil`, the conditional skips `play`, but `sleep event[:duration]` still advances the clock. The rest therefore remains in the score as an inspectable event instead of disappearing into an unexplained offset.
 
-The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+Dots need no special playback instruction. Multiplication by 1.5 produces the ordinary duration value before the event reaches the renderer: a dotted eighth is `0.75` beats in this convention, a dotted quarter is `1.5`, and a dotted half is `3`. Normalizing notation into beat values keeps the renderer concerned with sound and scheduling rather than notation history.
 
-The `:start` fields make the events look like a general score, though this sequential renderer currently trusts array order and advances by duration. A later renderer can schedule by start time; here the explicit values document the intended timeline and make manual checks possible. The tied note is represented as one event because the ear receives one onset. Lesson 15 returns to a fixed grid and studies what happens when attacks avoid the strongest positions.
+Ties benefit from the same normalization. Adjacent tied segments of the same pitch become one event whose duration is their sum. The ear then receives one onset and one continuous body. If the renderer instead plays both segments, the second attack contradicts the tie even when the total time remains correct.
 
-A dotted value is multiplication by 1.5, not a special catalogue entry. That rule applies at every scale: a dotted eighth is 0.75 beats under this convention, and a dotted half is 3 beats. Calculate dots before constructing events. The renderer then receives ordinary durations and needs no branch for notation history.
+The `:start` fields document intended positions, but this first `play_events` function does not schedule from them. It trusts array order and advances sequentially by each duration. That limitation should remain visible. You can manually verify that the listed starts match the prefix sums; a later general renderer will use starts to allow gaps and overlaps that a sequential loop cannot express.
+
+Envelope tails add one further distinction. A rest guarantees no new attack, but a previous note's release may continue fading into that span. Silence in the event data and acoustic silence at the speakers are therefore related but not identical. If you need an empty gap, shorten the preceding envelope as well as preserving the rest.
+
+Lesson 15 returns to a fixed subdivision grid and asks what happens when attacks avoid its strongest positions. The explicit rest here prepares that idea: an unplayed location can shape the rhythm as strongly as a played one.
 
 ## Take it further
 
-Write a two-bar phrase whose events total eight beats. Include a one-beat rest, one dotted-quarter duration of 1.5 beats, and a note tied across the bar line. Print the duration sum and compare the tied form with a two-attack version.
+Write a two-bar phrase whose event durations add up to eight beats. Include a one-beat rest, a dotted-quarter duration of 1.5 beats, and one note that begins before beat 4 and continues beyond it. Represent that tied note as one event, then make a comparison version that splits it into two attacks without changing its pitch or total span.
 
-The event durations must sum to eight beats and the tied comparison must preserve that total. Audition both forms in Sonic Pi 5, listening specifically for the extra attack rather than a change in pitch.
+Print both duration sums and verify that each equals eight. Check that every `:start` matches the accumulated durations before it. Then audition both forms in Sonic Pi 5, listening for the added attack at the bar boundary. The time and pitch should agree; articulation should supply the difference.

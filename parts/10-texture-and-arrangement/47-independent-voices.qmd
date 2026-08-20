@@ -9,25 +9,30 @@ status: draft
 
 ## The idea
 
-Two melodies become *polyphony* when your ear can follow them as independent
-voices. Independence requires more than different pitches. Each voice needs its
-own rhythm, contour, register, and place in the phrase. If both parts attack
-together with the same durations, one tends to sound like chord filling.
+Two simultaneous melodies form *polyphony* when the ear can follow each as a
+line with its own direction. Different pitches alone do not create that
+independence. A voice becomes legible through its rhythm, contour, register,
+and place in the phrase. If both parts attack together for the same durations,
+they tend to fuse into a harmonised melody, with one line heard as filling
+beneath the other.
 
-Sonic Pi maps this musical idea onto concurrency. A live_loop or in_thread gives
-each voice its own process. cue sends a timing event, and sync waits for it.
-Deterministic scheduling keeps the processes on the same beat grid, provided
-each one sleeps for the duration it claims.
+Sonic Pi's concurrency gives the musical distinction a natural program
+structure. A `live_loop` or `in_thread` allows each voice to advance through
+its own events. `cue` announces a timing boundary and `sync` waits for it. The
+voices can differ inside the bar while meeting again on a shared grid, provided
+each process sleeps for the amount of musical time its data claims.
 
-Keep the score for each voice in a separate structure. Shared tempo and bar
-length are useful. Shared mutable note arrays are a source of obscure bugs,
-especially when one loop rotates or changes an array while another reads it.
+Store each voice in a separate score structure. Tempo, meter, and phrase
+boundaries may be shared, but mutable note arrays should not be. A loop that
+rotates or edits shared data can alter another voice between readings and turn
+a musical problem into a concurrency bug whose sound is difficult to explain.
 
 ## Run this
 
-A clock loop announces each four-beat bar. The melody and bass wait for the same
-announcement, then consume independent score data whose durations each total
-four beats.
+A clock loop announces the beginning of every four-beat bar. Melody and bass
+wait for the same announcement, then read independent arrays. Their event
+counts and attack patterns differ, yet both score structures account for the
+same four beats before returning to the clock.
 
 ```{.ruby audio=""}
 use_bpm 88
@@ -72,50 +77,59 @@ live_loop :lower_voice do
 end
 ```
 
-After the loops meet at a bar cue, they repeat without cumulative drift. The
-bass changes on a different attack pattern from the melody, so it remains
-audible as a line.
+At each bar cue, the two lines begin from a known shared boundary. The melody
+makes four attacks and holds B; the bass moves only three times, with its last
+note arriving under the melody's sustained tone. That disagreement of attack
+patterns helps the lower part remain audible as a line instead of disappearing
+into a sequence of vertical sonorities.
 
 ## Change one thing
 
-1. Change the last bass duration from 1.0 to 0.75. The lower loop reaches sync
-   early and waits for the next bar cue. Listen for the quarter-beat silence.
-   The voices do not drift, but the broken invariant becomes audible.
-2. Give the bass the melody's duration pattern while retaining its pitches.
-   The parts align at every attack. Listen for the texture becoming more like a
-   harmonised melody and less like two lines.
-3. Transpose the melody up twelve semitones by changing each note to
-   note(event[:note]) + 12 inside a separate renderer. The wider register makes
-   the voices easier to track without changing their rhythmic relationship.
+1. Shorten the last bass duration from 1.0 to 0.75. The lower loop reaches
+   `sync` a quarter beat early and waits there. Listen to the gap before the
+   next downbeat. The clock prevents accumulating drift, but it cannot make the
+   incomplete bar sound complete.
+2. Restore the duration, then give the bass the melody's attack pattern while
+   keeping the bass pitches. When the two parts articulate together, the
+   texture begins to sound chordal. Compare that fusion with the original
+   moment where the bass moves beneath the held B.
+3. In a separate renderer, transpose each melody note twelve semitones upward.
+   The larger register gap makes the lines easier to follow, although their
+   rhythmic relationship has not changed. This isolates spacing from timing.
 
 ## Why it works
 
-Each voice is a state machine with one responsibility: play its next event,
-advance to the next absolute start, and meet the shared bar boundary. The
-`:note`, `:start`, and `:duration` keys retain the general event schema from the
-transcription lessons. The clock loop is coordination, not score storage. This
-distinction keeps a change to the melody from altering the bass process.
+Each voice behaves like a small state machine: find the next absolute start,
+play the event, advance its cursor, and arrive at the shared boundary. The
+familiar `:note`, `:start`, and `:duration` keys carry the event model from the
+transcription lessons into arrangement. The clock contains coordination rather
+than pitches. As a result, replacing the melody array does not rewrite the bass
+or change the clock's account of a bar.
 
-Sonic Pi schedules musical time independently of how long Ruby takes to execute
-ordinary lines. A sixteen-bar test should therefore return to the same cue
-without gradual separation. A wrong sleep total produces a repeatable gap or
-late arrival instead of floating-point drift. That makes duration sums the
-first diagnostic.
+Sonic Pi schedules musical time separately from the wall-clock time needed for
+ordinary Ruby statements. Over sixteen bars, correctly totalled loops return
+to the cue together rather than separating gradually. An incorrect total
+creates a repeatable early wait, a gap, or a missed boundary. Begin timing
+diagnosis by adding the durations; a balance or synth adjustment cannot repair
+a voice that claims the wrong amount of time.
 
-sync also defines a musical boundary. Bar cues suit repeating grooves. Phrase
-cues suit sections whose lengths differ. Too many cues couple the voices at
-every note and erase the benefit of independent processes. Coordinate at the
-largest boundary that still keeps the form stable.
+`sync` also expresses musical form. A bar cue suits a groove whose parts renew
+every four beats. A phrase cue may be clearer when the voices contain unequal
+bars but share an eight- or sixteen-beat arrival. Synchronising every note would
+couple the lines so tightly that their independent processes offer little
+benefit. Choose the largest boundary that keeps the intended form stable.
 
-The example runs indefinitely, so stop it with Cmd-. or Alt-. The Ruby syntax
-can be checked outside Sonic Pi, while timing, balance, and the audible
-independence of the voices remain manual listening work.
+This example repeats indefinitely; stop it with Cmd-. or Alt-. Ruby can check
+the syntax and duration data outside Sonic Pi. Whether the registers are
+balanced and whether each line remains perceptually independent still require
+listening to the running loops.
 
 ## Take it further
 
-Build an eight-bar two-part arrangement and let it repeat for sixteen bars.
-Store upper and lower events in separate arrays, validate each bar total, and
-use one cue per bar or phrase. Give the voices different attack patterns and a
-register gap of at least an octave. The target is a loop that stays locked while
-either line can be muted, transposed, or replaced without editing the other
-voice's score.
+Build an eight-bar two-part arrangement and allow it to repeat for sixteen
+bars. Keep upper and lower events in separate arrays, validate every bar total,
+and choose one cue per bar or phrase. Give the lines recognisably different
+attack patterns and begin with at least an octave between their registers.
+During review, mute each part in turn: the remaining line should still reveal a
+coherent contour. The combined loop should stay aligned while either score can
+be transposed or replaced without editing the other.

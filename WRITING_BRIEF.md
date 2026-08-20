@@ -1,4 +1,4 @@
-# First-Draft Writing Brief
+# Manuscript Writing Brief
 
 Read `STYLE.md` first. This file settles manuscript-wide choices that several
 writers must make the same way.
@@ -16,16 +16,18 @@ Keep these headings, in this order:
    head. Introduce the term after the sound when possible.
 2. `Run this`: provide a fresh-buffer Sonic Pi program with comments that explain
    musical intent. Describe the audible result directly below it.
-3. `Change one thing`: give two or three bounded edits and say what difference to
-   hear. Numbered lists work well here.
+3. `Change one thing`: give two or three controlled edits. Explain why each
+   comparison isolates the idea and guide the reader toward an audible feature
+   without dictating a subjective verdict.
 4. `Why it works`: connect the sound to theory and to a programmer's existing
    model of data, functions, state, or concurrency.
 5. `Take it further`: give one finite exercise whose answer can live in the
-   solutions appendix. State the target sound or structural constraint.
+   solutions appendix. Describe what the reader is making, why its constraints
+   reveal the lesson's idea, and how to recognise a coherent result.
 
 Aim for 650 to 900 words per lesson. The automated floor is 550 words so short
-topics can stay short. A first draft should be specific enough to edit, without
-padding to meet a quota.
+topics can stay short. Length follows explanation: keep the context and causal
+bridges a reader needs, then remove repetition that no longer carries thought.
 
 ## Code contract
 
@@ -49,8 +51,10 @@ padding to meet a quota.
 ## Continuity
 
 Assume only earlier lessons. Briefly restate a representation when more than one
-part has passed since its introduction. Use cross-references only when they help
-the reader recover a prerequisite; link to the relative `.qmd` file.
+part has passed since its introduction. At a lesson boundary, show what the new
+idea can explain that the previous representation could not. Use cross-references
+when they help the reader recover a prerequisite; link to the relative `.qmd`
+file.
 
 The conceptual progression is:
 

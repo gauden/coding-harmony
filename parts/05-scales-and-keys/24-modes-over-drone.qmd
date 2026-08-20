@@ -9,16 +9,18 @@ status: draft
 
 ## The idea
 
-Play the white notes from D to D over a sustained D. The collection is identical
-to C major, yet C no longer sounds like home. The drone changes every note's
-role. The raised sixth, B, gives the line a brightness that D natural minor would
-lose.
+Play the white notes from D to D while a low D continues underneath. The pitch
+collection is the same one used by C major, but C no longer commands the line.
+The drone makes D the reference point and changes the role of every other note.
+B, a raised sixth compared with D natural minor, now supplies a characteristic
+brightness.
 
-A *mode* is a scale pattern heard around a particular tonic. Rotating the major
-step formula creates seven modes: Ionian, Dorian, Phrygian, Lydian, Mixolydian,
-Aeolian, and Locrian. Rotation alone is mathematically correct and musically
-insufficient. Without a stable root, your ear may keep reinterpreting the notes
-as their parent major scale. The drone fixes the address space.
+A *mode* is a scale pattern heard around a chosen tonic. Rotate the major-scale
+steps and seven modes appear: Ionian, Dorian, Phrygian, Lydian, Mixolydian,
+Aeolian, and Locrian. Rotation describes their interval arithmetic, but the ear
+also needs convincing evidence about home. Without a stable root, the same notes
+may slide back into the familiar orbit of their parent major scale. The drone
+keeps the tonal address fixed while the pattern changes around it.
 
 ## Run this
 
@@ -55,51 +57,58 @@ names.each_with_index do |name, index|
 end
 ```
 
-Every pass starts and ends on D, so the changed step pattern has to reveal
-itself against one reference. Lydian's raised fourth produces a conspicuous
-lift. Phrygian's lowered second crowds the tonic. Mixolydian sounds major until
-its lowered seventh removes the leading-tone pull.
+Every pass begins and ends on D, which prevents root and pattern from changing
+together. Hear Lydian's raised fourth as an upward opening, then Phrygian's
+lowered second as a note pressed close against the tonic. Mixolydian initially
+resembles major, but its lowered seventh removes the semitone that would pull
+home. Those characteristic degrees are easiest to notice when the shared drone
+remains in memory between passes.
 
 ## Change one thing
 
-1. Restrict the loop to Ionian, Dorian, and Mixolydian. These separate into
-   major, minor-with-raised-sixth, and major-with-lowered-seventh. Hear the
-   characteristic degree before adding the remaining modes.
-2. Remove the drone thread. The pitch lists remain accurate, but the tonal
-   centre becomes less secure. Notice which modes collapse most readily into a
-   nearby major scale.
-3. Replace `:d4` with `:fs3`. The modes transpose while their interval patterns
-   remain unchanged. Keep the drone an octave below the new root.
+1. Restrict the loop to Ionian, Dorian, and Mixolydian. This gives you major,
+   minor with a raised sixth, and major with a lowered seventh. Locate the
+   diagnostic note in each pass before restoring the other four modes.
+2. Remove the drone thread. The arrays are still correct, but the centre becomes
+   easier to mishear. Notice which patterns are most readily absorbed into a
+   nearby major scale once the low reference disappears.
+3. Replace `:d4` with `:fs3` and keep the drone an octave below the new root.
+   Every sounding pitch changes, while the internal interval patterns and the
+   modal identities survive.
 
 ## Why it works
 
-Array rotation preserves the multiset of steps and changes their order. Because
-the values still sum to twelve, each mode closes at the octave. The semitone
-positions move relative to the root, altering which degrees feel tense or
-settled.
+Array rotation keeps the same seven step sizes but changes their order. They
+still add to twelve, so every mode reaches the octave. What moves is the position
+of each semitone relative to the root, and those new positions redistribute
+tension and stability across the scale.
 
-It helps to compare each mode with major or natural minor. Ionian is major.
-Dorian resembles natural minor with a raised sixth. Phrygian has a lowered
-second. Lydian resembles major with a raised fourth. Mixolydian lowers major's
-seventh. Aeolian is natural minor. Locrian lowers the second and fifth of natural
-minor, leaving its tonic chord unstable.
+Major and natural minor provide useful reference patterns. Ionian is major.
+Dorian is natural minor with a raised sixth; Phrygian lowers minor's second.
+Lydian raises major's fourth, while Mixolydian lowers major's seventh. Aeolian
+is natural minor. Locrian lowers both the second and fifth of natural minor,
+which leaves even its tonic triad without a stable perfect fifth. These are
+comparisons for hearing, not substitutes for the full step formulas.
 
-The characteristic degree is a diagnostic rather than a complete definition.
-A melody that never touches Dorian's sixth gives your ear little evidence. The
-ascending and descending program visits every degree, so the comparison is
-fair. Later melodies can emphasise the diagnostic note with duration, accent,
-or repetition.
+A characteristic degree is evidence for a mode, not its complete definition.
+If a Dorian melody never reaches degree 6, the ear receives little reason to
+distinguish it from natural minor. This program climbs and descends through
+every degree so no pattern conceals its identifying note. In a melody, duration,
+accent, or repetition can bring that note into focus without turning the line
+into a scale demonstration.
 
-The common root is the experimental control. If every mode began on the white
-key associated with its rotation, pitch height and tonic would change together.
-Starting all seven on D forces the interval pattern to carry the contrast. It
-also avoids the mistaken claim that Dorian belongs only to D or Mixolydian only
-to G. Any mode can begin on any pitch once its steps are applied from that root.
+The common D is the experimental control. Starting each rotation on its familiar
+white-key tonic would change both pitch height and tonal centre, making the
+comparison harder to interpret. Applying every pattern to D forces interval
+order to carry the difference. It also makes a broader point: Dorian is not a
+scale that belongs to D, nor Mixolydian one that belongs to G. Each mode can
+begin on any root.
 
 ## Take it further
 
-Build an ear drill containing Ionian, Dorian, and Mixolydian. Start with
-`use_random_seed 42`, choose one mode, play its drone and a six-note phrase that
-includes its characteristic degree, wait four beats, then print and play the
-answer. Run ten trials. Store the modes as data and keep the phrase rhythm
-identical so mode is the changing variable.
+Build a ten-trial ear drill with Ionian, Dorian, and Mixolydian. Start with
+`use_random_seed 42`. On each trial, choose one mode, sustain its drone, and play
+a six-note phrase that includes the characteristic degree. Leave four beats for
+an answer before printing and replaying the mode name. Store the patterns as
+data and keep rhythm, register, and synth fixed. That way a correct distinction
+has to come from the mode rather than from an accidental cue in the renderer.

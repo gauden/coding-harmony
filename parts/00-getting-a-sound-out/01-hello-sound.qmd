@@ -9,9 +9,11 @@ status: draft
 
 ## The idea
 
-A six-note phrase is enough to expose the boundary between score and instrument. The pitches and timings can stay fixed while the synth changes around them. I use that separation throughout the book: the phrase describes what happens, while `use_synth` chooses the machine that makes it audible. Start with `:pluck`, whose sharp attack makes every onset easy to locate. The program stores the phrase as note symbols and gives each note half a beat. `play_phrase` receives those two inputs and renders them in order.
+A first Sonic Pi program needs to do more than prove that the speakers work. It should also introduce a distinction that will make later programs easier to understand: the notes and timings describe a phrase, while the synth gives that phrase a sounding body. Those two layers can change independently.
 
-Listen once for event placement, then again for colour and decay. Holding most variables fixed is what turns the example into an experiment. If two edits happen together, the cause of the audible change becomes unclear. The bounded changes below preserve that discipline.
+The six-note phrase below rises from E, turns at B, and comes home. Its pitches live in one array and its durations in another. The `play_phrase` function joins the arrays and sends each event to the synth. Start with `:pluck`, because its quick attack makes every onset easy to locate. You can hear where the notes begin before deciding what you think of their colour.
+
+This division between score and renderer is modest here, but it will support much larger examples. For now, listen for two things separately. First follow the shape of the phrase. Then attend to the edge and tail of each note. The contour belongs to the score data; the edge and tail mostly belong to the chosen synth and envelope.
 
 ## Run this
 
@@ -32,30 +34,30 @@ end
 play_phrase notes, durations
 ```
 
-You hear six evenly spaced notes rise, turn, and settle. The plucked attack makes the rhythm plain, while the final note hangs long enough to sound like an ending.
+The program schedules six evenly spaced attacks. The first four notes climb, the fifth turns downward, and the final E lasts twice as long as the others. On playback, check whether that extra time gives the last note more closing weight and whether `:pluck` leaves the spaces between attacks easy to follow.
 
 ## Change one thing
 
-1. Replace `:pluck` with `:prophet`. Listen for the softened attack and broad tail; the same six starts become less percussive.
+1. Replace `:pluck` with `:prophet`. The note symbols and sleeps do not move, but the softened attack makes their exact starting points less prominent and the broader tail fills more of the gap between them.
 
-2. Run the phrase with `:blade`, then `:fm`. Compare how clearly you can locate each onset while the notes and sleeps remain fixed.
+2. Restore `:pluck`, then try `:blade` and `:fm` one at a time. Compare how clearly you can locate each onset. Use words such as *sharp*, *blurred*, *dry*, or *lingering* only when they identify something you can hear.
 
-3. Change the final duration from `1` to `0.5`. The pitch still resolves, though the phrase loses some of its closing weight.
-
-After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
+3. Return to the original synth and change the final duration from `1` to `0.5`. The line reaches the same E, but it no longer pauses there. This separates closure created by pitch from closure created by time.
 
 ## Why it works
 
-The note array is score data. The helper is a renderer, and the synth selection is configuration. Keeping those roles separate means one edit can recolour the whole phrase without changing its contour or timing.
+The arrays are the score. One says which pitches occur; the other says how far the musical clock advances after each pitch. `play_phrase` is the renderer that turns those paired values into scheduled sound. Finally, `use_synth` selects the sound generator. Because each role has a visible home, a one-word synth edit can recolour the whole phrase without rewriting its contour or timing.
 
-The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+Three Sonic Pi instructions carry most of the lesson. `play` starts a sound event. `sleep` advances the thread's musical clock before the next instruction runs. `use_synth` changes the instrument used by later `play` calls. Notice that `play` does not wait for its note to finish. The wait comes from `sleep`, so a note's audible tail and the distance to the following onset are related but distinct.
 
-The six-note limit keeps the first program small enough to read from top to bottom. `play` starts an event; `sleep` moves the musical clock; `use_synth` selects a sound generator. Press Run after each single-word synth edit and watch the log pane at the same time. A misspelled synth produces an error rather than a partial performance, and the line number is part of the feedback. Once this score-versus-renderer split is audible, Lesson 2 can replace note names with integers without changing the basic playback loop.
+You can expose that distinction without changing synths. Keep `:pluck` and change `release` from `duration * 0.8` to `duration * 1.4`. The attacks still occur on the same half-beat grid, but each tail now extends past the next attack. The phrase becomes more connected because the renderer changed, not because the duration array changed.
 
-One further comparison separates articulation from instrument choice. Keep `:pluck` and change `release` from `duration * 0.8` to `duration * 1.4`. The notes begin at the same moments, yet their tails overlap. That edit belongs to the renderer rather than the pitch array, so it demonstrates why sound settings should not be hidden inside the score data.
+The log pane belongs in this feedback loop. A misspelled synth name stops the program and points to a line; a correctly spelled but unsuitable synth still runs and asks for a listening judgement. Code feedback can establish whether Sonic Pi understood the instruction. Your ears establish what that instruction did to the phrase.
+
+This score-renderer boundary returns throughout the book because it keeps musical questions local. Lesson 2 replaces the note names with integers and transforms them arithmetically, but the playback loop retains the same job. Later lessons will make timing and articulation more elaborate without requiring the pitch data to know how it is rendered.
 
 ## Take it further
 
-Add a fourth synth choice and a second six-note phrase. Keep one `use_synth` line and one call to `play_phrase`, so changing a single symbol still replaces the instrument. Use the log pane to record the synth and any error message produced by a deliberate misspelling.
+Add a second six-note phrase and choose four synths that make its contour easy to hear in different ways. Keep one `use_synth` line and one call to `play_phrase`; changing a single synth symbol should still replace the instrument for the whole phrase. This constraint shows whether score data and rendering have remained separate.
 
-The finished file should contain two phrases, four working synth symbols, and one recorded error message with its corrected line. Audition every synth choice in Sonic Pi 5 before deciding which register suits it.
+Try one deliberate misspelling and copy the resulting log message beside its corrected line. Then run all four valid synths in Sonic Pi 5. For each one, record a concrete observation about attack or decay and note whether the phrase's register suits that sound. Your completed comparison has two reusable phrases, four valid synth choices, and an error you know how to read.

@@ -9,16 +9,18 @@ status: draft
 
 ## The idea
 
-Recognise a tune tapped on one pitch and rhythm is carrying more identity than
-its notes. Recognise it when every duration is equal and pitch contour is doing
-the work. A melody combines both streams, which makes it easy to credit the
-wrong one.
+A familiar tune can sometimes survive being tapped on a single pitch. In that
+case rhythm is carrying more of its identity than the note names. Give every
+note the same duration and a different part of the tune may survive through its
+rise and fall. Because an ordinary melody combines these streams, listening to
+the finished line does not always reveal which one made it recognisable.
 
-*Contour* reduces pitch motion to up, down, or same. It discards interval size
-and absolute register. Rhythm can be reduced separately to duration and onset.
-Treating them as independent arrays lets you make controlled mutations: retain
-the shape and replace the timing, retain the timing and flatten the pitches, or
-change interval sizes while keeping direction.
+*Contour* is a reduced description of pitch motion: up, down, or unchanged. It
+forgets interval size and absolute register. Rhythm can be separated into onset
+and duration data. Once the streams live in independent arrays, you can make a
+clean comparison: flatten all pitches while preserving time, replace the timing
+while preserving shape, or change every interval size without changing its
+direction.
 
 ## Run this
 
@@ -58,48 +60,56 @@ sleep 2
 play_phrase contour_notes, durations
 ```
 
-The first version combines both streams. The second retains rhythm on one pitch.
-The third retains coarse contour on a fixed grid. The fourth reunites the
-original timing with a pitch sequence that shares direction and changes every
-interval size.
+The first pass presents the complete phrase. The second keeps its rhythm and
+removes pitch motion, so any remaining identity belongs largely to timing. The
+third rebuilds only the coarse contour on equal durations. The fourth restores
+the original rhythm to that rebuilt shape. Listen across the sequence for what
+disappears at each reduction and what returns when the two streams meet again.
 
 ## Change one thing
 
-1. Replace every duration with `1`. Listen for how much identity survives in the
-   original pitches after the rhythmic profile is removed.
-2. Change contour steps from two semitones to one. Direction stays fixed while
-   the melody compresses into a narrow band.
-3. Reverse only `durations`. The notes keep their order, but accents created by
-   long values move to new pitches and the phrase boundaries shift.
+1. Replace every duration with `1`. The original pitches remain, but their
+   distinctive long and short values disappear. Notice which fragments still
+   sound connected and where the phrase loses its former boundaries.
+2. Change the rebuilt contour step from two semitones to one. Every direction
+   stays fixed while the line contracts into half the pitch range. This tests
+   how much interval size contributed beyond the signs of the motion.
+3. Reverse only `durations`. The notes keep their order, but long values now
+   emphasise different pitches. Listen for a new grouping rather than expecting
+   a backward version of the original tune.
 
 ## Why it works
 
-`zip` aligns two independent data streams by index. The renderer combines them
-at the last possible moment. That makes mutation local: a duration experiment
-does not rewrite pitch data, and a contour experiment does not disturb timing.
+`zip` aligns the note and duration streams by index, and `play_phrase` combines
+them only at playback. A timing experiment therefore need not rewrite pitch
+data, while a pitch transformation leaves rhythm intact. The architecture makes
+the listening comparison as local as the code change.
 
-Contour is a lossy encoding. Many melodies map to the same sequence of
-directions. That is useful because it exposes family resemblance, though it
-cannot reconstruct the source. Rhythm is also more than the duration array once
-meter and accent enter. The controlled versions here answer a narrower question:
-which preserved feature carries recognition for this phrase?
+Contour is deliberately lossy. Many different melodies reduce to the same
+sequence of directions, which makes family resemblance visible but prevents
+reconstruction of the source. A duration list is incomplete too once meter,
+accent, and articulation enter. The examples ask a narrower, answerable question:
+given these reductions of this phrase, which preserved feature carries more of
+what you recognise?
 
-The expected answer depends on the melody and listener. The curriculum's claim
-that rhythm often wins should be tested with another person rather than reported
-as a universal law. That uncertainty becomes important in transcription. A
-reliable rhythm with approximate pitches may identify the phrase sooner than
-exact notes placed at vague times.
+The answer varies with both melody and listener. Rhythm often carries a striking
+amount of identity, but that observation should be tested with another person
+rather than promoted to a universal rule. The uncertainty is useful in later
+transcription work. A secure rhythmic outline with approximate pitches may lead
+you to the phrase sooner than exact notes floating at uncertain times.
 
-Contour can be enriched in stages. Replace `:up` with interval classes such as
-`:step_up` and `:leap_up`, or store signed semitone differences. Each richer
-encoding preserves more identity and reduces the number of melodies that share
-it. Begin with the coarsest representation that answers the listening question,
-then add detail only when two useful cases remain indistinguishable.
+You can enrich contour in stages. Replace `:up` with categories such as
+`:step_up` and `:leap_up`, or store the complete signed semitone difference.
+Every added distinction retains more identity and allows fewer source melodies
+to share the encoding. Use the coarsest representation that answers the current
+question; add detail when two musically relevant cases still collapse together.
 
 ## Take it further
 
-Choose an eight- to sixteen-note tune familiar to a willing listener. Produce
-three anonymous versions: original rhythm on one pitch, original contour with
-equal durations, and original rhythm with contour rebuilt in whole tones. Ask
-which version they identify first. Keep synth, tempo, register, and amplitude
-fixed, then record the result and the exact data arrays.
+Choose a familiar tune of eight to sixteen notes and make three anonymous
+versions: its original rhythm on one pitch, its contour with equal durations,
+and its original rhythm paired with contour rebuilt in whole tones. Play them
+for a willing listener and record which version they identify first. Hold synth,
+tempo, register, and amplitude fixed, and preserve the exact arrays alongside
+the observation. That record makes the result reproducible without pretending
+one listener settles the general question.

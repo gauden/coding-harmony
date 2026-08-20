@@ -2,55 +2,65 @@
 title: "Preface"
 ---
 
-::: {.callout-warning appearance="default" icon="true" title="AI-generated draft under human rewrite"}
-**This is an AI-generated book.** It is being
-tested and completely rewritten by hand. Treat every lesson, code example, and
-description of sound as draft material until that work is complete.
+::: {.callout-warning appearance="default" icon="true" title="AI-generated draft under revision and testing"}
+**This is an AI-generated book.** The manuscript is being revised and independently tested.
+No human-authored edition is claimed. Until a lesson has passed a documented
+human listening test, treat its code and descriptions of sound as claims that
+still need a human ear.
 
 If you have a correction or suggestion, [submit a pull
-request](https://github.com/gauden/coding-harmony/pulls). I have
-limited capacity to respond individually, but I hope you will see changes in
-the book in response to your suggestions.
+request](https://github.com/gauden/coding-harmony/pulls). Individual responses may be
+limited, but useful corrections can still find their way into the book through
+that public record.
 :::
 
-The best way I know to find the gaps in my understanding is to explain the
-subject to someone else. This book and website are the record of that process:
-learning music theory by turning it into Sonic Pi programs, then listening for
-where the model and the sound disagree.
+Explaining a subject exposes the gaps that private study can leave undisturbed.
+That is the method of this book: turn ideas from music theory into Sonic Pi
+programs, listen to the result, and examine the places where model and sound
+disagree. The website keeps that process visible, including the rough edges that
+a finished textbook usually hides.
 
 Sonic Pi is usually introduced as a way to teach programming through music. That
-route has a cost for an experienced programmer. It spends time on loops and
-threads while harmony, melody, and rhythm wait offstage. Here the programming is
-assumed. Arrays, functions, state, and concurrency become working metaphors for
-musical structures.
+is a useful route, but it moves slowly for someone who already writes software.
+Loops and threads receive the attention while harmony, melody, and rhythm wait
+offstage. This book starts from the other side: programming is the shared
+language, and arrays, functions, state, and concurrency become ways of handling
+musical structure.
 
-I began unable to read a note. The 58 lessons follow the order in which I could
-make the subject concrete: sound, pitch and time as data, acoustics, pitch
-classes, rhythm, intervals, scales, harmony, melody, notation, transcription,
-arrangement, chromatic harmony, then four capstones. The representation grows
-with the music. A short phrase begins as an array and ends as named voices sharing
-a timeline.
+The 58 lessons are written for a programmer who begins unable to read a note.
+They follow the order in which the subject can become concrete. The book begins
+with sound itself, then represents pitch and
+time as data. Acoustics explains why some relationships recur; rhythm,
+intervals, scales, and harmony give those relationships names; notation and
+transcription arrive only after there is something familiar to notate. By the
+capstones, the short array from the early lessons has grown into named voices
+sharing a timeline. The representation grows because the music asks more of it.
 
 ## How the lessons work
 
-Each lesson takes one musical idea, encodes it as data, plays it, and asks you to
-change a bounded input. Sonic Pi is the laboratory. The programming stays ahead
-of the theory, so what you already know carries the load.
+Each lesson takes one musical idea, finds a representation for it, and plays the
+result. You then change one part while the others stay fixed. That small
+experiment gives the explanation something concrete to account for: a note
+moves, a cadence weakens, or a rhythm shifts its weight. Sonic Pi is the
+laboratory, and your programming experience supplies stable ground while the
+musical vocabulary develops.
 
 Six decisions shape the course:
 
-- **Sound first, name second.** You hear an interval, cadence, or mode before its
-  terminology has much authority.
+- **Sound first, name second.** You meet an interval, cadence, or mode as an
+  audible event. Its name arrives when it can help you recognise the event
+  again.
 - **Music is data.** A reusable event carries `:note`, `:start`, `:duration`, and
   sometimes `:amp`. Later fields describe articulation, spelling, or provenance.
 - **Score and renderer stay separate.** The score records content. A playback
   function interprets it. Changing an instrument should not rewrite the notes.
-- **Examples end with musical material.** Test tones establish a fact; phrases,
-  grooves, and progressions reveal what the fact does over time.
+- **Examples end with musical material.** Test tones can isolate a fact, but a
+  phrase, groove, or progression reveals what that fact does over time.
 - **Notation arrives late.** The staff appears in Part 8, once pitch and duration
   are familiar as numbers. It becomes another coordinate system to decode.
-- **Ear work runs beside theory.** From Part 2 onward, short drills turn each new
-  category into something you must identify without reading the answer.
+- **Ear work runs beside theory.** From Part 2 onward, short drills ask you to
+  recognise each new category without seeing its label. The goal is to make the
+  term answer to the sound.
 
 Ruby idioms receive a short explanation when they first appear. The complete
 subset used here is collected in [Ruby for
@@ -59,14 +69,16 @@ in the [cheat sheet](appendix/sonic-pi-cheatsheet.qmd). Each *Take it further*
 exercise has an entry in the [solutions appendix](appendix/solutions.qmd),
 including structural checks for exercises whose musical answer remains open.
 
-This book does not teach instrumental technique. It teaches what musicians are
-organising and why, using representations you can inspect, test, revise, and
-argue with.
+This is not a course in instrumental technique. It is an account of what
+musicians organise and why, expressed in representations you can inspect,
+test, revise, and argue with. A program cannot settle every musical question.
+It can make the question precise enough to hear.
 
 ## Working rhythm
 
-Four sessions a week covers the 58-lesson spine in about fifteen weeks, with the
-capstones after that. The pattern I use is:
+Four sessions a week cover the 58-lesson spine across roughly fifteen weeks,
+with the capstones afterward. The schedule below gives new material time to
+recur before the next layer arrives.
 
 | Session | Length | What |
 |---|---|---|
@@ -75,24 +87,31 @@ capstones after that. The pattern I use is:
 | One per week | 30 min | Free play using only the ideas met so far. |
 | Most days | 10 min | Ear drills from your own `drills.rb`. |
 
-Every fourth week, add no new theory. Finish a transcription instead. Theory
-sticks when a wrong value stops a phrase from sounding like its source.
+Every fourth week, leave new theory alone and reconstruct a short phrase by ear
+using only material already introduced. Once Parts 8 and 9 have supplied
+notation, source handling, and a transcription workflow, that reconstruction
+can grow into a sourced transcription. A concept changes character when a wrong
+value keeps a phrase from sounding like its source; it has become a diagnostic
+tool rather than a definition to remember.
 
-Run each example in a fresh Sonic Pi buffer unless its comment says that it
-continues from above. Read the code before pressing Run. After the first pass,
-make the edits under *Change one thing* separately so the audible difference has
-one cause. Stop live loops before moving to the next lesson.
+Run each example in a fresh Sonic Pi buffer unless a comment says that it
+continues from above. Read the code once before pressing Run, then listen without
+editing. Make the *Change one thing* variations separately; when pitch, timing,
+and timbre all move together, the ear has no clean comparison to make. Stop live
+loops before moving to the next lesson, since they continue after you change
+buffers.
 
 ## A word on status
 
-The whole manuscript now has a first draft. Every lesson carries `status: draft`.
-That means the planned concept, exercise, explanation, and substantive Ruby
-example are present. The Ruby has received syntax checking. It does not mean a
-human has worked through every example in Sonic Pi or confirmed each listening
-claim.
+Every lesson carries `status: draft`. The label says that the planned concept,
+exercise, explanation, and substantive Ruby example are present, and that the
+Ruby clears a syntax check. It says nothing yet about the experience of working
+through the lesson in Sonic Pi. Syntax can confirm the shape of a program while
+missing an invalid API call, a poor balance, or a misleading description of what
+the notes seem to do.
 
-A lesson reaches `tested` only after someone starts cold, follows it in Sonic Pi,
+A lesson reaches `tested` only when someone starts cold, follows it in Sonic Pi,
 records where it fails, and rewrites from those field notes. Recordings come
-after that pass. Until then, treat timing, synth balance, API behaviour, and the
-descriptions of sound as claims awaiting audition. The distinction is part of
-the method: code can parse while the musical result remains wrong.
+after that pass. Until then, timing, synth balance, API behaviour, and every
+description of sound await audition. Keeping that distinction visible is part
+of the method. Code can parse while the musical result remains wrong.

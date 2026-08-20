@@ -9,31 +9,35 @@ status: draft
 
 ## The idea
 
-Choose a two-voice invention, canon, or contrapuntal excerpt. The project asks
-for two lines that remain independently inspectable and reproduce the source
-together. Each voice needs its own events, measure references, phrase or motive
-labels, and uncertainty markers.
-Complete the independent-voice model in
+Choose a two-voice invention, canon, or contrapuntal excerpt whose lines can be
+followed both separately and together. The project asks your representation to
+preserve those two views. Each voice needs its own events, measure references,
+phrase or motive labels, and uncertainty markers; combined playback must then
+reproduce the source's vertical coordination. Revisit the independent-voice
+model in
 [Lesson 47](../10-texture-and-arrangement/47-independent-voices.qmd) and the
 entry-delay analysis in
 [Lesson 51](../10-texture-and-arrangement/51-canon-imitation.qmd) first. The
 capstone combines those concurrency decisions with the source checks from Part
 9.
 
-Polyphonic transcription adds a vertical check to the horizontal work. A note
-can be correct in its own melody and still enter at the wrong moment against the
-other voice. Validate each line's bar totals, then validate shared boundaries
-and inspect the intervals created at every attack.
+Polyphonic transcription adds vertical evidence to the horizontal work of
+following a melody. A pitch may be correct within its own line yet enter too
+early against the other voice, changing the interval and implied harmony. Check
+bar totals within each voice first. Then compare their shared boundaries and
+inspect the vertical interval created whenever either line attacks.
 
-Annotate motives, imitative entries, cadences, and implied harmony. These labels
-are analytical claims, so keep them beside the score without allowing them to
-change playback.
+Annotations for motives, imitative entries, cadences, and implied harmony help
+connect those two views. They are analytical claims about the events, not
+instructions for changing them. Keep the labels beside the score so a reader
+can review the interpretation while playback continues to depend on pitch and
+time alone.
 
 ## Run this
 
-The model uses two independent event arrays over eight beats. Motive labels show
-the imitative relationship, while one alignment check confirms that both voices
-finish together.
+The model gives each voice an independent eight-beat array. Motive labels reveal
+where subject material passes between the lines, and a final alignment check
+confirms that the two horizontal sequences agree on the end of the excerpt.
 
 ```{.ruby audio=""}
 use_bpm 86
@@ -77,46 +81,61 @@ in_thread { play_events upper, :piano, 0.75, 0.25 }
 play_events lower, :pluck, 0.65, -0.25
 ```
 
-The lower voice begins as support, then states a related rising subject while
-the upper voice continues. Panning aids inspection without changing the score.
+The lower voice begins with longer supporting notes. At beat 2 it takes up a
+related rising subject while the upper line proceeds toward its answer and
+cadence. Gentle panning helps the ear retain each strand, yet the pan positions
+live in the renderer and make no claim about the written score.
 
 ## Change one thing
 
-1. Delay the lower subject events by 0.5 beats while leaving its first event
-   fixed. The final alignment fails or events overlap. This distinguishes a
-   local imitation edit from a legal whole-voice shift.
-2. Transpose lower subject notes up twelve semitones. The motive stays
-   recognisable, but voice crossing becomes likely. Listen for which line your
-   ear follows after the crossing.
-3. Mute either play_events call. Each remaining voice should have a coherent
-   contour and rhythm. If one line sounds like scattered chord filler, revisit
-   its event boundaries and source.
+1. Delay only the lower subject events by 0.5 beats while leaving the opening
+   support and final cadence fixed. The existing endpoint check still passes,
+   which exposes its limit: it cannot detect internal overlap or a displaced
+   entry. Add an ordering or overlap check before deciding whether the edit is
+   valid.
+2. Restore the starts and transpose the lower subject notes upward by twelve
+   semitones. Their contour and pitch classes remain recognisable, but the
+   lower voice may cross above the upper. Listen for whether your attention
+   follows register, timbre, or the established melodic identity after crossing.
+3. Restore the register and mute each `play_events` call in turn. The isolated
+   voice should still have purposeful attacks, contour, and phrase direction.
+   If it sounds like scattered chord filling, return to its event boundaries
+   and compare them with the source before adjusting the combined balance.
 
 ## Why it works
 
-Independent arrays preserve horizontal identity. Global starts preserve
-vertical alignment. Together they allow both kinds of query: what does this
-voice do next, and what sounds against this attack?
+Independent arrays preserve horizontal identity: you can ask what one voice
+does next without filtering a mixed event list. Global starts preserve vertical
+alignment: you can ask what the other voice sustains when this attack occurs.
+Both representations are necessary because counterpoint is heard along each
+line and across the lines at the same time.
 
-Interval inspection uses pitch arithmetic. At every distinct attack time, find
-the active note in each voice and subtract the lower from the upper. Reduce
-with % 12 when pitch class is the concern, but keep the full interval to detect
-crossing and register. Dissonance can be correct when prepared and resolved;
-the report identifies places to analyse rather than banning interval classes.
+An interval report uses straightforward pitch arithmetic. Gather every distinct
+attack time, find the note active in each voice, and subtract the lower pitch
+from the upper. Reduction with `% 12` reveals interval class, but retaining the
+full number shows compound intervals, register, and crossing. A dissonance can
+be correct when prepared, placed, and resolved convincingly. The report points
+to a relationship that needs analysis; it does not forbid a class of sounds.
 
-Motive annotations resemble tags on events. An entry can share a subject label
-while being transposed or rhythmically altered. Cadence and implied-harmony
-labels describe spans, so a separate annotations array with start and duration
-may be cleaner for a longer work.
+Motive labels can attach directly to events like tags. Two entries may share a
+subject label even when one is transposed or rhythmically varied. Cadences and
+implied harmonies often describe spans rather than single attacks. In a longer
+work, a separate annotations array with `:start` and `:duration` can express
+those spans more faithfully without duplicating the score.
 
-Human comparison remains required. Syntax and alignment checks cannot confirm
-that two independently valid lines match the printed score or recording.
+Automated checks can confirm syntax, metric totals, final alignment, and the
+intervals implied by entered pitches. They cannot establish that either voice
+matches the page or recording. Loop each part against the source alone, then
+compare the combination at exposed entries and cadences. Human listening is the
+step that joins independently valid data to the musical claim.
 
 ## Take it further
 
-Transcribe at least sixteen bars of two-voice polyphony. Deliver separate
-voice arrays, per-bar duration checks, automatic final alignment, source
-coordinates, and annotations for motives, imitative entries, cadences, and
-implied harmony. Generate an interval report at every attack and explain each
-flagged crossing or exposed dissonance. The target is a combined rendering that
-matches the source while either voice remains readable and playable alone.
+Transcribe at least sixteen bars of two-voice polyphony. Deliver a separate
+array for each voice, duration checks for every bar, an automatic final-alignment
+check, and precise source coordinates. Annotate motives, imitative entries,
+cadences, and implied harmonies at the scope each claim requires. Generate a
+vertical interval report at every distinct attack and explain each crossing or
+exposed dissonance it flags. Audition the voices separately and together. The
+combined rendering should match the source, while either line remains readable,
+playable, and musically coherent on its own.

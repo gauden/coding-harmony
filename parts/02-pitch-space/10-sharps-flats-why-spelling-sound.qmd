@@ -9,9 +9,11 @@ status: draft
 
 ## The idea
 
-F-sharp and G-flat reach the same key in equal temperament. Sonic Pi confirms that `note(:fs4)` and `note(:gb4)` both return 66. Their sound address is identical, while their spelling records different musical motion. F-sharp can act as a raised F leading toward G; G-flat can act as a lowered G moving toward F. This is *enharmonic spelling*: one sounding pitch with more than one name. From here I carry both the numeric pitch and its written name when harmonic meaning depends on it.
+F-sharp and G-flat occupy the same equal-tempered key. Sonic Pi confirms this by returning 66 for both `note(:fs4)` and `note(:gb4)`. Playback therefore cannot distinguish them. Their names preserve a difference that belongs to musical context rather than physical frequency.
 
-Run the unedited program twice before changing it. On the first pass, follow the pulse. On the second, attend to the feature named in the description. Repetition gives you a reference, and a single edit then has something definite to oppose.
+F-sharp can describe an F raised toward G. G-flat can describe a G lowered toward F. This is *enharmonic spelling*: two names for one sounding pitch in equal temperament. The distinction may seem unnecessary while a program only plays isolated notes, but it becomes indispensable when the program later names intervals, explains a melody's direction, or exports notation.
+
+The table below carries both layers. `:pitch` is the numeric address used for sound; `:spelling` is the label that keeps the intended identity visible in the log.
 
 ## Run this
 
@@ -33,30 +35,30 @@ spellings.each do |entry|
 end
 ```
 
-Each pair of spellings collapses to one sounding key. The log still preserves two labels, which proves that the integer alone cannot retain the intended musical job.
+In each pair, you hear the same keyboard pitch twice. Nothing in the waveform says “sharp” on the first attack or “flat” on the second. The log preserves the two labels even though the numeric values coincide. That apparent redundancy is evidence that the fields answer different questions.
 
 ## Change one thing
 
-1. Add `:cs4` and `:db4` to the table. Confirm that both map to 61.
+1. Add C-sharp4 and D-flat4 entries. Confirm that both map to 61 and produce the same sound. Keep the labels visible so the equality does not erase their names.
 
-2. Print only the integers, then compare the result with the labelled output. The stripped version loses the distinction the lesson is about.
+2. Restore the original table and print only its integers. The output remains sufficient for playback, but it can no longer tell you which member of each enharmonic pair was supplied. State one later task that would need the missing label.
 
-3. Add B-sharp and C5. Check Sonic Pi's returned values and write down how the octave boundary affects the address.
-
-After each edit, restore the original before trying the next one. This keeps the comparisons independent. Write one sentence about the change in onset, duration, register, roughness, or direction. Avoid broad judgements such as “better”; name the feature that moved.
+3. Restore the labels, then add B-sharp4 and C5. Check Sonic Pi's returned values and observe how the spelling crosses an octave boundary. The pair exposes why note name and octave cannot be interpreted independently.
 
 ## Why it works
 
-A note spelling is metadata attached to a numeric value. The value drives playback; the label preserves intent for analysis and later notation. This resembles storing an identifier beside a normalized database key instead of expecting the key to explain its context.
+Spelling is metadata attached to a numeric pitch, but “metadata” does not mean decoration. The integer determines what Sonic Pi plays. The label preserves the note's role for analysis, explanation, and later notation. This resembles retaining a source identifier beside a normalized database key: equality in one field does not imply that the source context can be discarded.
 
-The program keeps musical material as data until the last possible moment. That separation makes the explanation inspectable: you can print the score, calculate a property, and pass the same values to a renderer. Sound then acts as another view of the data. When the result differs from the calculation, check whether the mismatch comes from the representation, the scheduling, or the synth envelope.
+The hash is deliberately redundant. `:pitch` alone can drive playback. `:spelling` alone is meaningful to a reader only if its accidental and octave are accurate. Together, the fields let later code verify that a label maps to the expected sound while still carrying information the sound address lacks.
 
-The hash is intentionally redundant: `:pitch` is sufficient for playback, while `:spelling` is sufficient for display only when its octave and accidental are accurate. Keeping both allows later code to validate that representation against sound. Do not force one global preferred spelling onto every context. Key and melodic direction will eventually choose among enharmonic options. Lesson 11 temporarily avoids that choice by working inside a five-note collection whose numeric members are already supplied by Sonic Pi.
+There is no single preferred spelling for every context. A key, chord, or melodic direction can make F-sharp the informative name in one passage and G-flat the informative name in another. Normalizing every class to a global sharp name may make transposition arithmetic tidy, but it silently deletes evidence needed for a correct musical explanation.
 
-Spelling also determines interval size once letter names enter the calculation. C-sharp to E uses three letters and sounds as three semitones; D-flat to E uses two letters and sounds the same three semitones. Lesson 18 will use both measurements. Keeping the label now prevents a later interval function from reconstructing intent that the numeric pitch never contained. Preserve it.
+Interval naming provides a concrete example. C-sharp to E spans the letter names C–D–E and therefore forms a kind of third. D-flat to E spans D–E and forms a kind of second. Both pairs cover three semitones in equal temperament. A MIDI subtraction can report that chromatic distance, but it cannot recover which letter span the writer intended. Lesson 18 will combine both measurements.
+
+For now, use playback and the log as complementary views. Repeated identical sounds confirm the shared address; repeated distinct labels preserve the identity that the address collapses. Lesson 11 temporarily avoids enharmonic decisions by asking Sonic Pi for an existing five-note collection and treating its members numerically.
 
 ## Take it further
 
-Build a pitch-class spelling table for all twelve classes with one preferred sharp and one preferred flat name where both are common. Store each entry as a hash with `:pitch` and `:spelling`. Print both fields and play the pitch once.
+Build a spelling table for all twelve pitch classes. Where a class commonly has both a sharp and a flat name, store separate hashes rather than choosing one global replacement. Each hash should contain `:pitch` and `:spelling`, and the output should print both fields before playing the pitch.
 
-The table should cover twelve pitch classes without losing either label or numeric address. Verify the mappings in the log and audition them in Sonic Pi 5; the repeated sound should coincide for every enharmonic pair.
+Check that the table covers twelve distinct numeric classes while retaining every label you supplied. Then audition the entries in Sonic Pi 5. Enharmonic partners should coincide in sound and numeric address, while the printed names remain distinct. If those two facts are visible at once, the data model is carrying both playback and musical intent.
