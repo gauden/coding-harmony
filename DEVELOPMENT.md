@@ -150,10 +150,9 @@ until examples have been auditioned in Sonic Pi.
 
 ## Current state
 
-The expository second-draft pass is complete and independently audited.
-`TODO.md` records only the final commit-and-push handoff. All lessons remain
-honestly marked `draft` until a human runs them in Sonic Pi and checks their
-listening claims.
+The expository second-draft pass is complete, independently audited, committed,
+and pushed. Every item in `TODO.md` is ticked. All lessons remain honestly marked
+`draft` until a human runs them in Sonic Pi and checks their listening claims.
 
 ## Second-draft and manual QA
 

@@ -65,4 +65,4 @@ session should read this file and `DEVELOPMENT.md` before editing prose.
 - [x] Pass pytest, prose lint, Ruby extraction and syntax checks, and `git diff --check`.
 - [x] Render the complete HTML book and inspect representative early, middle, late, and appendix pages.
 - [x] Update the README, changelog, and development record.
-- [ ] Commit and push the completed rewrite.
+- [x] Commit and push the completed rewrite.
