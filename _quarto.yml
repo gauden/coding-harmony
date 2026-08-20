@@ -2,10 +2,12 @@ project:
   type: book
   output-dir: _book
 
+author: "GPT 5.6 Sol at High Reasoning"
+
 book:
   title: "Music Theory Through Sonic Pi"
   subtitle: "For programmers who cannot read a note"
-  author: "Gauden Galea"
+  author: "GPT 5.6 Sol at High Reasoning"
   date: last-modified
   date-format: "D MMMM YYYY"
   favicon: assets/img/favicon.png
@@ -17,12 +19,6 @@ book:
   sidebar:
     style: docked
     collapse-level: 1
-  page-footer:
-    left: "Code MIT, text CC BY-NC-SA 4.0. Copyright 2026 Gauden Galea."
-    right:
-      - text: "Licence"
-        href: https://github.com/gauden/coding-harmony/blob/main/LICENSE.md
-
   # Chapters are generated from curriculum/music_theory_through_sonic_pi.html.
   # Run scripts/gen_book.py after changing the syllabus. Everything outside the
   # markers is handwritten and safe to edit.

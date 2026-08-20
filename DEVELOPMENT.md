@@ -39,8 +39,26 @@ until examples have been auditioned in Sonic Pi.
 
 ## Session log
 
+### 2026-08-20
+
+- Resumed the transparent-authorship milestone and found that Quarto's
+  `book.author` metadata labelled the title page but did not propagate to every
+  chapter. Added project-wide author metadata and a regression assertion for it.
+- Rebuilt all 65 HTML pages and confirmed that every page contains the exact
+  `GPT 5.6 Sol at High Reasoning` author metadata. The rendered book contains no
+  former CC/MIT book-licence links, copyright line, or `LICENSE.md` reference.
+- Final validation: seven pytest tests pass, prose lint is clean across 70 files,
+  all 83 extracted Ruby snippets clear syntax, and `git diff --check` is clean.
+
 ### 2026-08-19
 
+- Set the global Quarto author to `GPT 5.6 Sol at High Reasoning`, removed the
+  book licence file and all book-level licence/copyright presentation, and kept
+  third-party source-rights guidance separate. Seven pytest tests pass and prose
+  lint is clean.
+- The required full rebuild, inspection, commit, and push remain pending because
+  the Codex execution approval service reported its usage limit. Resume after
+  2026-08-20 07:30 Europe/Malta and continue from the sole unticked TODO item.
 - Added a warning callout at the top of `index.qmd` identifying the manuscript as
   AI-generated, under testing, and being completely rewritten by hand.
 - Linked the warning directly to the repository pull-request page and recorded

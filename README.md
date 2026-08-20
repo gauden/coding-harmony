@@ -20,6 +20,10 @@ The complete first draft is present: 58 lessons across 13 parts, the preface and
 setup chapter, five reference appendices, and worked entries for all 58 optional
 exercises. Every lesson is marked `draft`.
 
+The rendered draft is globally attributed to **GPT 5.6 Sol at High Reasoning**.
+It is being tested and completely rewritten by hand before any human-authored
+edition is claimed.
+
 `draft` means the planned lesson has substantive prose and a Ruby example, and
 the extracted Ruby clears syntax checks. It does not mean the examples have been
 auditioned end to end in Sonic Pi. Timing, synth balance, Sonic Pi API behaviour,
@@ -100,20 +104,3 @@ score data separate from rendering logic and preserve the shared event keys
 
 For a resumed Codex session, say `resume`. The durable protocol is at the top of
 [`DEVELOPMENT.md`](DEVELOPMENT.md).
-
-## Licence
-
-Two licences follow the arrangement Allen Downey uses for [Think
-Python](https://github.com/AllenDowney/ThinkPython).
-
-**Code** is [MIT](https://mit-license.org/). This covers Sonic Pi examples,
-scripts, filters, and build configuration.
-
-**Text** is [CC BY-NC-SA
-4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). This covers lesson
-prose, curriculum, diagrams, and audio.
-
-Full terms are in [`LICENSE.md`](LICENSE.md). Transcription sources and their
-edition-level licensing notes belong in [`appendix/sources.qmd`](appendix/sources.qmd).
-
-Copyright 2026 Gauden Galea.

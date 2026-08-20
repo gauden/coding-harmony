@@ -91,3 +91,28 @@ def test_preface_opens_with_ai_draft_warning() -> None:
     assert "tested and completely rewritten by hand" in body[:first_section]
     assert "https://github.com/gauden/coding-harmony/pulls" in body[:first_section]
     assert "limited capacity to respond" in body[:first_section]
+
+
+def test_ai_draft_has_global_author_and_no_book_licence() -> None:
+    config = (ROOT / "_quarto.yml").read_text(encoding="utf-8")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    sources = (ROOT / "appendix" / "sources.qmd").read_text(encoding="utf-8")
+
+    assert re.search(
+        r'^author:\s*"GPT 5\.6 Sol at High Reasoning"\s*$',
+        config,
+        re.MULTILINE,
+    )
+    assert '  author: "GPT 5.6 Sol at High Reasoning"' in config
+    assert "page-footer:" not in config
+    assert not (ROOT / "LICENSE.md").exists()
+    assert "## Licence" not in readme
+    assert "LICENSE.md" not in readme
+    assert "Copyright 2026" not in readme
+    assert "CC BY-NC-SA" not in sources
+    assert "MIT License" not in sources
+
+    for path in [ROOT / "index.qmd", ROOT / "setup.qmd", *LESSONS, *(ROOT / "appendix").glob("*.qmd")]:
+        metadata = front_matter(path.read_text(encoding="utf-8"))
+        match = re.search(r"^author:\s*(.+)$", metadata, re.MULTILINE)
+        assert match is None or "GPT 5.6 Sol at High Reasoning" in match.group(1)

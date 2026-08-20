@@ -46,3 +46,11 @@ session should read this file and `DEVELOPMENT.md` before editing prose.
 - [x] Add the AI-generated draft, hand-rewrite, and testing warning to the front page.
 - [x] Invite pull requests while setting the limited-response expectation.
 - [x] Pass tests and prose lint, then render and inspect the revised front page.
+
+## Follow-up: transparent AI authorship milestone
+
+- [x] Add regression coverage for global GPT authorship and no book-level licence.
+- [x] Set every rendered page author to `GPT 5.6 Sol at High Reasoning`.
+- [x] Remove the book licence file, footer, README claims, and draft licence rows.
+- [x] Preserve third-party source and rights provenance guidance.
+- [x] Rebuild, inspect, commit, and push the transparent draft.
