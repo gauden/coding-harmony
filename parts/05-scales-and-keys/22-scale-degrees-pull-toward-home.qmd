@@ -7,25 +7,26 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Hold a low C beneath the notes of C major and the scale stops behaving like an
-undifferentiated list. Some notes blend with the drone. Others seem to lean
-toward a neighbour, even when you hold them still. The drone supplies a centre,
-and that centre gives each note a job.
+## A drone turns a list into a hierarchy
 
-A note's position relative to the centre is its *scale degree*. Degree 1 is the
-*tonic*, the pitch that most readily feels like home. Degree 7 is the leading
-tone: it lies one semitone below the tonic and presses upward toward it. Degree
-5, the dominant, can support a pause while still leaving the phrase open. These
-roles are difficult to infer from isolated notes. A B by itself is a pitch; B
-held against C can sound like a sentence waiting for its last word.
+Put a low C underneath the notes of C major and the scale stops being seven
+interchangeable pitches. Some of them settle into the drone. Others lean, and
+they keep leaning even while you hold them perfectly still. One held bass note
+supplies a centre, and the centre hands every other note a job.
 
-## Run this
+Where a note sits relative to that centre is its *scale degree*. Degree 1, the
+*tonic*, sounds like home. Degree 7 sits a semitone below it and presses upward,
+which earns it the name leading tone. Degree 5, the dominant, holds a pause open
+without closing it. None of that survives isolation. B on its own is a pitch; B
+over a C drone is a sentence missing its last word.
+
+## Eight notes over a held C
 
 ```{.ruby audio=""}
 use_bpm 72
-use_synth :sine
+use_synth :tri
 
 define :play_phrase do |notes|
   notes.each do |pitch|
@@ -54,51 +55,45 @@ stem = [:c4, :e4, :g4, :a4, :g4, :e4]
 end
 ```
 
-Listen first to the direction of each two-note pair. B to C makes the clearest
-arrival because the semitone closes against the drone. F to E relaxes by a
-similar small motion, though with less force. Repeated G can rest without fully
-arriving. The four longer phrases hold their opening constant and change only
-the ending, so the different kinds of closure can be attributed to the final
-degree rather than to rhythm or contour elsewhere.
+`:tri` carries harmonics that meet the drone's, which is what lets a degree
+either lock into the bass or grind against it; a sine has one partial and
+nothing to lock with.
 
-## Change one thing
+Take the two-note pairs first. B to C arrives hardest, because that semitone
+closes right against the drone. F to E relaxes by the same small distance with
+much less force behind it. G repeated rests without arriving. Then four longer
+phrases share an identical opening and differ only in their last note. Rank
+those four endings from most finished to least. Which one surprised you?
 
-1. Replace the C drone with `:a2` and leave the melody untouched. The same MIDI
-   addresses now orbit A. Notice how C becomes a colour inside A minor instead
-   of the most convincing point of rest.
-2. Change the B ending to `:bb4`. B-flat stands a whole tone below C, so the
-   tight upward pull is gone. Compare the two endings at the same tempo before
-   assigning the difference to the accidental.
-3. Raise the final G to `:g5`. It is still degree 5, but its new register changes
-   its weight and brightness. Listen for whether height makes the boundary seem
-   more exposed, even though the scale-degree function is unchanged.
+## Move the centre, keep the notes
 
-## Why it works
+1. Swap the drone to `:a2` and leave the melody exactly as it is. Same MIDI
+   addresses, new centre. C turns into a colour inside A minor and stops being
+   the convincing place to stop.
+2. Change the B ending to `:bb4`. B-flat sits a whole tone under C, so the tight
+   upward pull disappears. Compare them at the same tempo before you credit the
+   accidental.
+3. Raise the final G to `:g5`. Still degree 5, new register. Listen for whether
+   the extra height exposes the ending, even though its function hasn't moved.
 
-Scale degree is an index interpreted against a tonic. Change the tonic and the
-same MIDI number acquires another index and another tendency. The raw address
-has not changed; its meaning within the current musical structure has. This is
-much like reading an array offset only after you know which array is in scope.
+## Degree is an index, and the key is the scope
 
-No single mechanism produces the entire sense of stability. Short melodic
-distance encourages motion to a neighbour, and the semitone from degree 7 to 8
-is especially tight. The drone changes the acoustic relation of every scale
-note to the bass. Long habits of hearing tonal music add another layer of
-expectation. Holding the drone fixed does not separate all those causes, but it
-does give them a stable reference against which their combined effect is easy
-to compare.
+Scale degree is an index read against a tonic. Change the tonic and the same
+MIDI number picks up a new index and a new tendency, exactly as an array offset
+means nothing until you know which array is in scope.
 
-The longer phrase is a controlled experiment. Synth, rhythm, register, and the
-first six notes remain fixed; only the ending changes. That economy is useful
-because a richly varied melody can hide the effect under several simultaneous
-changes. Here, if one ending closes more firmly, the changed scale degree is the
-best explanation available.
+No single mechanism produces all of this. Short distances invite motion, the
+drone fixes how each note relates to the bass, and years of hearing tonal music
+supply the rest. One held C won't separate those causes. It does give them a
+stable reference to work against, which is why the four long phrases share an
+opening and differ only in their final note.
 
-## Take it further
+## Rate your own tension
 
-Create a hash that maps degrees 1 through 7 to your own tension rating from 0 to
-5. Then play all seven degrees over one unchanged tonic drone in a shuffled
-order. For each trial, leave two beats for a judgement, print the degree, and
-play the resolution route you chose. Begin with `use_random_seed 42` so a second
-run presents the same order. The ratings are observations rather than official
-answers; the useful result is the pattern you can hear and reproduce.
+Build a hash mapping degrees 1 through 7 to your own tension rating from 0 to 5.
+Start with `use_random_seed 42`, shuffle the degrees, and play each one over an
+unchanged tonic drone. Leave two beats for your judgement, print the degree, and
+then play the resolution route you chose.
+
+Your ratings aren't answers to check against a key. What you're after is a
+pattern you can hear twice.

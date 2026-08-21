@@ -7,15 +7,28 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-The distance from C to E has two coordinates. Count letter names inclusively, C–D–E, and the interval is a third. Count equal-tempered semitones and the distance is four. The letter count supplies size; the semitone count determines quality. Together they name a major third.
+## Two coordinates, one name
 
-An *interval* therefore carries two measurements. Careful listening may suggest chromatic distance, but the program calculates it; sound cannot report how the notes were spelled. C-sharp to E and D-flat to E both span three semitones in equal temperament, yet C–D–E is a third and D–E is a second. This is the practical reason Lesson 10 kept a label beside the MIDI pitch.
+Ask how far it is from C to E and there are two honest answers. Count letter
+names inclusively, C then D then E, and you have a third. Count equal-tempered
+semitones and you have four. Letters give you the size. Semitones give you the
+quality. Hold both at once and the pair finally has a name: major third.
 
-The first interval-naming function handles a deliberately narrow domain: simple ascending examples whose expected forms are major or perfect. Read its result as a first join between letter space and semitone space, not as a complete theory library.
+Sound reports only one of those coordinates. C-sharp to E and D-flat to E each
+span three semitones, and your speakers render them identically. On paper they
+part company, because C to E covers three letters and D to E covers two, so one
+is a third and the other a second. No amount of careful listening recovers the
+spelling; the spelling was never in the air. That's the practical reason Lesson
+10 kept a letter beside every MIDI number, and it's why the helper below takes
+hashes and not bare integers.
 
-## Run this
+That helper handles a narrow domain on purpose: simple ascending pairs whose
+expected quality comes out major or perfect. Read it as a first join between
+letter space and semitone space.
+
+## Name a pair, then hear it
 
 ```{.ruby audio=""}
 use_bpm 72
@@ -37,32 +50,63 @@ puts interval_name(c, e, letters, base_distance)
 play c[:pitch]; sleep 1; play e[:pitch]
 ```
 
-The program prints “major 3,” then plays C followed by E. The two notes provide the four-semitone distance; the hashes provide the letters needed to count a third. If you changed only `:letter` while retaining the numeric pitches, playback would stay the same and the calculated size would change. That separation is the central evidence of the lesson.
+You get `major 3` in the log, then C, then E. Those two `play` calls supply the
+four semitones. The hashes supply the letters that turn four semitones into a
+third. Now edit `letter: :e` to `letter: :f` and leave `pitch:` exactly as it
+is. Which output changes, the printed name or the sound?
 
-## Change one thing
+## Break one coordinate at a time
 
-1. Add C–F and C–F-sharp. Both pairs span the letter names C–D–E–F and therefore remain fourths. The extra semitone in F-sharp changes the quality from perfect to augmented; the current helper will report that second result as `altered`.
+1. Add the pairs C–F and C–F-sharp. Both cover the letters C, D, E, F, so both
+   stay fourths. That extra semitone in F-sharp turns perfect into augmented,
+   and the helper as written reports it as `altered`.
+2. Restore the original, then run C-sharp–E against D-flat–E. Print the MIDI
+   difference and the letter size for each. You'll see the distances agree while
+   the sizes disagree.
+3. Restore C–E and swap the two hashes so the pair descends. Before you touch
+   the arithmetic, decide whether the result should carry direction as its own
+   field or normalise everything into an ascending interval. That's an interface
+   decision, so make it in words first.
 
-2. Restore the original example, then compare C-sharp–E with D-flat–E. Print both MIDI differences and letter sizes. The playback distance should coincide while the sizes differ.
+## Where size and quality come from
 
-3. Restore C–E and reverse the pair. Before editing the function, decide whether its output should preserve direction as a separate field or normalise the notes into an ascending interval. The choice changes the interface, so state it before changing the arithmetic.
+Interval naming is a join across two coordinate systems. The `letters` hash maps
+seven names onto a cycle. Subtract the indices modulo seven, add one, and you
+get an inclusive ordinal size: same letter is a unison, adjacent letters make a
+second, and so on round the cycle. MIDI subtraction answers the other question
+without consulting a single letter.
 
-## Why it works
+`base_distance` records how many semitones an unaltered interval of each size
+contains. Sizes 1, 4, 5 and 8 belong to the perfect family; sizes 2, 3, 6 and 7
+belong to the major and minor family. Comparing the actual count against that
+baseline gives you the quality. For a third, four semitones is major, three is
+minor, five is augmented, two is diminished. For a fourth, five is perfect, six
+is augmented, four is diminished. Letters choose which vocabulary applies; the
+semitone count then picks a word out of it.
 
-Interval naming joins two coordinate systems. The `letters` hash maps seven letter names onto a cycle. Subtracting their indices modulo seven and adding one gives an inclusive ordinal size: equal letters form a unison, adjacent letters form a second, and so on. MIDI subtraction independently supplies the semitone distance.
+Drop either coordinate and the naming collapses in a specific way. With MIDI
+alone the helper counts four semitones and has to invent a spelling before it
+can say "third." With letters alone it counts a third and can't tell you whether
+that third is major, minor, diminished or augmented.
 
-The `base_distance` table says how many semitones an unaltered major or perfect interval of each simple size contains. Sizes 1, 4, 5, and 8 belong to the perfect family; sizes 2, 3, 6, and 7 belong to the major/minor family. The current function recognises only an exact baseline and calls every deviation `altered`. That limitation is explicit enough to guide the extension.
+Two extensions are waiting. Compound intervals continue the inclusive count past
+the octave, and descending pairs need a direction policy. Add them one at a
+time, or a single wrong label will have several plausible causes.
 
-A full quality calculation compares the actual semitone count with the baseline. For a third, four semitones is major, three is minor, five is augmented, and two is diminished. For a fourth, five semitones is perfect, six is augmented, and four is diminished. The letter-derived family determines which quality names are available.
+Lesson 19 stops calculating and starts listening. The names come from this
+two-coordinate system; recognising them by ear is a separate skill that grows
+from repeated hearings.
 
-The pitch hashes keep the join honest. If you retained only MIDI values, the helper could calculate four semitones but would have to invent a spelling before calling the result a third. If you retained only letters, it could count a third but would not know whether the sound was major, minor, diminished, or augmented.
+## Fill in the missing qualities
 
-Compound intervals continue the inclusive letter count beyond an octave, and descending intervals add a direction policy. Both features are useful, but the first implementation remains within simple ascending pairs so its lookup and failure modes stay visible. Extend direction and compound size separately; otherwise one incorrect result may have several plausible causes.
+Extend `interval_name` so it returns diminished, minor, major, perfect and
+augmented for simple ascending intervals inside an octave. Build explicitly
+spelled test pairs from C to every chromatic pitch you need, and include the
+enharmonic alternatives wherever one semitone count can carry two different
+sizes.
 
-Lesson 19 leaves calculation behind and builds perceptual records for selected distances. The name will come from this two-coordinate system, while recognition must develop from repeated melodic and harmonic hearing.
-
-## Take it further
-
-Extend `interval_name` to return diminished, minor, major, perfect, and augmented qualities for simple ascending intervals within an octave. Create explicitly spelled test pairs from C to every chromatic pitch you need, including enharmonic alternatives where a semitone distance can have more than one size.
-
-For every case, assert an expected label and print the semitone distance beside it. Run those assertions as a data check, then audition representative pairs in Sonic Pi 5. A correct name proves that spelling and distance were joined according to the rules. Recognising that interval by ear is a separate ability, and it is the subject of the next lesson.
+Assert an expected label for every case and print the semitone distance beside
+it. Run those assertions as a data check first, then audition a few of the pairs
+in Sonic Pi 5. A correct label proves the rules joined spelling to distance.
+Hearing the same interval and naming it without the log is the next lesson's
+work.

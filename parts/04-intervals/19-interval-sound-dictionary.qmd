@@ -7,15 +7,22 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-An interval is not heard the same way in every presentation. Two successive notes create motion with a direction and a destination. The same two pitches struck together create a colour whose cues may include fusion, beating, and roughness. Familiarity with one form does not automatically produce recognition of the other.
+## The same interval twice, and you won't recognise it twice
 
-Keep separate descriptions for melodic and harmonic intervals for that reason. A personal phrase such as “small, tense step” or “open, fused span” can become a useful retrieval cue if it points to something you consistently hear. The description should remain attached to a register, direction, and sound source until you know which part of it transfers.
+Play two notes one after the other and you hear motion: a direction, a distance,
+an arrival. Strike the same two notes together and the motion vanishes. What's
+left is a colour, built out of fusion, beating and roughness. Learning one
+presentation buys you surprisingly little of the other, so keep two descriptions
+per interval and expect them to disagree.
 
-The program introduces four distances in a fixed order. It plays each as an ascending motion, pauses, then presents both pitches together. The standard name appears after both presentations, leaving time to form your own observation first.
+Your own words work better than borrowed ones, provided they point at something
+you hear every time. "Small and tense." "Open, almost hollow." Keep each phrase
+tied to the register, the direction and the synth that produced it until you
+find out how much of it travels.
 
-## Run this
+## Four distances, played two ways each
 
 ```{.ruby audio=""}
 use_bpm 68
@@ -37,32 +44,50 @@ intervals.each do |distance, label|
 end
 ```
 
-In the melodic presentation, follow the size and direction of the leap from C. In the harmonic presentation, stop following a path and attend to the combined sound. The minor second should retain much more close motion than the octave; the fifth often feels open without fusing as completely as the octave. These descriptions are starting points to test, not definitions supplied by the code.
+Follow the leap on the first pass. On the second, stop following anything and
+listen to the blend. The label arrives after both, which leaves you a few beats
+to commit to a description before the name overwrites it. Say yours out loud
+before the log prints, and notice which of the four you reached for fastest.
 
-## Change one thing
+## Change what varies
 
-1. Reverse every melodic interval while leaving the harmonic pairs unchanged. Descending motion may call up a different contour or emotional association even though the absolute semitone distance remains fixed.
+1. Reverse the melodic pairs and leave the harmonic ones alone. Does a
+   descending minor second still feel tense to you, or does it feel like relief?
+2. Restore the ascending forms and move `root` to `note(:fs3)`. Distances are
+   untouched, register isn't. Mark which of your descriptions survive the move.
+3. Restore C4, then play the harmonic pairs through `:sine` while the melodic
+   pairs keep `:piano`. Sine tones expose beating and fusion; the piano's attack
+   makes two separate events easy to locate. Don't compare smoothness across
+   that change without writing the timbre down.
 
-2. Restore the ascending forms and move the root from C4 to F-sharp3. The intervals retain their distances, but the new register and pitch context alter their surface colour. Mark which cues survive the move.
+## Build the dictionary out of contrasts
 
-3. Restore C4 and use a sine synth for harmonic pairs while retaining piano for melodic forms. Sines expose beating and fusion; piano attacks can make the two successive events easier to locate. Do not compare smoothness without noting the timbre change.
+Four distances, chosen because they don't resemble each other, teach you more
+than twelve copied from someone else's list. A minor second gets sharper next to
+a major third. A fifth defines itself against an octave. While you're still
+building the associations, show the label right after the sound so the two
+arrive together; shuffle the order later, when the question changes from "what
+does this sound like" to "can you retrieve the name."
 
-## Why it works
+Change the root only after all four have descriptions that hold up. If every
+major third you've ever heard is C4 to E4, you've learned a pair of pitches and
+not a relation. Transposition is the test for that.
 
-The dictionary maps a numerical distance to more than a standard label. Each entry can carry an ascending description, a descending description, a harmonic description, and an optional remembered tune. Those fields are observations about presentations of the interval, not alternate definitions of it.
+Tune anchors are worth having and worth auditing. A remembered song often starts
+on a pickup, decorates the target, or sits between two degrees you've
+misremembered. Store the exact two notes and the direction. When an anchor keeps
+producing wrong answers, delete it.
 
-Begin with a narrow fixed set because comparison builds the categories. A minor second becomes clearer beside a major third; a fifth can be contrasted with an octave. Show the label soon after both presentations during this reference work so the sound and name remain paired. Random order becomes useful later, when you want to test retrieval instead of building the association.
+Lesson 20 turns this reference material into a drill: prompt, pause, reveal.
 
-Vary root and register only after the first four distances have distinct descriptions. If every major third is C4–E4, you may learn that pair of pitches rather than the relation between them. Transposition tests whether the distance survives when the familiar absolute notes disappear. A wider range also exposes which descriptors belonged to one register.
+## Start with four rows
 
-Tune anchors can help, but they contain hidden assumptions. A remembered excerpt may begin with a pickup, embellish the target, or place the cue between different scale degrees than you recall. Store the exact two notes and direction that form the anchor. If it repeatedly produces a wrong answer, remove it rather than defending the association.
+Build a hash whose keys run from 0 to 12 semitones. Every completed row holds
+the standard label, an ascending description, a descending description, a
+harmonic description, and a tune anchor if you have an honest one.
 
-Personal adjectives need the same discipline. “Wide” may distinguish an octave from a second, but it says little about a fifth beside a sixth. “Beating” depends on timbre and register. “Settled” may reflect tonal context rather than distance alone. Keep a description when it directs attention to a reproducible cue and revise it when varied prompts expose its limits.
-
-The log provides labels and distances; playback provides the evidence for your descriptions. Lesson 20 turns this reference material into a prompt, answer interval, and delayed reveal. That change in control flow marks the difference between studying a sound and testing whether you can retrieve its name.
-
-## Take it further
-
-Create a personal reference hash whose possible keys run from 0 through 12 semitones. Each completed entry should contain the standard label, an ascending melodic description, a descending melodic description, a harmonic description, and an optional tune anchor with its exact cue notes.
-
-Complete four entries first. Audition all their presentations in Sonic Pi 5, revise descriptions that fail to point toward a repeatable feature, and then test the set in mixed order. Add one new interval only after identifying nine of ten prompts in two consecutive sessions. A small dictionary with specific evidence is more useful than twelve entries copied from someone else's adjectives.
+Fill four rows, audition all their presentations in Sonic Pi 5, and rewrite any
+description that doesn't point at a repeatable cue. Then test yourself in mixed
+order. Add a fifth interval only after two consecutive sessions of nine correct
+out of ten. Four rows backed by evidence beat twelve rows of inherited
+adjectives.

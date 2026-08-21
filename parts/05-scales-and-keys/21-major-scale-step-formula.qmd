@@ -7,23 +7,26 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-The white notes from C to the next C have a familiar shape, even before you can
-name it. Begin the same white-note walk on D, however, and the balance changes.
-The keys still look alike under your fingers; what changed is the sequence of
-gaps between them. That sequence is the useful object. A *major scale* follows
-the ordered step formula `2, 2, 1, 2, 2, 2, 1`, with every number measured in
-semitones.
+## Seven gaps, not seven names
 
-Learning scales as rows of note names makes each key feel like a new item to
-memorise. The formula gives a better account: one construction can
-begin on any root. It also directs the ear to the scale's two tight places. The
-one-semitone steps fall between degrees 3 and 4, then between 7 and 8. Shift one
-of those small gaps and you have not made a faulty major scale. You have made a
-different interval pattern with a different sound.
+Walk the white notes from C up to the next C and the shape is familiar long
+before you can name it. Start the same white-note walk on D and the balance
+falls apart, even though your fingers are doing something nearly identical. The
+keys didn't change. The gaps between them did, and the gaps are the object worth
+holding onto. A *major scale* is the ordered step formula `2, 2, 1, 2, 2, 2, 1`,
+counted in semitones.
 
-## Run this
+Learn scales as rows of note names and every key becomes a fresh thing to
+memorise. Learn the formula and you have one construction that starts wherever
+you point it. Better still, the formula tells your ear where to listen. Two of
+those seven gaps are single semitones, and they sit between degrees 3 and 4 and
+between 7 and 8. Move one of them and you haven't built a broken major scale.
+You've built a different pattern with a different sound, which is the whole
+subject of Lesson 24.
+
+## Build it, play it, check it
 
 ```{.ruby audio=""}
 use_bpm 112
@@ -58,51 +61,58 @@ play_phrase thirds.map { |index| c_major[index] }
 end
 ```
 
-The first pass makes the formula plain by climbing and descending one degree at
-a time. The later pass skips alternate degrees. Nothing has been added to the
-pitch collection, yet the skips begin to suggest harmony and give the line more
-direction. Meanwhile, the log checks a separate question: for each possible
-root, does our constructor return the same pitches as Sonic Pi's major scale?
-Each `true` confirms that agreement.
+The first two passes climb and descend one degree at a time, which is the
+plainest reading of the formula there is. As you listen up the scale, which two
+steps sound smaller than their neighbours? Find them by ear before you go back
+and count the array.
 
-## Change one thing
+Then the pattern in `thirds` skips alternate degrees. Not one new pitch enters
+the collection, yet the line suddenly implies harmony and pulls forward. Down in
+the log, a separate question gets answered twelve times: for each root from 60
+to 71, does our constructor produce exactly what Sonic Pi's own `scale` does?
 
-1. Change the root from `:c4` to `:fs3`. Follow the two one-semitone gaps as the
-   whole pattern moves into a lower register. Their positions within the scale
-   do not change, even though every sounding pitch does.
-2. Change the fourth value in `major_steps` from `2` to `1`. The last note now
-   falls a semitone short of the octave. Because the function accumulates
-   distances, the missing semitone affects every later destination.
-3. Play `c_major.values_at(0, 2, 4, 7)` slowly. The first three selected pitches
-   outline a chord; the last supplies the upper tonic. Remove index `7` and
-   listen to the difference between an implied harmony and a completed octave.
+## Move a step and hear what moves
 
-## Why it works
+1. Change the root from `note(:c4)` to `note(:fs3)`. Track the two small gaps as
+   the whole pattern drops into a lower register. Every sounding pitch is
+   different; their positions in the scale aren't.
+2. Change the fourth value in `major_steps` from `2` to `1`. Your last note now
+   lands a semitone short of the octave. Because the function accumulates, that
+   one missing semitone drags every later destination down with it.
+3. Play `c_major.values_at(0, 2, 4, 7)` slowly. The first three outline a chord
+   and the last supplies the upper tonic. Drop index `7` and listen to what you
+   lose: implied harmony without the octave to close it.
 
-Each number in `major_steps` is a delta rather than a pitch. `build_scale`
-starts with the root, adds one delta, saves the result, and repeats. In
-programming terms it is a cumulative sum that preserves its intermediate
-states, like a running balance or a route reconstructed from segment lengths.
-That model explains why editing one early step moves everything that follows.
+## A running total that keeps its intermediate states
 
-The seven steps add to twelve, so the eighth note arrives exactly one octave
-above the root. Five steps are whole tones of two semitones; two are semitones.
-Their order, rather than their mere presence, gives major its shape. Rotating
-the same values moves the tight gaps and produces the modes in Lesson 24.
-Changing only the root is transposition, since every result receives the same
-offset and every internal interval survives.
+Every number in `major_steps` is a delta, never a pitch. `build_scale` starts at
+the root, adds a delta, keeps the result, and repeats. Programmers meet that
+pattern as a cumulative sum: a running bank balance, a route rebuilt from
+segment lengths, a scan over an array. Seeing it that way explains variation 2
+immediately. Edit an early step and everything downstream shifts.
 
-The comparison loop turns that claim into a small test. One C-major example
-could succeed by accident, so the loop checks all twelve pitch classes against
-Sonic Pi's built-in constructor. Ruby can establish that the returned arrays
-match element by element. It cannot establish how clearly a synth exposes the
-two semitone steps, which is why the run combines inspection with listening.
+Those seven steps total twelve, so the eighth note is exactly an octave above
+the root. Five of them are whole tones and two are semitones, and it's the
+*order* that gives major its character, since any rearrangement keeps the same
+total. Rotate the values and you get the modes. Change only the root and you get
+transposition, because every pitch receives the same offset and every internal
+interval survives untouched.
 
-## Take it further
+That comparison loop is a real test, and it's there because one working example
+proves very little. C major could agree with Sonic Pi by luck. All twelve pitch
+classes agreeing is harder to arrange by accident. What Ruby settles is that two
+arrays match element by element. What it can't settle is whether a given synth
+lets you hear the two semitone steps, which is why the run pairs an assertion
+with a listening task.
 
-Write `descending_scale(root, steps)` without calling `reverse`. Begin at
-`root + 12` and subtract the step values in reverse order until the line reaches
-`root`. Print both directions for all twelve roots before playing the pair in F
-major. Each array should contain eight notes, and the top note of the ascent
-should be the starting note of the descent. Those checks tell you whether the
-arithmetic closes before the sound has a chance to disguise an off-by-one error.
+## Walk the formula backwards
+
+Write `descending_scale(root, steps)` without calling `reverse` on a finished
+scale. Begin at `root + 12` and subtract the step values in reverse order until
+you arrive back at `root`. Print both directions for all twelve roots, then play
+the pair in F major.
+
+Each array should hold eight notes, and the top note of the ascent should be the
+first note of the descent. Check both of those before you play anything.
+Arithmetic catches an off-by-one that a fast tempo and a short release will
+happily disguise.

@@ -7,23 +7,26 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Play the white notes from A to A and pay attention to the last step. G rises a
-whole tone to A, so the arrival lacks the tight leading-tone motion heard from B
-to C. Composers have often altered the upper part of the scale when they wanted
-more pull or a smoother melodic route. Minor therefore behaves as a related
-family of forms, not as one fixed row of notes.
+## The last step is a whole tone, and that's the problem
 
-*Natural minor* rotates the major-scale pattern so that it begins on degree 6.
-*Harmonic minor* raises degree 7 in both directions, creating a leading tone.
-*Melodic minor* raises degrees 6 and 7 on the ascent, then returns to natural
-minor while descending. Treated as three rows of note names, the forms can look
-like historical facts to memorise. Comparing their arrays reveals the purpose of
-each edit: one creates a leading-tone approach to the tonic, while a second
-removes the wide melodic gap on the way to that raised note.
+Play the white notes from A up to A and pay attention to the final step. G to A
+is a whole tone. Compare it with B to C at the top of a major scale, where the
+semitone shoves you into the tonic, and you'll hear what's missing: the arrival
+happens, but nothing pushed it. Composers wanted that push back. So they raised
+the seventh degree when they needed it, which is why minor comes to you as a
+family of related forms and not as one settled row of notes.
 
-## Run this
+Three members show up constantly. *Natural minor* rotates the major pattern to
+start on degree 6. *Harmonic minor* raises degree 7 in both directions, manufacturing
+a leading tone. *Melodic minor* raises degrees 6 and 7 on the way up, then drops
+back to natural minor coming down. Presented as three lists of note names,
+they look like trivia to memorise. Line up the arrays and you can see what each
+edit is for: one builds a semitone approach to the tonic, and the second removes
+the hole the first one left behind.
+
+## Three forms and one tune to test them with
 
 ```{.ruby audio=""}
 use_bpm 108
@@ -59,50 +62,51 @@ tune_degrees = [0, 2, 4, 3, 2, 5, 6, 7, 4, 3, 2, 1, 6, 7, 0]
 end
 ```
 
-The natural form keeps every adjacent step to one or two semitones. Harmonic
-minor opens a three-semitone gap from F to G-sharp and supplies a semitone from
-G-sharp to A. Melodic minor raises F to F-sharp during the ascent, replacing the
-wide gap with smaller motions. Watch the printed diff while you listen for the
-often-described increase in cadential pull; the code establishes the one- or
-two-element change, while audition determines its character here.
+The diff in the log is tiny: one changed position for harmonic, two for melodic.
+Your ears get something much less tiny. Harmonic minor opens a three-semitone
+gap between F and G-sharp, then closes hard from G-sharp to A. Melodic minor
+lifts F to F-sharp on the ascent and the gap flattens out into ordinary steps.
+Then the same fifteen-degree tune runs through all three. Which of the three
+do you expect to end most like a finished cadence, and which one actually did?
 
-## Change one thing
+## Alter the alteration
 
-1. Lower harmonic minor's G-sharp to G in the final two notes only. The earlier
-   altered notes remain, but the closing gesture loses its semitone approach to
-   A. This separates the scale's general colour from its cadential use.
-2. Use `:prophet` instead of `:piano` and set `release: 0.8`. The longer tails
-   make F and G-sharp overlap, bringing the wide interval forward as a sound
-   rather than a numerical difference.
-3. Add 5 to every pitch in every array. The family moves from A to D while the
-   differences between natural, harmonic, and melodic forms remain fixed.
+1. Lower harmonic minor's G-sharp back to G in the last two notes only, leaving
+   the earlier alterations alone. The scale keeps its colour and loses its
+   cadence. That split is the point of the exercise.
+2. Swap `:piano` for `:prophet` and set `release: 0.8`. Now F and G-sharp overlap
+   in the air, and the wide interval becomes something you hear rather than
+   something you read out of a diff.
+3. Add 5 to every pitch in every array. The whole family moves from A to D and
+   the differences between the three forms survive intact.
 
-## Why it works
+## Two edits, two different jobs
 
-Natural minor begins on degree 6 of its relative major, so rotating the major
-formula yields `2, 1, 2, 2, 1, 2, 2`. Its seventh degree lies two semitones below
-the tonic. Raise that degree and the final interval contracts to a semitone,
-recreating the leading-tone pull that major supplies by default.
+Natural minor starts on degree 6 of its relative major, so rotating the major
+formula gives you `2, 1, 2, 2, 1, 2, 2`. Its seventh degree lands two semitones
+under the tonic. Raise it and the closing interval contracts to a semitone,
+which is precisely the pull major gets for free.
 
-That harmonic solution creates a melodic complication. Natural degree 6 and
-raised degree 7 are now three semitones apart. Harmony can make expressive use
-of the gap, but a rising line often moves more fluently through smaller steps.
-Melodic minor raises degree 6 too, making whole-tone steps through degrees 5, 6,
-and 7. On the way down, degree 7 is no longer pressing toward a tonic above it,
-so the natural form can return without frustrating that upward tendency.
+That fix creates a fresh problem one degree lower. Natural degree 6 and raised
+degree 7 now sit three semitones apart. Harmony can exploit that gap; a rising
+melodic line doesn't cross it comfortably. Melodic minor raises degree 6 as well, so
+degrees 5, 6 and 7 become even whole tones. Coming down, degree 7 has nothing
+above it to press into, so the natural form returns without fighting anything.
 
-The code keeps all three forms visible as data instead of hiding alterations in
-the renderer. `zip` aligns corresponding positions, and `select` shows exactly
-which ones changed. The tune can then consume any compatible eight-note array.
-That separation lets you hear the scale choice against a fixed melodic design,
-and it keeps the explanation close to the values responsible for the sound.
+Keeping all three forms as data does real work here. `zip` lines the positions
+up, `select` reports the ones that differ, and the tune consumes whatever
+eight-note array you hand it. You get to hear the scale choice against a fixed
+melodic design, and the explanation stays next to the numbers responsible for
+the sound.
 
-## Take it further
+## Generate the family from formulas
 
-Write `minor_forms(root)` that returns `:natural`, `:harmonic`, `:melodic_up`,
-and `:melodic_down` arrays in a hash. Generate them from step formulas rather
-than copying note lists. Before listening, verify that natural and harmonic
-minor differ at one index and that natural and melodic-up differ at two. Then
-play a two-octave E-minor line, using the ascending form on the way up and the
-descending form on the way back. The assertions protect the family resemblance;
-the playback reveals what those small differences do.
+Write `minor_forms(root)` returning a hash with `:natural`, `:harmonic`,
+`:melodic_up` and `:melodic_down`. Build each one from a step formula; don't
+paste note lists. Before you listen, assert that natural and harmonic differ at
+exactly one index, and that natural and melodic-up differ at exactly two.
+
+Then play a two-octave E-minor line, ascending through the melodic form and
+descending through the natural one. The assertions protect the family
+resemblance. The playback tells you what those one or two changed integers
+actually do to a phrase.
