@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revision Plan: Making the Draft Approachable</title>
+<style>
+  :root {
+    --bg: #f7f7f4;
+    --paper: #ffffff;
+    --ink: #1f2328;
+    --muted: #667085;
+    --line: #d9dde3;
+    --accent: #5b3f8c;
+    --soft: #f0ecf8;
+    --code: #18181b;
+    --code-ink: #f4f4f5;
+    --ok: #2d6a4f;
+    --okbg: #eaf4ee;
+    --warn: #8a5a1a;
+    --warnbg: #fbf3e6;
+    --danger: #9b2c2c;
+    --dangerbg: #fbecec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16171a; --paper: #1e2024; --ink: #e6e7ea; --muted: #a0a6b0;
+      --line: #33363c; --accent: #b79ceb; --soft: #2a2436;
+      --code: #0f1013; --code-ink: #e8e9ec;
+      --ok: #7fd3a5; --okbg: #1c2a22; --warn: #e0b070; --warnbg: #2c2418;
+      --danger: #f0a0a0; --dangerbg: #2e1c1c;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.6;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 24px; }
+
+  header {
+    background: linear-gradient(135deg, #2d2240 0%, #5b3f8c 100%);
+    color: #fff; padding: 46px 0 34px;
+  }
+  header .wrap { padding-top: 0; padding-bottom: 0; }
+  h1 { font-size: clamp(1.7rem, 4.5vw, 2.7rem); line-height: 1.08; margin: 0 0 12px; max-width: 820px; }
+  .subtitle { font-size: 1.05rem; max-width: 760px; opacity: .93; margin: 0; }
+  .meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  .pill {
+    border: 1px solid rgba(255,255,255,.35); border-radius: 999px;
+    padding: 6px 11px; font-size: .86rem; background: rgba(255,255,255,.08);
+  }
+
+  nav.toc {
+    position: sticky; top: 0; z-index: 30;
+    background: var(--bg); border-bottom: 1px solid var(--line);
+  }
+  nav.toc .wrap { display: flex; gap: 6px; flex-wrap: wrap; padding: 10px 24px; }
+  nav.toc a {
+    text-decoration: none; font-size: .86rem; padding: 5px 10px;
+    border: 1px solid var(--line); border-radius: 999px; color: var(--ink);
+    background: var(--paper);
+  }
+  nav.toc a:hover { border-color: var(--accent); color: var(--accent); }
+
+  section { margin: 40px 0; }
+  h2 {
+    font-size: 1.5rem; margin: 0 0 6px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--accent);
+  }
+  h2 .num { color: var(--accent); font-variant-numeric: tabular-nums; margin-right: .5em; }
+  h3 { font-size: 1.12rem; margin: 26px 0 8px; }
+  h4 { font-size: .95rem; margin: 18px 0 6px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  p { margin: 0 0 14px; }
+  .lede { font-size: 1.05rem; color: var(--muted); margin-bottom: 22px; }
+
+  .card {
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 10px; padding: 18px 20px; margin: 16px 0;
+  }
+  .card > :last-child { margin-bottom: 0; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin: 18px 0; }
+  .stat {
+    background: var(--paper); border: 1px solid var(--line);
+    border-left: 3px solid var(--accent); border-radius: 8px; padding: 14px 16px;
+  }
+  .stat .n { font-size: 1.7rem; font-weight: 650; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .stat .k { font-size: .85rem; color: var(--muted); margin-top: 4px; }
+
+  .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+  @media (max-width: 720px) { .ba { grid-template-columns: 1fr; } }
+  .ba > div { border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; background: var(--paper); }
+  .ba .now { border-top: 3px solid var(--danger); }
+  .ba .then { border-top: 3px solid var(--ok); }
+  .ba h5 { margin: 0 0 8px; font-size: .78rem; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+  .ba p { font-size: .95rem; }
+
+  .note, .warn, .good {
+    border-radius: 8px; padding: 13px 16px; margin: 14px 0; font-size: .95rem;
+    border-left: 3px solid;
+  }
+  .note { background: var(--soft); border-color: var(--accent); }
+  .warn { background: var(--warnbg); border-color: var(--warn); }
+  .good { background: var(--okbg); border-color: var(--ok); }
+  .note > :last-child, .warn > :last-child, .good > :last-child { margin-bottom: 0; }
+
+  code {
+    background: var(--soft); padding: 1px 5px; border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .88em;
+  }
+  pre {
+    background: var(--code); color: var(--code-ink); padding: 14px 16px;
+    border-radius: 8px; overflow-x: auto; font-size: .84rem; line-height: 1.5;
+  }
+  pre code { background: none; padding: 0; color: inherit; }
+
+  .tablewrap { overflow-x: auto; margin: 16px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; background: var(--paper); }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--soft); font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; }
+  td.c { text-align: center; white-space: nowrap; }
+
+  .tag {
+    display: inline-block; font-size: .74rem; padding: 2px 8px; border-radius: 999px;
+    font-weight: 600; letter-spacing: .02em; white-space: nowrap;
+  }
+  .t-high { background: var(--dangerbg); color: var(--danger); }
+  .t-med  { background: var(--warnbg); color: var(--warn); }
+  .t-low  { background: var(--okbg); color: var(--ok); }
+
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin-bottom: 7px; }
+  .lead-in { font-weight: 600; }
+
+  footer { border-top: 1px solid var(--line); margin-top: 50px; padding: 22px 0 40px; color: var(--muted); font-size: .88rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Making the draft approachable</h1>
+    <p class="subtitle">An editorial review of <em>Music Theory Through Sonic Pi</em> at commit <code>3baa1e6</code>, and a plan for the third draft. The prose problem is not a writing problem. It is a specification problem, and it is fixable at the source.</p>
+    <div class="meta">
+      <span class="pill">58 lessons · 5 appendices</span>
+      <span class="pill">62,381 words</span>
+      <span class="pill">41,160 words of lesson prose</span>
+      <span class="pill">Review only — no files changed</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc"><div class="wrap">
+  <a href="#verdict">Verdict</a>
+  <a href="#diagnosis">1. Why it sounds cold</a>
+  <a href="#cause">2. The root cause</a>
+  <a href="#style">3. Rewrite STYLE.md</a>
+  <a href="#rewrites">4. Before / after</a>
+  <a href="#template">5. Break the template</a>
+  <a href="#content">6. Content gaps</a>
+  <a href="#defects">7. Specific defects</a>
+  <a href="#sequence">8. Work sequence</a>
+  <a href="#keep">9. Do not change</a>
+</div></nav>
+
+<div class="wrap">
+
+<section id="verdict">
+  <h2><span class="num">§0</span>Verdict</h2>
+  <p class="lede">The book is better than it reads. The musical content is largely correct, the score/renderer spine is genuinely good pedagogy, and the honesty about what has and has not been auditioned is a real virtue. What it lacks is a person.</p>
+
+  <p>You said you cannot get the other agent to sound approachable. I can show you why, and it is not a matter of asking harder. Two artefacts in this repository actively manufacture the voice you dislike, and any agent that obeys them will reproduce it every time:</p>
+
+  <ul>
+    <li><strong><a href="STYLE.md">STYLE.md</a> is a list of prohibitions.</strong> It bans twenty words, five constructions, praise, cheer, rhetorical questions, em dashes, and — decisively — the writer's own first person. It supplies almost no positive model of the target voice. An agent given a ban list optimises for not being caught, which produces prose that is inoffensive and inert.</li>
+    <li><strong><a href="tests/test_book_draft.py">tests/test_book_draft.py</a> enforces the sameness.</strong> <code>REQUIRED_HEADINGS</code> hard-codes the same five section titles into all 58 lessons and a minimum word count pushes every lesson to the same length. The template is not a habit the agent fell into. It is a passing test.</li>
+  </ul>
+
+  <p>Change those two files and the prose changes. Leave them and you will keep re-litigating the voice one lesson at a time, forever.</p>
+</section>
+
+<section id="diagnosis">
+  <h2><span class="num">§1</span>Why it sounds cold: six measurements</h2>
+  <p class="lede">These are counts over the 41,160 words of lesson prose with all code blocks stripped out. Each one is a specific, addressable habit rather than a matter of taste.</p>
+
+  <div class="grid">
+    <div class="stat"><div class="n">0</div><div class="k">verbal contractions in the whole book. All 85 apostrophes are possessives (<code>chord's</code>, <code>note's</code>). Not one <code>don't</code>, <code>you'll</code>, <code>here's</code>, <code>that's</code>.</div></div>
+    <div class="stat"><div class="n">8</div><div class="k">question marks across 58 lessons. The book never once wonders aloud or asks you to predict something before it tells you.</div></div>
+    <div class="stat"><div class="n">2.4×</div><div class="k">per lesson that the word "you" appears. "We" appears zero times in 58 lessons, though STYLE.md explicitly permits it.</div></div>
+    <div class="stat"><div class="n">~26%</div><div class="k">of sentences open with "The" or "A" plus an abstract noun. The grammatical subject is almost always a thing, never a person.</div></div>
+    <div class="stat"><div class="n">567</div><div class="k">hedges (<code>may</code>, <code>can</code>, <code>remains</code>, <code>whether</code>) — about 14 per thousand words. Roughly one hedge every four sentences.</div></div>
+    <div class="stat"><div class="n">14.8 ± 6.1</div><div class="k">words per sentence. 75% of sentences fall between 10 and 25 words; only 11% are under 8. No sentence ever lands hard.</div></div>
+  </div>
+
+  <h3>1.1 The register is locked formal</h3>
+  <p>Zero contractions is the single loudest signal. It is what separates "you'll hear the third drift" from "the third may be heard to drift," and readers register it long before they can name it. Combined with 26 nominalisations per thousand words (<code>-tion</code>, <code>-ment</code>, <code>-ness</code>, <code>-ity</code>), which is academic-journal density, the surface never relaxes.</p>
+
+  <h3>1.2 The hedging is the biggest single problem</h3>
+  <p>This one deserves its own diagnosis, because it comes from a good intention. Nothing has been auditioned in Sonic Pi, so the draft honestly refuses to claim what anything sounds like. But that honesty leaked out of the metadata and into every sentence:</p>
+  <div class="warn">
+    <p>"The ratio-built version <em>is expected to</em> have less internal motion around its third; the equal-tempered version <em>may</em> carry a faint shimmer. Those expectations still <em>require audition</em> on the stated synth and playback system." <span style="color:var(--muted)">— Lesson 6</span></p>
+  </div>
+  <p>A reader at a keyboard needs to know what to listen for. Told only what <em>might</em> happen, they cannot tell a failed setup from a subtle effect from a wrong claim. The prose sounds evasive precisely where it is trying to be scrupulous. <span class="lead-in">The fix is structural, not verbal:</span> commit in the prose, and quarantine the uncertainty into one visible per-lesson marker. See §3.3.</p>
+
+  <h3>1.3 Banning a construction did not remove the reflex</h3>
+  <p>STYLE.md bans "not X, but Y". The draft contains 108 instances of <code>rather than</code> and <code>instead of</code> — the identical corrective move wearing a different coat. The lesson generalises: prohibitions redirect a habit, they do not dissolve it. Only a positive model does that.</p>
+
+  <h3>1.4 There is nobody in the book</h3>
+  <p>STYLE.md permits first person singular <em>only</em> for documented human observation. Since no human has audited anything yet, the rule evaluates to a total ban in practice: 24 instances of "I" in 41,160 words. The preface promises "an informed person at the next desk." No such person exists in the text. The result reads like well-written API documentation for music.</p>
+</section>
+
+<section id="cause">
+  <h2><span class="num">§2</span>The root cause, stated plainly</h2>
+  <p>Your style guide is a slop filter, and it works: the prose has no filler, no cheerleading, no <em>delve</em>, no <em>unlock</em>. But a slop filter is not a voice. It defines the floor and says nothing about the ceiling, so an agent writes to the floor and stops.</p>
+  <p>The guide is also self-defeating in three specific places:</p>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>STYLE.md rule</th><th>Intent</th><th>What it actually produced</th></tr></thead>
+    <tbody>
+      <tr><td>First person only for documented human observation</td><td>Don't fabricate listening experience</td><td>No narrator at all. 24 "I"s in 41k words.</td></tr>
+      <tr><td>"Do not praise, scold, cheer"</td><td>No hype</td><td>No warmth of any kind. Affect stripped to zero.</td></tr>
+      <tr><td>Rhetorical questions "only when the pause does work"</td><td>No filler questions</td><td>8 question marks in 58 lessons. The reader is never invited to predict.</td></tr>
+      <tr><td>Em dash: "prefer a full stop, comma, or colon"</td><td>Reduce a known AI tic</td><td>Linted to zero. Every aside now becomes its own flat sentence, flattening rhythm.</td></tr>
+      <tr><td>"Distinguish an observed result from an expected result"</td><td>Honesty about untested claims</td><td>14 hedges per 1,000 words. Nothing is ever asserted.</td></tr>
+      <tr><td><code>REQUIRED_HEADINGS</code> + 550-word floor in pytest</td><td>Ensure lessons are substantive</td><td>58 lessons of identical shape and near-identical length.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="note"><p>Every one of these was a reasonable response to a real failure mode. The problem is that the corrections are all subtractive, and six subtractive rules compounded produce a book with nothing sticking out of it anywhere.</p></div>
+</section>
+
+<section id="style">
+  <h2><span class="num">§3</span>Change 1: rewrite STYLE.md from prohibition to demonstration</h2>
+  <p class="lede">This is the highest-leverage change in the plan and should happen before a single lesson is touched. Target: cut the ban list roughly in half, and spend the recovered space on worked examples of the voice you want.</p>
+
+  <h3>3.1 Add a positive voice specification</h3>
+  <p>Open the guide with a passage of the target voice, annotated. Then state the mandates as things to <em>do</em>:</p>
+  <ul>
+    <li><span class="lead-in">Use contractions.</span> Default to them in explanation. Reserve the full form for emphasis.</li>
+    <li><span class="lead-in">Make the reader or the writer the subject of the sentence</span> at least once per paragraph. Not "the program schedules six attacks" but "you get six evenly spaced attacks."</li>
+    <li><span class="lead-in">Open at least one paragraph per lesson with a question</span> the reader can answer by pressing Run.</li>
+    <li><span class="lead-in">One sentence under eight words per section.</span> Rhythm is a requirement, not a nicety. The current 11% needs to roughly double.</li>
+    <li><span class="lead-in">Name the surprise.</span> Every lesson has one moment where the sound contradicts the naive expectation. Say so, in those words.</li>
+  </ul>
+
+  <h3>3.2 Restore the em dash, with a budget</h3>
+  <p>Banning it outright cost more than it saved. Replace the ban with a quota the linter can enforce: at most one em dash per lesson. That keeps the tic in check while returning the one mark that carries an aside without breaking the sentence.</p>
+
+  <h3>3.3 Replace pervasive hedging with a single honesty marker</h3>
+  <p>This is the change that will most transform how the book reads. Make it a hard rule:</p>
+  <div class="good">
+    <p><strong>In the body text, state what the reader will hear, in the present indicative.</strong> All uncertainty about verification lives in exactly two places: the <code>status:</code> field in front matter, and a short standard callout at the top of the lesson. Zero hedges in the explanation itself.</p>
+  </div>
+  <p>Concretely: add a shared Quarto include, <code>_not-yet-auditioned.qmd</code>, that renders one small callout, and delete every in-sentence "may", "is expected to", "remains a listening judgement" from the prose. The book becomes more honest, not less — one clear disclosure beats 567 mumbled ones, and when a lesson is auditioned you remove one line instead of re-editing forty sentences.</p>
+
+  <h3>3.4 Loosen the first-person rule to permit reasoning, not experience</h3>
+  <p>The rule correctly forbids inventing listening history. It should not forbid the writer's presence. Permit first person for <em>authorial decisions</em>, which are real and documentable: "I've kept the bass out of this example because it hides the third." Forbid it for sensory claims until a human has listened. That single distinction gives the book a narrator without licensing a fabrication.</p>
+
+  <h3>3.5 Update the linter to match</h3>
+  <p><a href="scripts/lint-prose.sh">scripts/lint-prose.sh</a> currently only catches bad words. Add positive checks so the new mandates are enforceable rather than aspirational: per-lesson contraction count above zero, at least one sentence under eight words per section, hedge density below a threshold, em dashes at most one per file, and a warning when more than 30% of sentences in a file start with "The" or "A".</p>
+</section>
+
+<section id="rewrites">
+  <h2><span class="num">§4</span>Change 2: six worked rewrites to paste into STYLE.md</h2>
+  <p class="lede">These are the models the guide is missing. Each deliberately breaks a current rule — contractions, direct address, an em dash, a question, a committed claim — and each is drawn verbatim from the present draft.</p>
+
+  <h3>4.1 The opening of a lesson</h3>
+  <div class="ba">
+    <div class="now"><h5>Now — Lesson 6</h5>
+      <p>"A tuning system chooses which frequency relationships remain exact and where small discrepancies will appear. Pure fifths make a tempting foundation: multiply a frequency by <code>3/2</code> twelve times and the resulting pitch comes close to seven octaves above the start. It does not arrive exactly."</p></div>
+    <div class="then"><h5>Proposed</h5>
+      <p>"Stack twelve pure fifths and you land almost exactly seven octaves up. Almost. Multiply by <code>3/2</code> twelve times and you overshoot by about a quarter of a semitone — nothing at all on one chord, and a disaster once you want to play in all twelve keys. That gap is the Pythagorean comma, and every tuning system ever built is a decision about where to hide it."</p></div>
+  </div>
+  <p style="font-size:.92rem;color:var(--muted)">What changed: a two-word sentence for rhythm, second person, a committed number (23.5 cents), and a closing line that says why the reader should care before the terminology arrives.</p>
+
+  <h3>4.2 The paragraph after the code</h3>
+  <div class="ba">
+    <div class="now"><h5>Now — Lesson 6</h5>
+      <p>"Both triads implement a major-third and fifth structure, although the audible contrast may be subtler than the numerical formulas suggest. The ratio-built version is expected to have less internal motion around its third; the equal-tempered version may carry a faint shimmer."</p></div>
+    <div class="then"><h5>Proposed</h5>
+      <p>"Listen to the third, not the whole chord. In the ratio-built triad it sits still. In the equal-tempered one it shimmers, because that third is 14 cents sharp of a pure 5:4 and the two tones keep drifting in and out of phase. If you hear nothing on the first pass, you're not doing it wrong: this difference lives close to the floor on small speakers."</p></div>
+  </div>
+  <p style="font-size:.92rem;color:var(--muted)">What changed: an instruction first, then two committed claims, then a specific number that makes the claim checkable, then a contraction doing the reassurance the ban list forbade. Note that this rewrite also exposes a real bug in the lesson — see §7.1.</p>
+
+  <h3>4.3 The explanation</h3>
+  <div class="ba">
+    <div class="now"><h5>Now — Lesson 41</h5>
+      <p>"Provenance belongs beside the score data. Record edition, page, system, and measure even if those fields never reach Sonic Pi. When a note sounds doubtful, that pointer leads directly back to the evidence."</p></div>
+    <div class="then"><h5>Proposed</h5>
+      <p>"Write the edition, page, system, and measure into the score, even though Sonic Pi will never read them. Six months from now a note will sound wrong and you won't remember whether you mis-copied it or the editor did. Those four fields are the difference between checking and guessing."</p></div>
+  </div>
+  <p style="font-size:.92rem;color:var(--muted)">What changed: the abstract noun "provenance" stops being the subject; the reader is. The claim is dramatised with a scenario rather than asserted.</p>
+
+  <h3>4.4 The transition to the next lesson</h3>
+  <div class="ba">
+    <div class="now"><h5>Now — Lesson 5</h5>
+      <p>"Pure ratios work beautifully when one root and a few intervals define the local world. The next lesson asks what happens when a keyboard must support the same interval pattern from every one of twelve starting notes."</p></div>
+    <div class="then"><h5>Proposed</h5>
+      <p>"All of this works while you stay put. Tune a perfect fifth above C and it's exact. But now the piece moves to D, and then to E-flat, and your keyboard has only twelve keys to serve all of them. Something has to give. Lesson 6 is about what gives, and by how much."</p></div>
+  </div>
+
+  <h3>4.5 The exercise</h3>
+  <div class="ba">
+    <div class="now"><h5>Now — Lesson 38</h5>
+      <p>"Generate a Markdown table for positions <code>-2</code> through <code>10</code>. Include coordinate, line-or-space classification, letter, octave, Sonic Pi symbol, and MIDI integer, and mark middle C plus the five treble lines."</p></div>
+    <div class="then"><h5>Proposed</h5>
+      <p>"Build yourself the reference card you'd actually want taped to the monitor: positions -2 to 10, with the letter, the octave, the Sonic Pi symbol, and the MIDI number for each, and middle C and the five treble lines marked. Print it. You'll use it for the whole of Part 8."</p></div>
+  </div>
+  <p style="font-size:.92rem;color:var(--muted)">STYLE.md already warns against "bureaucratic exercise language" and the draft still produces it, because the guide names the fault without modelling the alternative. Fifty-eight <em>Take it further</em> sections need this treatment.</p>
+
+  <h3>4.6 The variation instruction</h3>
+  <div class="ba">
+    <div class="now"><h5>Now — Lesson 1</h5>
+      <p>"Replace <code>:pluck</code> with <code>:prophet</code>. The note symbols and sleeps do not move, but the softened attack makes their exact starting points less prominent and the broader tail fills more of the gap between them."</p></div>
+    <div class="then"><h5>Proposed</h5>
+      <p>"Swap <code>:pluck</code> for <code>:prophet</code> and run it again. Not one note or sleep has changed, so anything different you hear belongs to the instrument. What you lose is the click of each onset; what you gain is a tail long enough to fill the gap before the next note. Same phrase, different body."</p></div>
+  </div>
+</section>
+
+<section id="template">
+  <h2><span class="num">§5</span>Change 3: break the template</h2>
+  <p class="lede">The uniformity is measurable and total. It is also the thing that most makes the book feel machine-made, independent of any individual sentence.</p>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Property</th><th>Lessons conforming</th></tr></thead>
+    <tbody>
+      <tr><td>Exactly the headings <em>The idea / Run this / Change one thing / Why it works / Take it further</em>, in that order</td><td class="c"><strong>58 / 58</strong></td></tr>
+      <tr><td>Exactly one code block</td><td class="c"><strong>58 / 58</strong></td></tr>
+      <tr><td>Exactly three numbered variations</td><td class="c"><strong>57 / 58</strong></td></tr>
+      <tr><td>Length between 724 and 1,011 words</td><td class="c"><strong>58 / 58</strong></td></tr>
+      <tr><td>Zero images, figures, diagrams, or tables</td><td class="c"><strong>58 / 58</strong></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h4>What to do</h4>
+  <ol>
+    <li><span class="lead-in">Relax the pytest contract.</span> In <a href="tests/test_book_draft.py">test_book_draft.py</a>, replace the exact <code>REQUIRED_HEADINGS</code> tuple with a check that a lesson contains a runnable example, at least one prompted variation, and an exercise — however those are titled. Keep the 58-lesson and solutions-coverage invariants; they are earning their keep.</li>
+    <li><span class="lead-in">Let section titles say what the section is about.</span> "Why it works" × 58 is a filing system. "Why twelve fifths miss the octave" tells a reader scanning the page what they are about to learn. Keep the underlying rhythm; vary the labels.</li>
+    <li><span class="lead-in">Allow two or three code blocks where the lesson needs them.</span> At present every "Change one thing" instruction asks for a hand-edit with no shown result. Where a variation matters, show the changed block.</li>
+    <li><span class="lead-in">Vary length deliberately.</span> Lessons 2, 10 and 14 could be 400 words. Lessons 31, 43 and 51 want 1,400. Uniform length means every lesson is padded or truncated toward the same number.</li>
+    <li><span class="lead-in">Give each Part a one-page opener.</span> Thirteen short bridges would give the book the sense of movement that 58 identical units currently deny it, at maybe 2,000 words total.</li>
+  </ol>
+</section>
+
+<section id="content">
+  <h2><span class="num">§6</span>Content gaps</h2>
+
+  <h3>6.1 The book about sound has no sound <span class="tag t-high">high</span></h3>
+  <p>There are 60 <code>audio=""</code> attributes and zero recordings. This is a known and deliberately flagged state, so it is not a criticism of honesty — but it is the largest single gap between what the book promises and what it delivers. Every listening claim is currently unfalsifiable for the reader. Rendering even one reference recording per Part (13 files) would change the experience more than any prose edit.</p>
+
+  <h3>6.2 The book about notation has no notation <span class="tag t-high">high</span></h3>
+  <p>There is not one image, figure, diagram, or table in 58 lessons and 5 appendices. Most lessons survive this. Part 8 does not:</p>
+  <ul>
+    <li><strong>Lesson 38, "Treble clef as a coordinate system,"</strong> describes lines and spaces in words and asks the reader to hold a five-line staff in their head.</li>
+    <li><strong>Lesson 41, "Decode four printed bars,"</strong> contains no printed bars. The exercise sends the reader off to find their own public-domain score. The lesson cannot be completed from the book.</li>
+  </ul>
+  <p>Fix: generate SVG staff examples with LilyPond or Verovio into <code>assets/img/</code>, checked in as build products. Minimum viable set is about eight figures — treble staff with coordinates, grand staff, the four key signatures used, and four printed bars for Lesson 41 sourced from a public-domain edition. Elsewhere, a handful of ASCII or SVG grids would carry rhythm (Part 3), the circle of fifths (Lesson 25), and the piano keyboard map (Lesson 8).</p>
+
+  <h3>6.3 Cross-references are text, not links <span class="tag t-med">medium</span></h3>
+  <p>47 bare "Lesson N" mentions in the prose against 3 actual markdown links. In an HTML book with a working <code>site-url</code>, every one of those should be clickable. This is mechanical and scriptable.</p>
+
+  <h3>6.4 The three capstones need a shared piece of music <span class="tag t-med">medium</span></h3>
+  <p>Lessons 55–57 each invent their own material. A book whose spine is "the representation grows because the music asks more of it" should end by returning to something the reader already knows — ideally the E-minor-pentatonic phrase from <a href="setup.qmd">setup.qmd</a>, now carrying harmony, voices and form. That single decision would make the arc land.</p>
+
+  <h3>6.5 Ear-training drills are described but never centralised <span class="tag t-low">low</span></h3>
+  <p>The preface commits the reader to 10 minutes a day from their own <code>drills.rb</code>, and Lesson 20 builds a drill harness, but no lesson afterward adds to it. Either make "add this to <code>drills.rb</code>" a recurring one-line coda, or drop the daily-practice promise from the preface.</p>
+</section>
+
+<section id="defects">
+  <h2><span class="num">§7</span>Specific defects worth fixing regardless of voice</h2>
+  <p class="lede">Found by reading, not by running — none of this has been executed in Sonic Pi, and it should all be confirmed on audition. Each is a concrete claim you can check.</p>
+
+  <h3>7.1 Lesson 6 demonstrates tuning with the one synth that cannot show it <span class="tag t-high">high</span></h3>
+  <p>The lesson compares a just triad against an equal-tempered one using <code>synth :sine</code>. A sine wave has a single partial. The audible difference between just and equal-tempered intonation comes almost entirely from <em>beating between coincident upper partials</em> — the root's 5th harmonic against the third's 4th, for instance. Remove the harmonics and you remove the phenomenon. Two sines four semitones apart, heard in separate passes, will sound essentially identical whichever tuning produced them.</p>
+  <div class="warn"><p>The lesson's own closing paragraph has the reasoning backwards: it warns that changing synth may introduce "new partials or attacks" that "conceal the gentle beating." Partials are what <em>create</em> the beating here. Fix: use <code>:saw</code>, <code>:tri</code> or <code>:prophet</code> and sustain the chords longer. Lesson 5, by contrast, is right to use sines — near-unison beating is exactly what sines show best.</p></div>
+
+  <h3>7.2 Lesson 16's third variation silently breaks its own seed <span class="tag t-med">medium</span></h3>
+  <p>The lesson correctly warns that "the seed reproduces a comparison only while the order and mapping of random calls remain unchanged." Variation 3 then asks the reader to "set amplitude variation to zero while leaving timing variation intact" and compare with the original. Removing those two <code>rrand</code> calls per pair shifts every subsequent draw in the seeded stream, so the timing jitter changes too and the comparison is not controlled. Fix: draw all random values into named variables up front, so removing one from use does not renumber the rest — which is also a better lesson about seeded randomness.</p>
+
+  <h3>7.3 Lesson 29's cadences all move in strict parallel motion <span class="tag t-med">medium</span></h3>
+  <p>Every chord is built with <code>chord(root, quality)</code> in root position and close voicing, so <code>IV → I</code> moves all three voices up exactly 7 semitones and <code>V → I</code> moves all three up exactly 5. Parallel octaves and fifths throughout. That is awkward on its own terms, and it is awkward against Lesson 31, which teaches that cadences are four lines moving independently. It also means the tonic chord sits an octave above the IV, V and vi chords, so "arrival" is confounded with a register jump. Fix: hand-voice the four cadences with a common tone held.</p>
+  <p>Separately, <code>body</code> ends on <code>:IV</code>, so the plagal ending produces <code>IV IV I</code> and the half cadence produces <code>IV IV V</code>. Two of the four conditions have a repeated chord at the seam that the other two don't.</p>
+
+  <h3>7.4 Lesson 31's "well-led" voicing puts bass and tenor in unison <span class="tag t-low">low</span></h3>
+  <p>In the <code>led</code> progression, the G chord is <code>bass: 55, tenor: 55</code>. Two of the four voices are the same pitch, so the chord sounds in three parts and the tenor line vanishes for a beat — in a lesson whose subject is tracking four independent lines. The <code>movement</code> cost function cannot see this, which is a genuinely good teaching point if you make it deliberate: add a "no unisons" constraint and let the reader discover why the optimiser wanted one.</p>
+
+  <h3>7.5 The <code>hz_to_midi</code> round trip <span class="tag t-low">low</span></h3>
+  <p>Lessons 5 and 6 compute exact frequencies and then pass them through <code>hz_to_midi</code> into <code>note:</code>. Worth confirming on audition that Sonic Pi preserves the fractional MIDI value rather than rounding it — the entire premise of both lessons is that sub-semitone differences survive to the output.</p>
+</section>
+
+<section id="sequence">
+  <h2><span class="num">§8</span>Suggested sequence</h2>
+  <p class="lede">Ordered so that nothing gets written twice. The voice work is worthless until the specification changes, and the specification is worthless until the tests stop enforcing the old one.</p>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th style="width:3em">#</th><th>Step</th><th>Why here</th><th style="width:8em">Size</th></tr></thead>
+    <tbody>
+      <tr><td class="c">1</td><td>Rewrite STYLE.md: positive voice spec, six worked before/after models, hedging rule, first-person rule, em-dash quota</td><td>Every later step depends on it</td><td>Half a day</td></tr>
+      <tr><td class="c">2</td><td>Relax <code>REQUIRED_HEADINGS</code> and the word floor in <code>test_book_draft.py</code>; extend <code>lint-prose.sh</code> with the positive checks from §3.5</td><td>Otherwise the tests re-impose the old shape</td><td>1–2 hours</td></tr>
+      <tr><td class="c">3</td><td>Add the shared "not yet auditioned" callout include and strip hedges from prose</td><td>Mechanical, and unlocks committed claims everywhere</td><td>1 day</td></tr>
+      <tr><td class="c">4</td><td>Hand-rewrite Part 0 and Part 1 (Lessons 1–7) to the new voice, yourself, not via an agent</td><td>These become the reference corpus. An agent can match seven good lessons; it cannot invent them from a rule list</td><td>1–2 days</td></tr>
+      <tr><td class="c">5</td><td>Fix the defects in §7 while in those files</td><td>Same files, same pass</td><td>Included</td></tr>
+      <tr><td class="c">6</td><td>Agent-rewrite Lessons 8–58 with the seven rewritten lessons supplied as few-shot exemplars, in batches of 8–10, reviewing each batch before the next</td><td>Exemplars work where rules don't</td><td>Several days</td></tr>
+      <tr><td class="c">7</td><td>Generate the Part 8 notation figures and the rhythm/circle-of-fifths diagrams</td><td>Independent of voice; can run in parallel from step 2</td><td>1 day</td></tr>
+      <tr><td class="c">8</td><td>Linkify the 47 cross-references; write the 13 Part openers</td><td>Cheap, high perceived polish</td><td>Half a day</td></tr>
+      <tr><td class="c">9</td><td>Audition Part 0 and Part 1 in Sonic Pi, record 13 reference clips, promote those lessons to <code>tested</code></td><td>Proves the pipeline end to end before scaling it</td><td>1 day</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="note">
+    <p><strong>On step 4, the one to resist skipping.</strong> The reason the agent can't sound approachable is that it has been given a definition of the voice and no instance of it. Seven hand-written lessons are worth more than seven more pages of style rules, and they are the only input that reliably transfers. If you write nothing else yourself, write Lesson 1 and Lesson 6.</p>
+  </div>
+</section>
+
+<section id="keep">
+  <h2><span class="num">§9</span>What not to change</h2>
+  <p class="lede">A rewrite this broad can easily damage what already works. These are load-bearing.</p>
+  <ul>
+    <li><span class="lead-in">The score/renderer split.</span> Introduced in Lesson 1 and carried through to Lesson 58. It is the strongest idea in the book and the reason a programmer will keep reading.</li>
+    <li><span class="lead-in">The <code>:note</code> / <code>:start</code> / <code>:duration</code> event schema.</span> Consistent across all 58 lessons — genuinely impressive continuity, and hard to re-establish if broken.</li>
+    <li><span class="lead-in">Sound before name.</span> The curriculum ordering is well judged: acoustics before naming, notation at Part 8 rather than Part 1, transcription last. Do not let a voice pass disturb the sequence.</li>
+    <li><span class="lead-in">The <code>draft</code> / <code>tested</code> distinction and the AI-authorship disclosure.</span> The intellectual honesty here is unusual and worth keeping. §3.3 concentrates it; it does not remove it.</li>
+    <li><span class="lead-in">The banned-vocabulary list.</span> Keep it. It works. Just stop treating it as the whole of the style guide.</li>
+    <li><span class="lead-in">The musical content.</span> Spot-checks across acoustics, cadences, voice leading, swing and clef translation found the theory sound and the explanations accurate. The problem really is only how it sounds on the page.</li>
+  </ul>
+</section>
+
+<footer>
+  <div>Review of <em>Music Theory Through Sonic Pi</em> at <code>3baa1e6</code>. Prose statistics computed over the 58 lesson files with code blocks stripped. No manuscript files were modified. Musical and code defects in §7 were found by reading and have not been run in Sonic Pi.</div>
+</footer>
+
+</div>
+</body>
+</html>

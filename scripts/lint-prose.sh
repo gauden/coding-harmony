@@ -27,11 +27,16 @@ if hits=$(printf '%s\n' "$active" | grep -nIEi -f /dev/stdin -- $files); then
   status=1
 fi
 
-# Em dashes get their own pass so the message can explain itself.
-if hits=$(grep -nI -- '—' $files); then
-  echo "$hits" | sed 's/$/   <- em dash, prefer a full stop or comma/'
-  status=1
-fi
+# Em dashes are budgeted, not banned: STYLE.md allows one per file, and
+# tests/test_book_draft.py enforces that count. Report files over budget here
+# so the linter and the suite agree.
+for f in $files; do
+  n=$(grep -oI -- '—' "$f" | wc -l | tr -d ' ')
+  if [ "$n" -gt 1 ]; then
+    echo "$f: $n em dashes   <- budget is one per file"
+    status=1
+  fi
+done
 
 if [ $status -eq 0 ]; then
   echo "Prose clean: $(printf '%s\n' $files | wc -l | tr -d ' ') files, $(printf '%s\n' "$active" | wc -l | tr -d ' ') patterns."

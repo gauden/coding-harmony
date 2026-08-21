@@ -2,12 +2,12 @@ project:
   type: book
   output-dir: _book
 
-author: "GPT 5.6 Sol at High Reasoning"
+author: "GPT 5.6 Sol at High Reasoning and Claude Opus 5"
 
 book:
   title: "Music Theory Through Sonic Pi"
   subtitle: "For programmers who cannot read a note"
-  author: "GPT 5.6 Sol at High Reasoning"
+  author: "GPT 5.6 Sol at High Reasoning and Claude Opus 5"
   date: last-modified
   date-format: "D MMMM YYYY"
   favicon: assets/img/favicon.png

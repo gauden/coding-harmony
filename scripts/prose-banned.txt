@@ -24,11 +24,12 @@ it's worth noting
 \bleverage the\b
 
 # Constructions
-\bnot just\b
-\bnot only\b.*\bbut also\b
 
 # Voice, from the STYLE.md voice section
 \blet's\b
 \blet us\b
 \bwe have shown\b
-\bwe will see\b
+
+# Bureaucratic exercise language (STYLE.md: Tone)
+\bthe structural constraint\b
+\bthe finished file should\b

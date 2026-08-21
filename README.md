@@ -12,9 +12,10 @@ This is a music-theory course rather than a general Sonic Pi tutorial.
 Programming is assumed. Ruby idioms receive a short explanation when they first
 appear and a fuller reference in the appendices.
 
-The book uses an expository field-notes voice: first person for the writer,
-second person for the reader, and enough context to carry an unfamiliar idea
-from sound to code to theory. The rules are in [`STYLE.md`](STYLE.md).
+The book talks to you the way a capable friend at the next keyboard would: it
+tells you what you're about to hear, commits to the claim, and says when a
+result is genuinely subtle. [`STYLE.md`](STYLE.md) specifies that voice with
+worked models, and `tests/test_book_draft.py` measures the prose against it.
 
 ## Status
 
@@ -23,9 +24,9 @@ across 13 parts, the preface and setup chapter, five reference appendices, and
 worked entries for all 58 optional exercises. Every lesson remains marked
 `draft` until its code and listening claims pass documented human audition.
 
-The rendered draft is globally attributed to **GPT 5.6 Sol at High Reasoning**.
-It is undergoing revision and independent testing; no human-authored edition is
-claimed.
+The rendered draft is globally attributed to **GPT 5.6 Sol at High Reasoning and
+Claude Opus 5**. It is undergoing revision and independent testing; no
+human-authored edition is claimed.
 
 `draft` means the planned lesson has substantive prose and a Ruby example, and
 the extracted Ruby clears syntax checks. It does not mean the examples have been
@@ -48,7 +49,8 @@ added lesson. It is not part of ordinary prose editing.
 | [`curriculum/music_theory_through_sonic_pi.html`](curriculum/music_theory_through_sonic_pi.html) | The 58-lesson syllabus and searchable course map. |
 | [`curriculum/plan.html`](curriculum/plan.html) | Build, audio, testing, and publication decisions. |
 | [`appendix/`](appendix/) | Ruby guide, Sonic Pi cheat sheet, solutions, glossary, and sources ledger. |
-| [`STYLE.md`](STYLE.md) | House voice and prose constraints. |
+| [`STYLE.md`](STYLE.md) | The house voice, with worked models and measurable mandates. |
+| [`plan.html`](plan.html) | Editorial review of the second draft and the plan for this one. |
 | [`WRITING_BRIEF.md`](WRITING_BRIEF.md) | Lesson, code, and continuity contracts for contributors. |
 | [`TODO.md`](TODO.md) | Durable first-draft and integration checklist. |
 | [`DEVELOPMENT.md`](DEVELOPMENT.md) | Resume protocol, session record, checks, and deferred QA. |
