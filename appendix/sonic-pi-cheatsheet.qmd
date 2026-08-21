@@ -2,10 +2,12 @@
 title: "Sonic Pi cheat sheet"
 ---
 
-This is the working subset of Sonic Pi used by the book. It is arranged by the
-musical job each call performs, so you can recover an operation without knowing
-its exact name. The built-in help pane remains the authority for your installed
-version and is usually the fastest place to continue.
+Here's the working subset of Sonic Pi the book actually uses, arranged by the
+musical job each call does. That ordering is deliberate: you'll usually know
+what you want to happen to the sound before you remember what the call is
+named. For your installed version the built-in help pane is the authority, and
+it's normally the fastest place to keep going once you've found the right
+neighbourhood.
 
 ## Sound
 
@@ -17,21 +19,21 @@ version and is usually the fastest place to continue.
 | `use_synth :prophet` | Set the instrument for what follows. |
 | `synth :pluck, note: :c4` | Play one note on a named synth without switching. |
 
-The pitch begins the event; the following options determine how that event
-occupies acoustic space. These are the `play` options that recur most often:
+The pitch starts the event. Everything after it decides how that event occupies
+acoustic space, and these are the `play` options you'll reach for most:
 
 | Option | Meaning |
 |---|---|
-| `amp: 0.7` | Scale amplitude. Values above 1 are possible and can clip. |
-| `pan: -0.5` | Place the sound left to right from -1 to 1. |
+| `amp: 0.7` | Scale amplitude. Values above 1 are allowed and can clip. |
+| `pan: -0.5` | Place the sound left to right, from -1 to 1. |
 | `attack: 0.02` | Time taken to reach peak amplitude. |
-| `decay: 0.1` | Time taken to move from the peak to sustain level. |
+| `decay: 0.1` | Time taken to fall from the peak to sustain level. |
 | `sustain: 0.4` | Time held at the sustain level. |
 | `release: 0.6` | Fade time after sustain. |
-| `cutoff: 90` | Low-pass filter cutoff expressed as a MIDI note number. |
+| `cutoff: 90` | Low-pass filter cutoff, written as a MIDI note number. |
 
-`play` returns a synth node. `control` can change a running node when a lesson
-needs a continuous bend or fade.
+`play` returns a synth node, and `control` changes a node that's already
+running. Reach for it when a lesson needs a bend or a fade inside a single note.
 
 ```ruby
 voice = play :c4, sustain: 2, note_slide: 0.5
@@ -49,8 +51,8 @@ control voice, note: :g4
 | `in_thread do ... end` | Run a block concurrently, once. |
 | `sync :name` / `cue :name` | Wait for, and send, a start signal. |
 
-One beat lasts `60.0 / bpm` seconds. Score durations stay in beats, which lets a
-tempo change scale the whole performance without forcing you to rewrite every
+One beat lasts `60.0 / bpm` seconds. Keep your score durations in beats and a
+single tempo change rescales the whole performance without you rewriting one
 event.
 
 `at` schedules several offsets from the same starting point:
@@ -73,20 +75,21 @@ sleep 2
 | `set :name, value` | Store named Sonic Pi state. |
 | `get :name` | Read named Sonic Pi state. |
 
-Counters belong to their thread. Two live loops can therefore tick through rings
-independently without stealing positions from one another. When two rings inside
-the same loop need different counters, name those counters explicitly in the
-full Sonic Pi call.
+Counters belong to their thread. So two live loops can tick through rings side
+by side without stealing positions from each other. When two rings inside one
+loop need separate counters, name those counters explicitly in the full Sonic Pi
+call.
 
 ## Envelope
 
 An envelope describes the life of a synth node: `attack`, `decay`, `sustain`,
-and `release`, all measured in beats. `amp` scales its level, while `pan` places
+and `release`, all measured in beats. `amp` scales its level, and `pan` places
 it between -1 on the left and 1 on the right.
 
-The total audible lifetime often extends beyond the following `sleep`. `sleep`
-advances the score cursor; envelope options describe the synth node. Long release
-times therefore overlap later notes.
+Here's the part that catches people out. A note's audible life often runs past
+the `sleep` that follows it, because `sleep` moves the score cursor while the
+envelope describes the synth node. Long release times overlap later notes, which
+is a feature right up until it isn't.
 
 ## Music helpers
 
@@ -99,8 +102,8 @@ times therefore overlap later notes.
 | `chord_invert(chord(:c4, :major), 1)` | The chord, inverted. |
 | `hz_to_midi(440)` / `midi_to_hz(69)` | Convert between frequency and note number. |
 
-Rings returned by `scale` and `chord` support ordinary indexing and iteration.
-Call `.to_a` when a plain array makes printed comparisons clearer.
+Rings from `scale` and `chord` index and iterate like ordinary arrays. Call
+`.to_a` when you want a printed comparison to read cleanly.
 
 ## Samples
 
@@ -111,18 +114,19 @@ Call `.to_a` when a plain array makes printed comparisons clearer.
 | `sample :loop_amen, beat_stretch: 4` | Stretch a loop to four beats. |
 | `sample :ambi_choir, rate: -1` | Play a sample backwards. |
 
-Sample names are symbols. Use the completion menu or the built-in help rather
-than relying on a name from a different Sonic Pi version.
+Sample names are symbols. Trust the completion menu or the built-in help over a
+name you remember from a different Sonic Pi version, because the libraries move
+between releases.
 
 ## Randomness
 
-`rrand(lo, hi)` for a float, `rrand_i(lo, hi)` for an integer, `choose` to pick
-from a list, `one_in(n)` for a probability. Set `use_random_seed 42` at the top of any
-example whose output should be reproducible.
+`rrand(lo, hi)` gives you a float, `rrand_i(lo, hi)` an integer, `choose` picks
+from a list, and `one_in(n)` gives you a probability. Put `use_random_seed 42`
+at the top of any example whose output should be reproducible.
 
-Random calls made in separate threads follow separate deterministic streams.
-Moving a random call into another loop can therefore change the result even when
-the seed stays fixed.
+Random calls made in separate threads draw from separate deterministic streams.
+Move a random call into another loop and your result changes, even though the
+seed didn't.
 
 ## Effects
 
@@ -133,9 +137,9 @@ end
 ```
 
 `:reverb`, `:echo`, `:lpf`, `:hpf`, and `:distortion` cover most of the signal
-shaping in the lessons. Effects can nest, and their order changes the signal
-path. Distortion followed by reverb distorts a dry note and then places it in a
-space; reversing the blocks also distorts the reverberant tail.
+shaping in the lessons. Effects nest, and their order changes the signal path.
+Distortion outside reverb distorts a dry note and then puts it in a room. Swap
+the blocks and you distort the reverberant tail along with the note.
 
 ```ruby
 with_fx :distortion, distort: 0.2 do
@@ -154,14 +158,15 @@ end
 | `raise "message"` | Stop the current run with an explicit error. |
 | `assert condition` | Fail when a Sonic Pi assertion is false. |
 
-When a note disappears, print the score data before changing the synth. Inspect
-pitch, onset, duration, and amplitude in that order. A zero duration or amplitude
-can look like a scheduler problem even while the scheduler is doing exactly what
-the event requested.
+When a note disappears, print the score data before you touch the synth. Check
+pitch, onset, duration, and amplitude in that order. A zero duration or a zero
+amplitude looks exactly like a scheduler bug, while the scheduler is doing
+precisely what your event asked it to do.
 
 ## Fresh-buffer checklist
 
 A self-contained example should survive amnesia. Press Stop, switch to an unused
-buffer, paste the block, and run it. Every `define`, variable, synth selection,
-tempo, and random seed must appear above its first use. A successful second run
-in a buffer full of remembered definitions proves much less than it seems.
+buffer, paste the block, run it. Every `define`, variable, synth selection,
+tempo, and random seed has to sit above its first use. A clean second run in a
+buffer full of remembered definitions proves far less than it looks like it
+proves.

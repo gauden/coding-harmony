@@ -2,230 +2,237 @@
 title: "Glossary"
 ---
 
-Musical terms become useful when they help you hear or build something. This
-glossary therefore points back to the lesson where each term first does real
-work. The definitions describe how the book uses the word and recover the
-central idea; the named lesson supplies the sound, code, and surrounding
-argument.
+A musical term earns its keep when it helps you hear something or build
+something. So every entry below points back to the lesson where the word first
+does real work. The definitions tell you how this book uses each term and
+recover the idea underneath it. They don't replace the lesson, which is where
+the sound, the code, and the argument live.
 
 ### Accent
 
-Extra weight on an event, produced by amplitude, timing, register, or timbre.
-Meter becomes audible through a repeating pattern of accents. Lessons 13 and 36.
+Extra weight on one event, put there by amplitude, timing, register, or timbre.
+Meter only becomes audible through a repeating pattern of accents. Lessons 13
+and 36.
 
 ### Accidental
 
-A sharp, flat, or natural written beside a note. Within the notation model used
-here, it changes later occurrences of the same letter and octave in that voice
+A sharp, flat, or natural written beside a note. In this book's notation model
+it changes every later occurrence of the same letter and octave in that voice
 until the bar ends. Lesson 40.
 
 ### ADSR
 
-The four-stage envelope of attack, decay, sustain, and release. These stages
-describe how a sound's amplitude changes while and after a note is held. Lesson 7.
+Attack, decay, sustain, release: the four stages of an envelope. Together they
+describe how a sound's amplitude moves while a note is held and after you let
+go. Lesson 7.
 
 ### Antecedent
 
-The opening phrase in a question-and-answer pair. It usually ends with enough
-instability to make a following phrase feel necessary. Lesson 34.
+The opening phrase of a question-and-answer pair. It ends with enough
+instability that you expect a second phrase to follow. Lesson 34.
 
 ### Articulation
 
-The manner in which a note begins, continues, and ends. Legato and staccato are
-articulations; the pitch can stay unchanged while the gesture changes. Lesson 7.
+How a note begins, continues, and ends. Legato and staccato are articulations;
+the pitch stays put while the gesture changes. Lesson 7.
 
 ### Bar
 
-A fixed span of metrical time. A bar groups beats according to the time
-signature and gives scoped meaning to written accidentals. Lesson 13.
+One fixed span of metrical time. Bars group beats according to the time
+signature, and they give written accidentals their scope. Lesson 13.
 
 ### Beat
 
-The unit used by Sonic Pi's scheduler and by a listener's pulse. Its duration in
-seconds depends on the tempo. Lesson 3.
+Sonic Pi's scheduling unit, and the pulse a listener taps along with. How long
+it lasts in seconds depends on the tempo. Lesson 3.
 
 ### Cadence
 
 A harmonic ending or pause. Authentic, plagal, half, and deceptive cadences
-create different degrees and kinds of closure. Lesson 29.
+close a phrase to different degrees and in different ways. Lesson 29.
 
 ### Chord
 
-Several notes treated as one harmonic event. This book begins with three-note
-triads and later separates their notes into independent voices. Lesson 26.
+Several notes treated as one harmonic event. This book starts with three-note
+triads, then splits their notes into independent voices. Lesson 26.
 
 ### Chromatic
 
-Using pitches outside the current diatonic scale, or moving in semitones. A
-chromatic chord can point briefly toward another tonic. Lessons 8 and 52.
+Using pitches outside the current diatonic scale, or moving by semitones. A
+chromatic chord can point briefly at another tonic. Lessons 8 and 52.
 
 ### Consonance
 
-Relative smoothness or stability between sounding pitches. It depends on their
-frequency relationship, spectrum, register, and musical setting. Lesson 5.
+Smoothness or stability between sounding pitches. It depends on their frequency
+relationship, spectrum, register, and setting, so it isn't a fixed property of
+an interval. Lesson 5.
 
 ### Contour
 
-The sequence of up, down, and repeated motion in a melody, with exact interval
-sizes removed. Lesson 32.
+Up, down, and repeated motion in a melody, with the exact interval sizes thrown
+away. Strip a tune back to its contour and you can often still recognise it.
+Lesson 32.
 
 ### Degree
 
-A scale position counted from its tonic. Degree numbers preserve a note's job
-when a tune moves to another key. Lesson 22.
+Scale position counted from the tonic. Degree numbers keep a note's job intact
+when you move the tune to another key. Lesson 22.
 
 ### Dissonance
 
-Relative roughness or instability between pitches. Dissonance can be acoustic,
-harmonic, or contextual, and it often supplies motion rather than error. Lesson 5.
+Roughness or instability between pitches. It can be acoustic, harmonic, or
+contextual, and it usually supplies motion; read it as an error and you lose the
+reason most music moves at all. Lesson 5.
 
 ### Dominant
 
 Scale degree 5 and the chord built on it. The dominant is stable enough to hold
-attention and unstable enough to point toward the tonic. Lesson 22.
+your attention and unstable enough to point at the tonic. Lesson 22.
 
 ### Drone
 
-A sustained or repeated pitch under changing material. A drone fixes the tonal
-reference, making scale-degree and modal differences easier to hear. Lesson 22.
+One sustained or repeated pitch held under changing material. Put a drone under
+a scale and modal differences get much easier to hear. Lesson 22.
 
 ### Duration
 
-How much musical time an event occupies. In the event schema it is measured in
-beats, independently of tempo. Lesson 12.
+How much musical time an event occupies. In the event schema you measure it in
+beats, so the tempo can change without touching the score. Lesson 12.
 
 ### Enharmonic
 
-Two written pitch names that produce the same key on an equal-tempered
-instrument, such as F-sharp and G-flat. Their spelling records harmonic function.
-Lesson 10.
+Two written names for the same key on an equal-tempered instrument, such as
+F-sharp and G-flat. They sound identical and mean different things, because
+spelling records harmonic function. Lesson 10.
 
 ### Envelope
 
-The change of amplitude or another parameter over a sound's lifetime. Envelope
-shape is a large part of an instrument's identity. Lesson 7.
+How amplitude, or some other parameter, changes over a sound's lifetime.
+Envelope shape carries much of an instrument's identity. Lesson 7.
 
 ### Frequency
 
-The number of pressure-wave cycles per second, measured in hertz. Doubling a
-frequency raises a pitch by one octave. Lesson 4.
+Pressure-wave cycles per second, measured in hertz. Double a frequency and you
+raise the pitch by one octave. Lesson 4.
 
 ### Harmony
 
-The organisation of notes sounding together and the motion from one such state
-to another. Lessons 26 to 31 turn harmony into chord and voice data.
+Notes sounding together, and the motion from one such state to the next. Lessons
+26 to 31 turn harmony into chord and voice data.
 
 ### Interval
 
-The distance between two pitches. It carries both a diatonic number, such as
-third, and a chromatic size in semitones. Lesson 18.
+Distance between two pitches, carrying two measurements at once: a diatonic
+number such as third, and a chromatic size in semitones. You can't name an
+interval from the semitone count alone. Lesson 18.
 
 ### Inversion
 
-A chord arrangement in which a note other than the root occupies the bass. The
-pitch classes stay the same while the chord's balance changes. Lesson 27.
+A chord with something other than its root in the bass. Pitch classes stay the
+same; what shifts is the chord's balance. Lesson 27.
 
 ### Key
 
-A tonal environment organised around one tonic and a scale. A key supplies
-defaults without restricting every pitch to its scale. Lesson 21.
+Tonal environment organised around one tonic and its scale. A key supplies
+defaults, and it never confines the music to seven pitches. Lesson 21.
 
 ### Leading tone
 
-Scale degree 7 when it lies one semitone below the tonic. Its short upward move
-to the tonic creates a strong pull. Lesson 22.
+Scale degree 7 when it sits one semitone below the tonic. That single semitone
+is where its pull comes from. Lesson 22.
 
 ### Meter
 
-The repeating hierarchy of strong and weak beats. A time signature describes
-its grid; accents make the hierarchy audible. Lesson 13.
+Repeating hierarchy of strong and weak beats. A time signature describes the
+grid; accents are what make the hierarchy audible. Lesson 13.
 
 ### Mode
 
-A scale pattern heard in relation to its own tonal centre. Rotations of the
-major-scale steps produce the seven diatonic modes. Lesson 24.
+A scale pattern heard against its own tonal centre. Rotate the major-scale steps
+and you get the seven diatonic modes. Lesson 24.
 
 ### Motive
 
-A short musical idea that remains recognisable after controlled change. Pitch,
+A short musical idea that stays recognisable through controlled change. Pitch,
 rhythm, contour, and articulation can each carry part of its identity. Lesson 33.
 
 ### Octave
 
-The interval between pitches whose frequencies have a 2:1 ratio. In MIDI-style
-numbering it spans twelve semitones. Lesson 9.
+Interval between two pitches whose frequencies stand in a 2:1 ratio. In
+MIDI-style numbering it spans twelve semitones. Lesson 9.
 
 ### Pitch class
 
-All octave copies of one chromatic pitch treated as a class. For integer notes,
-`note % 12` computes it. Lesson 8.
+All octave copies of one chromatic pitch, treated as a single class. For integer
+notes, `note % 12` hands it to you. Lesson 8.
 
 ### Phrase
 
-A musical unit heard as one gesture, often ending with a cadence. Phrases can
-pair as question and answer. Lesson 34.
+A musical unit you hear as one gesture, often ending in a cadence. Phrases pair
+up as question and answer. Lesson 34.
 
 ### Register
 
-The high, middle, or low region occupied by a pitch or voice. Register affects
-weight, clarity, and the space available to other parts. Lesson 9.
+High, middle, or low region a pitch or a voice occupies. Register decides
+weight, clarity, and how much room the other parts have. Lesson 9.
 
 ### Rest
 
-A measured span in which a voice produces no new note. A rest still occupies
-time in the score. Lesson 14.
+A measured span in which a voice attacks nothing. It still occupies time in the
+score, and that's what separates it from silence you forgot to write. Lesson 14.
 
 ### Rhythm
 
-The pattern of event onsets and durations against a pulse. Rhythm can preserve a
-melody's identity even when its pitches change. Lesson 12.
+Pattern of onsets and durations against a pulse. Change every pitch in a tune
+and the rhythm alone can keep it recognisable. Lesson 12.
 
 ### Scale
 
 An ordered pitch collection tied to a tonal reference. Step formulas generate
-scales without storing a separate note list for each root. Lesson 21.
+scales, so you don't store a separate note list for every root. Lesson 21.
 
 ### Semitone
 
-One step in the twelve-part equal-tempered octave and one integer step in Sonic
+One step in the twelve-part equal-tempered octave, and one integer step in Sonic
 Pi pitch arithmetic. Lesson 6.
 
 ### Syncopation
 
-An onset or continuation that shifts weight away from the meter's expected
-strong positions. Lesson 15.
+An onset or continuation that pulls weight away from the positions the meter
+leads you to expect. Lesson 15.
 
 ### Tempo
 
-The rate of the beat, normally stated in beats per minute. Changing tempo alters
-seconds per beat without changing score durations. Lesson 3.
+Rate of the beat, normally given in beats per minute. Change it and seconds per
+beat change with it, while your score durations stay exactly as written.
+Lesson 3.
 
 ### Timbre
 
-The spectral and temporal character that distinguishes sounds at the same pitch
-and loudness. Harmonics and envelopes both contribute. Lessons 4 and 7.
+Spectral and temporal character that tells two sounds apart at the same pitch
+and loudness. Harmonics and envelopes both feed into it. Lessons 4 and 7.
 
 ### Tonic
 
-The pitch and chord heard as home in a key or mode. Other scale degrees are
-understood through their relation to it. Lesson 22.
+The pitch and chord you hear as home in a key or mode. Every other degree is
+understood through its relation to that one. Lesson 22.
 
 ### Triad
 
 A three-note chord built from a root and two stacked thirds. Major, minor,
-diminished, and augmented triads use different third sizes. Lesson 26.
+diminished, and augmented triads differ in the sizes of those thirds. Lesson 26.
 
 ### Tuplet
 
-A division that fits an unusual number of equal events into a standard time
-span, such as three notes in the time normally occupied by two. Lesson 17.
+A division that fits an unusual number of equal events into a standard span,
+such as three notes in the time normally taken by two. Lesson 17.
 
 ### Voice leading
 
-The motion of individual lines from one harmony to the next. Small moves and
-retained common tones often make a progression sound connected. Lesson 31.
+Motion of individual lines from one harmony to the next. Small moves and
+retained common tones are what make a progression sound connected. Lesson 31.
 
 ### Voicing
 
-The chosen octaves, spacing, order, and doubling of a chord's pitches. One chord
-can support many voicings. Lesson 27.
+Octaves, spacing, order, and doubling you choose for a chord's pitches. One
+chord supports many voicings, and they don't sound alike. Lesson 27.

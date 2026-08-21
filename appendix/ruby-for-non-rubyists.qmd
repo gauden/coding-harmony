@@ -2,34 +2,40 @@
 title: "Ruby for non-Rubyists"
 ---
 
-You do not need to become a Ruby programmer to read this book. Sonic Pi places a
-music language on top of Ruby, and the examples use a deliberately small part of
-the host language. This guide explains that part in the order you are likely to
-notice it. If an example feels musically clear but syntactically unfamiliar,
-start with the shape of its data, then use the relevant section here to decode
-the punctuation.
+You already write software, so you don't need a Ruby tutorial. You need the
+short list of places where Ruby's punctuation and idiom differ from whatever
+language you think in, because those are the only places an example in this book
+will stop you. Sonic Pi puts a music language on top of Ruby and the lessons use
+a deliberately small slice of the host language. That slice is what follows,
+roughly in the order you'll meet it.
 
-## Symbols
+One reading habit helps more than any single rule here. When an example looks
+musically clear and syntactically strange, find the shape of its data first,
+then come back and decode the punctuation.
 
-`:c4` is a *symbol*, Ruby's compact way to represent a stable name. Sonic Pi
-uses symbols for note names, synth names, and scale names, so the leading colon
-appears in almost every lesson.
+## Symbols are interned names, not strings
+
+`:c4` is a *symbol*: an immutable, interned identifier. If your background is
+Lisp, you already know them. If it's Python or JavaScript, think of a string
+that's guaranteed unique in memory and never gets mutated or formatted.
 
 ```ruby
 play :c4          # symbol
 play 60           # the same note as an integer
 ```
 
-Symbols are ordinary values: they can sit in arrays and serve as hash keys.
-Sonic Pi gives note symbols one additional musical ability. Inside its runtime,
-`:c4 + 12` means the C one octave higher because the music layer converts the
-note name before doing arithmetic. Plain Ruby does not treat arbitrary symbols
-that way.
+Sonic Pi names notes, synths, and scales with symbols, which is why the leading
+colon shows up on nearly every page. Symbols behave like ordinary values: they
+sit in arrays and serve as hash keys.
 
-## Arrays and indexing
+One thing here is not Ruby. Inside Sonic Pi's runtime, `:c4 + 12` gives you the
+C an octave up, because the music layer converts the note name before doing the
+arithmetic. Plain Ruby won't add an integer to an arbitrary symbol, so don't
+carry that trick outside the buffer.
 
-Most scores in the early chapters begin as arrays. Their indexes start at zero,
-negative indexes count backward from the end, and a range selects a slice.
+## Arrays
+
+Zero-indexed, negative indexes count from the end, ranges slice. No surprises.
 
 ```ruby
 notes = [60, 62, 64, 65]
@@ -38,21 +44,23 @@ notes[-1]      # => 65
 notes[1..2]    # => [62, 64]
 ```
 
-`+` joins arrays and `rotate` moves values from the front to the back. The scale
-and mode chapters use both. Methods with a trailing `!` usually mutate their
-receiver; this book prefers the non-mutating form when score data is involved.
+`+` concatenates and `rotate` moves values from the front to the back, which is
+exactly what the modes chapter needs.
 
 ```ruby
-[60, 64] + [67]          # => [60, 64, 67]
+[60, 64] + [67]         # => [60, 64, 67]
 [0, 2, 4, 5].rotate(1)  # => [2, 4, 5, 0]
 ```
 
-## Hashes and event data
+Watch the trailing `!`. By convention it marks the mutating twin of a method:
+`sort` returns a new array, `sort!` rearranges the receiver. Score data in this
+book stays immutable, so the non-mutating form is the one you'll see.
 
-A hash gives names to related values. That makes it a better representation
-than parallel arrays once a note needs a start time, duration, and amplitude.
-The event schema uses symbols as keys, and modern Ruby allows `note: 60` as
-shorthand for `:note => 60`.
+## Hashes carry the event schema
+
+A hash gives names to related values, which beats parallel arrays the moment a
+note needs a start time, a duration, and an amplitude. Event keys are symbols,
+and `note: 60` is shorthand for `:note => 60`.
 
 ```ruby
 event = {note: 60, start: 0, duration: 1, amp: 0.8}
@@ -61,16 +69,16 @@ event.fetch(:duration)  # => 1
 event.fetch(:pan, 0)    # => 0 when :pan is absent
 ```
 
-`fetch` is useful when absence is an error or when a default should be visible.
-Square-bracket lookup returns `nil` for a missing key, which can hide a spelling
-mistake until the renderer runs.
+Reach for `fetch` when a missing key is a bug, or when you want the default
+visible at the call site. Square brackets return `nil` for a missing key, and
+`nil` will happily travel three functions downstream before anything complains.
+That's how a typo in `:duraton` turns into a silent renderer.
 
 ## Blocks
 
-A block is an anonymous function passed to a method. Ruby writes a longer block
-with `do ... end` and often keeps a one-line block inside braces. Parameters go
-between vertical bars. When you read the next example, translate it as "four
-times, with the current count called `i`."
+A block is an anonymous function attached to a method call. Ruby spells a long
+one `do ... end` and a one-liner in braces, with parameters between vertical
+bars. Read the next example as "four times, with the current count called `i`."
 
 ```ruby
 4.times do |i|
@@ -79,19 +87,26 @@ times, with the current count called `i`."
 end
 ```
 
+The block isn't an argument in the ordinary sense. It's a second channel the
+method can yield to, which is why `4.times` needs no callback syntax and no
+lambda.
+
 ## each and map
 
-The difference between `each` and `map` is one of the few Ruby distinctions that
-shapes the musical model. `each` visits values for an effect such as playing a
-note. `map` transforms the values and returns a new array, which is what a
-transposition needs.
+One Ruby distinction shapes the musical model, so it's worth being precise about
+it. `each` walks the values for an effect, such as playing a note, and returns
+the receiver. `map` transforms each value and returns a new array, which is what
+a transposition is.
 
 ```ruby
 [60, 64, 67].each { |n| play n; sleep 0.5 }
 [60, 64, 67].map  { |n| n + 12 }              # => [72, 76, 79]
 ```
 
-Destructuring works in block parameters, which is how the score walker reads
+If a score change vanishes without a trace, check that you didn't write `each`
+where the result mattered.
+
+Block parameters destructure, which is how every score walker in the book reads
 pairs:
 
 ```ruby
@@ -101,22 +116,21 @@ pairs:
 end
 ```
 
-Several nearby methods appear in later lessons:
+Three more enumerable methods appear later:
 
 ```ruby
 [60, 62, 64].each_cons(2).to_a  # => [[60, 62], [62, 64]]
 [60, 64, 67].zip([1, 1, 2])     # => [[60, 1], [64, 1], [67, 2]]
-[1, 2, 3].sum                    # => 6
+[1, 2, 3].sum                   # => 6
 ```
 
-`each_cons(2)` exposes adjacent values, which suits interval and voice-leading
-checks. `zip` aligns parallel arrays by index. `sum` is used for bar-duration
-assertions.
+`each_cons(2)` hands you adjacent pairs, which is what interval and
+voice-leading checks are made of. `zip` aligns parallel arrays by index. `sum`
+does the bar-duration assertions.
 
 ## Conditions
 
-Ruby's `if` is an expression, and a short condition can follow the statement it
-controls.
+`if` is an expression, and a short condition can trail the statement it governs.
 
 ```ruby
 quality = interval == 4 ? :major : :minor
@@ -127,10 +141,12 @@ if duration <= 0
 end
 ```
 
-Only `false` and `nil` are false in Ruby. Zero is true. That difference matters
-when pitch class 0 represents C.
+Here's the rule that bites people arriving from C, Python, or JavaScript: only
+`false` and `nil` are falsy. Zero is true. Empty string, true. Empty array,
+true. That matters constantly here, because pitch class 0 is C and `play note if
+note` is a real guard against a rest.
 
-`case` works well for symbolic music data:
+`case` reads well over symbolic music data:
 
 ```ruby
 offsets = case quality
@@ -142,8 +158,8 @@ offsets = case quality
 
 ## Keyword arguments
 
-Trailing `name: value` pairs are keyword arguments. Sonic Pi uses them for the
-features that shape a sound after the pitch is chosen.
+Trailing `name: value` pairs are keyword arguments, and Sonic Pi uses them for
+everything that shapes a sound once the pitch is settled.
 
 ```ruby
 play :c4, amp: 0.7, release: 2, cutoff: 90
@@ -151,10 +167,8 @@ play :c4, amp: 0.7, release: 2, cutoff: 90
 
 ## Defining functions
 
-Sonic Pi wraps Ruby's function definition in `define`. Registration with the
-runtime makes the named function available inside threads and across repeated
-runs. The examples still place every definition above its first call so that a
-fresh buffer contains its whole explanation.
+Sonic Pi wraps Ruby's `def` in a call to `define`, which registers the function
+with the runtime so it's reachable inside threads and across repeated runs.
 
 ```ruby
 define :play_phrase do |score, transpose: 0|
@@ -163,8 +177,9 @@ end
 ```
 
 Arguments before the keyword section are positional. A keyword with a default is
-optional; one without a default is required. The final expression becomes the
-return value.
+optional, one without a default is required, and the last expression evaluated
+becomes the return value. Explicit `return` is rare in Ruby and you'll almost
+never see it here.
 
 ```ruby
 define :transpose do |notes, by:|
@@ -174,23 +189,24 @@ end
 transpose([60, 64, 67], by: 12)
 ```
 
-Keep definitions above their first call in a fresh buffer. Sonic Pi remembers a
-named definition across runs, but examples in this book never depend on that
-history.
+Put every definition above its first call. Sonic Pi does remember a named
+definition between runs, and that's precisely the trap: an example that only
+works because of what your buffer remembers is an example you can't hand to
+anyone else.
 
 ## Rings
 
-A ring is Sonic Pi's circular sequence type. Where an array eventually raises a
-bounds error, a ring wraps around: `ring(1, 2, 3)[4]` returns `2`. This suits a
-performance pattern that continues longer than the source sequence.
+A ring is Sonic Pi's circular sequence. Index past the end of an array and Ruby
+gives you `nil`; index past the end of a ring and it wraps, so `ring(1, 2, 3)[4]`
+is `2`. That suits a performance pattern that outlasts its source material.
 
 ```ruby
 notes = ring(:c4, :e4, :g4)
 8.times { |i| play notes[i]; sleep 0.5 }   # cycles, no bounds error
 ```
 
-Sonic Pi adds `tick` and `look` for counters associated with the current thread.
-`tick` advances and returns the counter; `look` reads it without advancing.
+Sonic Pi adds `tick` and `look`, thread-local counters over a ring. `tick`
+advances and returns; `look` reads without advancing.
 
 ```ruby
 notes = ring(:c4, :e4, :g4)
@@ -200,15 +216,15 @@ notes = ring(:c4, :e4, :g4)
 end
 ```
 
-An explicit loop index is easier to inspect when several rings must advance at
-different rates. The book uses `tick` for repeating performance patterns and an
-index for transformations whose positions carry meaning.
+The book uses `tick` for repeating performance patterns and an explicit index
+for transformations where the position carries meaning. An explicit index is
+easier to print when several rings advance at different rates.
 
-## Numeric details
+## Numbers
 
-Pitch arithmetic uses integers, but beat arithmetic often needs a floating-point
-value. In Ruby 2.6, `2 / 3` uses integer division and loses the triplet; `2.0 /
-3` preserves it. Modulo performs a different kind of reduction, wrapping an
+Pitch arithmetic is integer arithmetic; beat arithmetic often isn't. Ruby's `/`
+truncates on two integers, so `2 / 3` is `0` and your triplet disappears. Write
+`2.0 / 3`. Modulo does the other reduction you need constantly, folding an
 unbounded note address into a pitch class or an event count into a pattern slot.
 
 ```ruby
@@ -217,26 +233,25 @@ unbounded note address into a pitch class or an event count into a pattern slot.
 13 % 4        # => 1, the second slot in a four-step pattern
 ```
 
-Floating-point duration sums can carry tiny rounding errors. A check over many
-fractional events should compare within a tolerance instead of demanding exact
-equality.
+Floating-point duration sums accumulate small errors. When you check a bar of
+fractional events, compare within a tolerance and don't demand exact equality.
 
 ## Threads and shared state
 
-`in_thread` and `live_loop` let musical lines advance concurrently under Sonic
-Pi's deterministic scheduler. Local variables are captured when a thread
-begins. Long-lived loops coordinate more clearly through `cue` and `sync`, while
-`set` and `get` provide named state when a value genuinely needs to change.
+`in_thread` and `live_loop` run musical lines concurrently under Sonic Pi's
+deterministic scheduler. Local variables are captured when the thread starts.
+For coordination between long-lived loops, `cue` and `sync` pass messages, and
+`set` and `get` hold named state for values that genuinely have to change.
 
-Prefer messages and immutable score data to shared mutable arrays. A live loop
-that reads a changing array while another loop writes it is harder to reason
-about than two loops starting from the same cue and reading stable data.
+Prefer messages and immutable score data over shared mutable arrays. A live loop
+reading an array while another writes it is much harder to reason about than two
+loops that start from one cue and read stable data.
 
-## Things that trip you up
+## The short list of things that trip you up
 
-Several small rules account for a large share of confusing failures. Ruby
-returns the last expression, so functions rarely need `return`. Integer
-division truncates, which makes `2.0 / 3` the safe spelling for a triplet.
-Symbols and strings are different types, and Sonic Pi usually expects symbols
-for musical names. A method name may end in `?`; the punctuation does not change
-the call syntax, but it tells the reader to expect a Boolean result.
+Integer division truncates, so spell a triplet `2.0 / 3`. Only `nil` and `false`
+are falsy, so a pitch class of 0 is a true value. Symbols and strings are
+different types, and Sonic Pi wants symbols for musical names. A method name
+ending in `?` calls like any other; the punctuation is a promise about the
+return value, not syntax. And the last expression is the return value, which
+means a stray `puts` at the end of a function returns `nil` to your caller.
