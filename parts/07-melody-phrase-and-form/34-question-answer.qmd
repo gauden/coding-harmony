@@ -7,20 +7,22 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Play a four-bar phrase that stops on G, allow a short pause, then repeat its
-opening and finish on C. The first phrase establishes a boundary without closing
-the larger shape; the second answers it. Because their beginnings match, much
-of that question-and-answer behaviour can be concentrated in the final notes.
+## Same opening, two different endings
 
-An *antecedent* is a phrase that behaves like a question, often by ending with a
-half cadence. A *consequent* responds with stronger closure, often an authentic
-cadence. Together they form a *period*. Shared material tells the listener that
-the phrases belong together, while the changed boundary makes their order feel
-directed rather than interchangeable.
+Play a four-bar phrase that stops on G. Pause. Then play its opening again and
+finish on C instead. The first phrase drew a boundary without closing anything;
+the second one answered it. Because the beginnings match, almost all of that
+question-and-answer behaviour is concentrated in the last two notes.
 
-## Run this
+An *antecedent* is the phrase that behaves like a question, usually by stopping
+on a half cadence. A *consequent* replies with stronger closure, usually an
+authentic one. Put them together and you have a *period*. Shared material tells
+your ear the two phrases belong to each other, and the changed ending is what
+makes their order matter.
+
+## A working pair and a broken one
 
 ```{.ruby audio=""}
 use_bpm 96
@@ -53,59 +55,52 @@ sleep 1
 play_phrase consequent
 ```
 
-In the first pair, the common opening makes the divergent tails easy to compare.
-G leaves the antecedent poised for continuation; the final C gives the consequent
-a firmer resting point. The second pair spends that arrival too early. Once the
-first phrase has already closed on C, the consequent's repeated closure no longer
-completes as large an arc.
+In the first pair, the shared opening makes the two tails easy to compare. G
+leaves the antecedent leaning forward; the final C gives the consequent
+somewhere to rest. The second pair spends that arrival too early. Once the first phrase
+has landed on C, what is the second one for?
 
-## Change one thing
+## Take away one cue at a time
 
-1. Change only the question's last G to C. Both phrases now claim finality, so
-   the first four bars compete with the second instead of preparing them.
-2. Transpose the consequent opening up two semitones and retain the answer tail.
-   The relationship is less literal, and the return to C has to bridge a more
-   abrupt change of pitch context.
-3. Remove the one-beat pause. Silence no longer marks the seam, leaving cadence,
-   duration, and repeated material to establish the phrase division by themselves.
+1. Change the question's last G to C. Both phrases now claim finality, so you
+   get two rivals where you wanted a setup and a reply.
 
-## Why it works
+2. Transpose the consequent's opening up two semitones and keep the answer tail.
+   You break the literal repetition, and the return to C now has to bridge a
+   wider gap.
 
-A period depends on both repetition and contrast. The common `opening` gives the
-phrases a shared identity, while the two tails assign different cadential roles.
-In programming terms, each phrase is a common prefix followed by a selected
-suffix. In musical terms, the listener hears an expectation established and
-then answered with altered evidence.
+3. Remove the one-beat pause. Silence no longer marks the seam, which leaves
+   cadence, duration and repeated material to draw the phrase division on their
+   own. Can you still hear where one phrase ends?
 
-The antecedent ends on degree 5, the dominant. Lesson 29 treated that boundary
-as a half cadence because it supports a pause while predicting continuation.
-The consequent moves through B, the leading tone, to tonic C and supplies the
-strongest local arrival in the key. Even without block chords, the melody can
-imply the same punctuation through its scale degrees.
+## Prefix, suffix, and the cadence underneath
 
-Four bars followed by four is a common size for a period, not a parser rule.
-Grouping also depends on repetition, breath, duration, silence, and cadence.
-This small program foregrounds two cues, shared material and changed endings,
-so their contribution is easy to hear. Dynamics or accompaniment could reinforce
-the boundary later without replacing the underlying relationship.
+A period runs on repetition and contrast at once. The common `opening` gives
+both phrases a shared identity while the two tails hand them different
+cadential jobs. In code that's a shared prefix and a selected suffix. In music
+it's an expectation set up, then answered with altered evidence.
 
-The repeated opening creates a timing expectation as well. After the same seven
-events, the listener knows roughly when divergence should arrive. Shorten the
-second opening and the answer may feel premature; lengthen it enough and memory
-of the antecedent grows faint. Symmetry is a compositional resource, not a
-constraint imposed by the array representation.
+The antecedent lands on degree 5, the dominant. [Lesson 29](../06-chords-and-harmony/29-cadences-are-punctuation.qmd) called that a half
+cadence: it supports a pause and still predicts continuation. The consequent
+passes through B, the leading tone, into C, which is the strongest local arrival
+in the key. There isn't a chord anywhere in this program. One melodic line
+implies the same punctuation through its scale degrees.
 
-A consequent may vary more than its cadence. It can begin higher, compress the
-rhythm, or reverse one interval while preserving an opening gesture. During a
-comparison, change one dimension at a time. If pitch, rhythm, register, and
-harmony all move at once, the ear has little reason to interpret the second
-phrase as an answer rather than the start of new material.
+Four bars plus four is a common size for a period, not a parser rule. Grouping
+runs on repetition, breath, duration, silence and cadence too. This program
+foregrounds just two of those cues so you can hear what they contribute on their
+own.
 
-## Take it further
+A consequent can vary more than its cadence: a higher start, a compressed
+rhythm, one flipped interval. Change one dimension at a time. Move pitch,
+rhythm, register and harmony at once and your ear won't hear an answer; it'll
+hear new material.
 
-Create an A-minor period whose two two-bar phrases reuse the same opening
-material. End the antecedent on E and the consequent on A, approaching the final A through
-G-sharp so harmonic minor supplies a leading tone. Keep both phrases at exactly
-eight beats and assert their totals before playback. Once the arithmetic passes,
-listen for whether the shared beginning remains strong enough to make the two
-different endings sound like question and answer.
+## Build a period in A minor
+
+Build an A-minor period whose two two-bar phrases reuse the same opening
+material. End the antecedent on E and the consequent on A, approaching that
+final A through G-sharp so harmonic minor supplies the leading tone. Keep both
+phrases at exactly eight beats and assert both totals before playback. Once the
+arithmetic passes, listen: does that shared beginning still bind two endings
+this different into one question and answer?

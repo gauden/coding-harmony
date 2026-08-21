@@ -101,8 +101,8 @@ the notes reach an octave but the class never wraps, your modulo is wrong. If
 the class wraps correctly but playback lands in the wrong octave, you used a
 class somewhere an address belonged.
 
-Lesson 9 makes register the variable under study, so it holds on to complete
-MIDI addresses. Lesson 10 adds a second thing modulo erases: two spellings that
+[Lesson 9](09-octaves-address-space.qmd) makes register the variable under study, so it holds on to complete
+MIDI addresses. [Lesson 10](10-sharps-flats-why-spelling-sound.qmd) adds a second thing modulo erases: two spellings that
 share one sounding class while describing different musical motion.
 
 ## Build yourself a chromatic browser

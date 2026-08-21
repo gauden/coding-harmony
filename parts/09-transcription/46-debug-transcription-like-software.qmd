@@ -7,33 +7,30 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-A transcription can feel wrong while refusing to reveal where it is wrong.
-Validation turns that broad unease into a smaller set of places to hear again.
-A bar-length assertion finds missing time. A range check catches improbable
-registers. A leap report points to intervals large enough to deserve comparison
-with the source. None proves that a pitch is correct, but each removes a family
-of routine mistakes from the search.
+## "Something's wrong here" is not a bug report
 
-My rhythmic errors most often begin with a missing tie, a rest counted twice,
-or a dotted value entered as though it were plain. All three change the amount
-of time in a bar, so one exact total catches them without having to guess their
-cause. Range and leap rules are less absolute: music can exceed either on
-purpose. Report those cases as evidence for a person to review, not as edits
-the program is authorised to make.
+A transcription can feel wrong while refusing to tell you where. Validation is
+how you turn that broad unease into a short list of places to hear again. A
+bar-length assertion finds missing time. A range check catches an improbable
+register. A leap report flags intervals big enough to be worth comparing against
+the source. None of them proves a pitch is correct. Each one deletes a family of
+routine mistakes from your search.
 
-Once the structural checks are quiet, loop the suspicious bar beside the same
+Three rhythmic errors account for most of the damage: a missing tie, a rest
+counted twice, and a dotted value entered as though it were plain. All three
+change how much time is in a bar, so one exact total catches all three without
+your having to guess which happened. Range and leap rules are softer, because
+music breaks both on purpose all the time. Report those as evidence for a person
+to review, never as edits the program is allowed to make on its own.
+
+Once the structural checks go quiet, loop the suspicious bar next to the same
 few seconds of the source. A short comparison lets you attend to attack time,
-pitch, and release in separate hearings. Replaying an entire minute leaves too
-many plausible locations competing for attention.
+then pitch, then release, in separate hearings. Replay a whole minute and you
+give yourself too many plausible culprits at once.
 
-## Run this
-
-The score stores each bar in a separate array, and each event carries a pitch,
-local start, and duration. The validator stops execution when the meter is
-broken. Large melodic motion produces a message instead, because an octave may
-be surprising without being erroneous.
+## A validator that stops, and one that only speaks up
 
 ```{.ruby audio=""}
 use_bpm 80
@@ -75,62 +72,78 @@ bars.each do |bar|
 end
 ```
 
-Both bars account for four beats. In bar 2, the sudden rise from G4 to G5 is
-audibly exposed, and the log reports its twelve-semitone size. The program has
-located an observation; it has not decided whether the octave belongs in the
-music.
+Both bars account for four beats, so nothing halts. In bar 2 the jump from G4 to
+G5 is impossible to miss, and the log reports its twelve-semitone size. So is
+that octave a transcription error or the best thing in the melody? The program
+has no opinion, and shouldn't. It found an observation and stopped there.
 
-## Change one thing
+That distinction is the whole design. `raise` is for properties that cannot be
+true of a correct transcription. `puts` is for properties that are usually worth
+a second look.
+
+## Break it three ways
 
 1. Shorten the last duration in bar 1 from 2.0 to 1.5 and run the buffer. The
-   assertion stops playback before the malformed measure can become part of a
-   longer listening pass. Read the reported total, restore the missing half
-   beat, and confirm that bar 2 becomes reachable again.
-2. Change note 79 to 80. The leap is now thirteen semitones, and the line rises
-   to A-flat5. Add a range warning for notes below 48 or above 84. Two messages
-   may describe the same event from different angles; keep both if each points
-   to a distinct source question.
-3. Loop `play_events bars[1]` three times and compare it with the corresponding
-   source interval. On the first hearing, check attacks; on the second, pitches;
-   on the third, releases. The repeated bar stays fixed while your attention
-   changes.
+   assertion stops playback before the malformed measure can hide inside a
+   longer listening pass. Read the reported total, put the half beat back, and
+   watch bar 2 become reachable again.
+2. Change note 79 to 80. The leap is thirteen semitones now and the line reaches
+   A-flat5. Add a range warning for anything below 48 or above 84. You'll get two
+   messages describing one event from different angles, and that's fine. Keep
+   both if each points at a different question about the source.
+3. Loop `play_events bars[1]` three times and compare it against the matching
+   moment in your source. First time through, listen only to attacks. Second
+   time, only pitches. Third, only releases. The bar holds still while your
+   attention moves, which is the opposite of what happens when you replay the
+   whole piece.
 
-## Why it works
+## What assertions can and can't know
 
-Assertions encode properties that the representation must satisfy. In 4/4, an
-ordinary complete bar accounts for four beats, including rests and any portion
-of a tied continuation that occupies time. A pickup has a genuinely different
-expected length, so give that measure its own value. Weakening every assertion
-to tolerate one exception would remove the information the test was meant to
-preserve.
+An assertion encodes a property your representation must satisfy. In 4/4, an
+ordinary complete bar accounts for four beats, counting rests and any part of a
+tied continuation that occupies time. A pickup genuinely has a different
+expected length, so give that measure its own value. Do not weaken every
+assertion to tolerate the one exception, because that throws away the
+information the test existed to protect.
 
-Absolute event starts enable further checks. Sort events by start, reject
-negative durations, and identify gaps or overlaps not present in the source. A
-sequential array may be quicker to type because each duration implies the next
-start. An absolute timeline is easier to compare with a score or recording
-because one bad duration does not move every coordinate. Convert between the
-forms in a helper rather than maintaining two hand-edited versions that can
-disagree.
+Absolute event starts buy you more checks. Sort events by start, reject negative
+durations, and find gaps or overlaps the source doesn't have. A sequential array
+is faster to type, since each duration implies the next start, but an absolute
+timeline is far easier to compare against a score or a recording, because one
+bad duration doesn't shift every coordinate after it. Convert between the two
+forms in a helper. Two hand-maintained versions will disagree, and you won't
+find out when.
 
-Warnings have a different role from assertions. A leap wider than an octave is
-common in arpeggiated music and may be characteristic of the line. A plausible
-range depends on instrument, singer, octave convention, and transposition. The
-software can show you where an assumption was exceeded; the source and musical
-context decide whether that event should change.
+Warnings do a different job. A leap wider than an octave is ordinary in
+arpeggiated music and may be the most characteristic thing about a line. A
+plausible range depends on instrument, singer, octave convention and
+transposition. Software shows you where an assumption was exceeded. The source
+and the musical context decide whether the event should change, and neither of
+those lives in your program.
+
+There's a failure mode worth naming here, because it's the one that actually
+bites. A check that fires constantly gets ignored, and an ignored check is worse
+than no check, because it looks like coverage. If your leap warning prints on
+every third note, the threshold is wrong for this music. Raise it, or scope it
+to the bars you're unsure about. A validation report you skim is a validation
+report that isn't running.
 
 The milestone for this part is a thirty-to-sixty-second melody with a source
-reference, bar-level data, validation helpers, and a separate expressive
-renderer. Ruby syntax checks can confirm that the program parses, and automated
-tests can inspect totals and ranges. They cannot confirm that the attacks match
-the recording or that the shaped performance sounds convincing. Those claims
-remain manual Sonic Pi work.
+reference, bar-level data, validation helpers and a separate expressive
+renderer. Ruby syntax checks confirm the program parses. Automated tests inspect
+totals and ranges. Neither can confirm that your attacks match the recording or
+that the shaped performance is convincing. Those stay manual Sonic Pi work, and
+saying so is not a failure of the tooling; it's an accurate description of where
+the tooling ends.
 
-## Take it further
+## Write the report, then read it honestly
 
-Add a validation report to the transcription from Lesson 45. List every bar
-total, the overall note range, all leaps of twelve semitones or more, and each
-`REVIEW` marker. Choose one suspicious bar and make a temporary three-stage
-loop: neutral rhythm, strict pitches, then expressive rendering. Resolve each
-failure or preserve it with an explanation tied to the source. A useful report
-may still contain warnings; its value lies in showing why each surviving case
-is understood.
+Add a validation report to the transcription you built in [Lesson 45](45-transcribe-from-score.qmd). List every
+bar total, the overall note range, all leaps of twelve semitones or more, and
+each `REVIEW` marker.
+
+Pick one suspicious bar and build a temporary three-stage loop: neutral rhythm,
+strict pitches, then expressive rendering. Resolve each failure, or keep it and
+write down the source-based reason it survives. A useful report can still be
+full of warnings. What makes it useful is that you can say, for every surviving
+one, why it's there.

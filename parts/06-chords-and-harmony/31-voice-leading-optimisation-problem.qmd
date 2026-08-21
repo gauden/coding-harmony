@@ -7,21 +7,23 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Play C-F-G-C with every chord in root position. The harmonic route is clear, but
-the upper parts leap whenever the root moves. Revoice the same progression so
-that common tones remain and the other notes travel by small steps. The chords
-then reveal another identity: four melodies moving together.
+## Four chords, or four melodies?
 
-*Voice leading* is the shaping of those individual lines. A four-part texture
-can be stored as soprano, alto, tenor, and bass arrays, which preserves each
-voice's history across chord boundaries. Small total movement is a useful first
-objective, provided the system also rejects crossed voices and respects range
-and required tones. The problem is therefore closer to constrained optimisation
-than to choosing four independent chord symbols.
+Play C-F-G-C with every chord in root position. The harmonic route is perfectly
+clear and the upper parts leap every time the root does. Now revoice the same
+progression so common tones stay put and everything else travels by step. The
+chords stop sounding like a sequence of objects and start sounding like four
+lines going somewhere together.
 
-## Run this
+*Voice leading* is the shaping of those lines. Store a four-part texture as
+soprano, alto, tenor and bass arrays and each voice keeps its own history across
+every chord boundary. Total movement makes a decent first objective. It's only a
+first objective, though, and this lesson is mostly about what that number fails
+to notice.
+
+## Three renderings of one progression
 
 ```{.ruby audio=""}
 use_bpm 72
@@ -50,69 +52,135 @@ led = {
   alto: [60, 60, 59, 60], soprano: [64, 65, 62, 64]
 }
 
+repaired = {
+  bass: [48, 53, 55, 48], tenor: [55, 57, 59, 55],
+  alto: [60, 60, 62, 60], soprano: [64, 65, 67, 64]
+}
+
 define :movement do |lines|
   lines.values.sum do |pitches|
     pitches.each_cons(2).sum { |a, b| (a - b).abs }
   end
 end
 
-puts "naive movement: #{movement(naive)}"
-puts "led movement: #{movement(led)}"
+# A chord is legal only if the four voices ascend strictly: no crossings,
+# and no two voices landing on the same pitch.
+define :collisions do |lines|
+  order = [:bass, :tenor, :alto, :soprano]
+  bad = []
+  lines[:bass].each_index do |index|
+    chord = order.map { |name| lines[name][index] }
+    unless chord.each_cons(2).all? { |lower, upper| upper > lower }
+      bad << [index, chord]
+    end
+  end
+  bad
+end
+
+[["naive", naive], ["led", led], ["repaired", repaired]].each do |name, lines|
+  puts "#{name}: movement=#{movement(lines)} collisions=#{collisions(lines)}"
+end
+
 play_lines naive, nil
 play_lines led, nil
-[:bass, :tenor, :alto, :soprano].each { |name| play_lines(led, name) }
+play_lines repaired, nil
+[:bass, :tenor, :alto, :soprano].each { |name| play_lines(repaired, name) }
 ```
 
-Both renderings contain the same C-F-G-C harmonies. In the led version, the tenor
-returns from G through A to G and then holds that G across the final boundary;
-C remains in the alto where the next chord permits it. The whole texture is
-smoother because the lines are smoother.
-The muted passes then remove one voice at a time, making it easier to follow the
-remaining paths without altering their pitches or timing.
+All three renderings contain the same C, F, G and C harmonies over the same bass
+line. The log prints 56 for `naive`, 26 for `led` and 32 for `repaired`. Which
+of the three do you expect to prefer? Hold onto that guess; one of these numbers
+is lying to you.
 
-## Change one thing
+The muted passes at the end drop one voice at a time from `repaired`, which
+makes the remaining three much easier to follow. No pitch or timing changes when
+a voice disappears.
 
-1. Move the led soprano's G-chord note from 62 to 74. The added octave raises the
-   movement score and draws the ear toward one conspicuous jump, even though the
-   chord's pitch classes remain unchanged.
-2. Exchange tenor and alto on one chord. The vertical harmony survives, but the
-   lines cross. Listen for the moment when their identities become harder to
-   trace from one event to the next.
-3. Mute each voice in turn. Identify which chord loses a root, third, or leading
-   tone, then compare which absence alters the cadence most. Distance alone does
-   not tell you which pitch performs the more important function.
+## Push on the result
 
-## Why it works
+1. In `led`, change the soprano's G-chord note from 62 to 74. That octave costs
+   twelve extra points and pulls your ear straight to one conspicuous jump,
+   though you haven't touched a single pitch class.
 
-`movement` adds the absolute pitch differences between consecutive notes in
-each line. A lower result means less travel in this controlled example, but the
-number is a cost function rather than a theory of good writing. A fuller search
-must also reject crossing, keep each voice within range, preserve required chord
-tones, and perhaps reward contrary motion at a cadence.
+2. Swap the tenor and alto values on any one chord of `repaired`. The vertical
+   harmony survives intact, the two lines cross, and `collisions` now prints the
+   offending chord. Listen for the moment where the lines stop being traceable
+   from one event to the next.
 
-Storing lines first changes what the program can answer. A chord list describes
-the pitches present at one moment. A voice matrix also records where each pitch
-came from and where it goes next. Transpose that matrix and you can recover the
-vertical chord view, but you have not thrown away the horizontal histories.
+3. Mute each voice of `repaired` in turn and work out which chord loses a root,
+   a third or a leading tone. Then decide which absence damages the cadence
+   most. Distance travelled tells you nothing about which pitch was carrying the
+   important job.
 
-Lesson 27's greedy search chose the cheapest next chord at each boundary. A
-global search can assess the entire progression before deciding. A locally easy
-choice may leave no smooth route to a later chord, while a slightly larger move
-now may lower the total. Four voices with a bounded candidate set are still
-small enough for exhaustive enumeration, so the trade-off can be inspected
-rather than guessed.
+## The cheapest answer is a broken one
 
-Common tones also affect articulation. Zero movement already reduces the score,
-but holding a note through a boundary is not acoustically identical to striking
-it twice at the same pitch. The current renderer reattacks every event and hides
-that distinction. A more faithful version could merge equal adjacent notes in
-one line, allowing a sustained tone to bind the changing harmony around it.
+Look at `led` again, at the third chord. Bass is 55 and tenor is 55. Those are
+the same note.
 
-## Take it further
+A cost function that adds up absolute pitch differences loves a unison, because
+zero movement is the cheapest move available. The tenor sat on G3 in chord one,
+found G3 still legal in chord three, and stayed. Total movement dropped to 26,
+the lowest of the three. Meanwhile the texture quietly fell from four sounding
+pitches to three, and the tenor line went missing from the middle of a lesson
+about tracking four independent lines.
 
-Generate every inversion of C-F-G-C that fits fixed bass, tenor, alto, and
-soprano ranges. Reject candidates with crossings or missing chord tones, then
-score each complete four-chord path by total movement. Play the cheapest path
-beside the root-position baseline. Print both totals and all four resulting
-voice arrays so a low score can be checked against the musical constraints that
-gave it meaning.
+That's the surprise worth carrying out of this lesson: **a low movement score is
+not the same thing as good voice leading**. The score measures one property. It
+had no way to see the collapse, because a unison is invisible to a function that
+only ever looks at one line at a time.
+
+`collisions` is the smallest repair that helps. It rebuilds each vertical chord
+from the four arrays and demands that the pitches ascend strictly, which rejects
+crossings and unisons in one test. Run it against `led` and chord index 2 comes
+back flagged. `repaired` moves the tenor up to B3 there and lifts alto and
+soprano to keep the chord ascending, and it costs 32 instead of 26. Six extra
+points buys you back a voice.
+
+Now listen to `repaired` and hear what the constraint still missed. Between the
+F chord and the G chord, every voice moves up by exactly two semitones. Bass and
+alto travel in parallel fifths and bass and soprano in parallel octaves, which
+is the same defect that made [Lesson 29](29-cadences-are-punctuation.qmd)'s cadences worth hand-voicing. Add one
+constraint, satisfy it, and a different problem takes the vacancy. An optimiser
+sees exactly what you taught it to see.
+
+## What the cost function can and cannot reach
+
+`movement` sums absolute pitch differences between consecutive notes in each
+line. Lower means less travel in this controlled example. The number is a cost
+function and not a theory of good writing, and a serious search wants more in
+it: reject crossings and unisons, keep every voice inside a singable range,
+preserve the required chord tones, refuse parallel perfect intervals, and
+reward contrary motion at a cadence.
+
+Storing lines first changes what your program can be asked. A chord list
+describes the pitches present at one moment. A voice matrix also records where
+each pitch came from and where it goes next. Transpose that matrix and the
+vertical chord view comes back unharmed, so you lose nothing by keeping the
+horizontal histories.
+
+[Lesson 27](27-inversions-voicing.qmd)'s greedy search picked the cheapest next chord at each boundary and
+never looked further ahead. A global search can weigh the whole progression
+before committing. An easy local choice sometimes leaves no smooth route into a
+later chord, and a slightly larger move now can lower the total. Four voices
+over a bounded candidate set stay small enough for exhaustive enumeration, so
+you can inspect that trade-off directly.
+
+Common tones affect articulation too. Zero movement already lowers the score,
+and holding a note through a boundary is not acoustically the same as striking
+it twice at one pitch. This renderer reattacks every event and hides the
+difference. A more faithful version would merge equal adjacent notes within a
+line, letting one sustained tone bind the changing harmony around it.
+
+## Search the whole progression
+
+Generate every voicing of C-F-G-C that fits fixed bass, tenor, alto and soprano
+ranges of your own choosing. Throw out any candidate that crosses voices, puts
+two voices on one pitch, or drops a required chord tone. Score each complete
+four-chord path by total movement, then play the cheapest path beside the
+root-position baseline.
+
+Print both totals and all four voice arrays from the winner. Print them even
+when the number looks good, because a score you can't trace back to four
+readable lines is a score you have no reason to trust. Then listen: the
+arithmetic promises less motion, and only your ears can tell you whether less
+motion made the progression smoother or just quieter.

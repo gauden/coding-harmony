@@ -7,22 +7,26 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-In D major, a written F sounds as F-sharp even when no sharp is printed beside
-that particular note. The key signature supplies the standing rule. A natural
-sign can override it locally, later Fs in the same bar inherit that override,
-and the signature's F-sharp returns after the barline. What the page omits is as
-important as what it marks explicitly.
+## The sharp that nobody printed
 
-A *key signature* maps letter names to default sharp or flat alterations. An
-*accidental* supplies a local override, scoped here to one bar and one
-letter-octave position. The notation behaves like nested configuration: a global
-default, mutable state within the bar, and an optional assignment on the current
-event. Resolving those layers in order prevents an unmarked note from being
-mistaken for a natural.
+In D major, a written F sounds as F-sharp even when there's no sharp anywhere
+near that note head. Two marks at the head of the system said so, once, and
+they keep saying it for the rest of the piece. A natural sign can shout them
+down for a bar. Later Fs in that same bar inherit the shouting. Then the barline
+arrives and the signature quietly takes over again.
 
-## Run this
+So what a printed page leaves out matters as much as what it prints. A *key
+signature* maps letter names onto default sharp or flat alterations. An
+*accidental* is a local override, scoped to one bar and, in this decoder, to one
+letter at one octave. If you've ever debugged a config file that inherits from a
+global default, gets patched per environment, and then gets overridden by a
+command-line flag, you already know the shape of this problem. Resolve the
+layers in the wrong order and an unmarked note comes out natural when the page
+meant it sharp.
+
+## Two bars under one standing rule
 
 ```{.ruby audio=""}
 use_bpm 88
@@ -64,56 +68,63 @@ bars.each do |bar|
 end
 ```
 
-The first F inherits one sharp from the signature. The explicit natural stores
-zero as the local F4 alteration, so the following F4 remains natural without
-another sign. When the next bar creates a new `local` hash, F-sharp returns. The
-C-flat example follows the same precedence in the other direction: an event can
-replace a sharp default with a flat local value.
+Bar one holds three Fs. The first carries no sign, the second carries a natural,
+and the third carries nothing at all. Sharp or natural on that third one? Decide
+before you read the log.
 
-## Change one thing
+Here's what the resolver does. The first F takes its sharp from the signature.
+The explicit natural writes zero into the local slot for F4, so the third F stays
+natural without a second sign on the page. Bar two builds a fresh `local` hash
+and F-sharp is back. The C-flat later in that bar runs the same precedence the
+other way: a local value replacing a sharp default with a flat.
 
-1. Change the signature to `{b: -1, e: -1}` for B-flat major. Flats and sharps
-   use negative and positive values in one alteration field, so the resolver
-   needs no new control path.
-2. Add F5 after the F4 natural. Because the local key includes octave, F5 still
-   inherits F-sharp from the signature. Remove octave from `scope_key` and hear
-   the F4 natural incorrectly spread into another register.
+## Break the scope on purpose
+
+1. Change the signature to `{b: -1, e: -1}` for B-flat major. Flats are negative
+   and sharps positive in one alteration field, so the resolver needs no new
+   branch to handle them.
+2. Add F5 straight after the F4 natural. Because the local key carries the
+   octave, F5 still inherits F-sharp from the signature. Now delete `octave`
+   from `scope_key` and run it again. You'll hear the F4 natural bleed into a
+   register the page never touched.
 3. Add an explicit sharp after the natural in the same bar. The later sign
-   replaces the earlier F4 assignment, demonstrating that local accidental state
-   can change more than once before the barline resets it.
+   overwrites the earlier F4 assignment, which is how bar-local state is
+   supposed to behave until the barline clears it.
 
-## Why it works
+## Innermost scope wins
 
-The resolver searches from the most local information outward. An accidental on
-the current event first updates bar state. Existing bar state takes precedence
-over the key signature, and the signature takes precedence over the table of
-natural pitch classes. Nested `fetch` calls make that fallback order visible in
-the code rather than relying on a collection of special cases.
+`resolve_note` searches from the most local information outward. An accidental
+on the current event updates bar state first. Bar state beats the key signature,
+and the signature beats the table of natural pitch classes. Two nested `fetch`
+calls put that fallback order on one line, where you can read it, instead of
+scattering it through special cases.
 
-Letter and alteration remain separate through the calculation. F-sharp and
-G-flat can resolve to the same MIDI number while preserving different source
-letters and signs. That difference supports correct interval names, key-aware
-analysis, and faithful comparison with a printed edition. Collapsing both notes
-to pitch class 6 too early would make later reconstruction guesswork.
+Letter and alteration stay separate all the way through. F-sharp and G-flat
+resolve to the same MIDI number while keeping different letters and different
+signs, and you need that difference for correct interval names, key-aware
+analysis, and honest comparison with a printed edition. Collapse both to pitch
+class 6 early and you can never reconstruct which one the page showed you.
 
-Published notation includes rules beyond this example, among them conventions
-for cancelling accidentals and special treatment of notes tied across a barline.
-The current resolver states a smaller model and exposes its boundary. Extend it
-when a real source supplies a case the model cannot express, so each new branch
-answers an observed notation problem rather than a speculative one.
+Published notation has rules this example doesn't reach: conventions for
+cancelling accidentals, and the treatment of notes tied across a barline. The
+resolver states a smaller model and shows you its edge. Extend it when a real
+source hands you a case it can't express, so every new branch answers an
+observed problem.
 
-Key signatures store defaults by letter, which brings the circle of fifths back
-into the data model. D major sharpens F and C; it does not announce anonymous
-pitch classes 6 and 1. A G-flat in the same passage reaches the same MIDI key as
-F-sharp through a different spelling. Preserve the written letter after
-resolution so a diagnostic can distinguish deliberate enharmonic spelling from
-an encoding error.
+Key signatures store defaults by letter, which brings the circle of fifths
+straight back into the data model. D major sharpens F and C. It doesn't announce
+anonymous pitch classes 6 and 1. Keep the written letter after resolution and a
+diagnostic can still tell a deliberate enharmonic spelling from a typo.
 
-## Take it further
+## Write the resolver yourself
 
-Write `resolve_bar(events, key_signature)` so it returns new hashes with a MIDI
-`:note` while preserving letter, octave, start, duration, and any accidental.
-Use a four-bar phrase containing a sharp signature, a natural override, a
+Write `resolve_bar(events, key_signature)` so it returns new hashes carrying a
+MIDI `:note` while preserving letter, octave, start, duration, and any
+accidental. Scope the bar-local overrides with `key = [event[:letter],
+event[:octave]]`, the way the code above does.
+
+Feed it a four-bar phrase containing a sharp signature, a natural override, a
 repeated affected note, the same letter in another octave, and a barline reset.
-Print each source event beside its resolved form. The paired output should show
-both what the notation said and which layer supplied the final alteration.
+Print each source event beside its resolved form. Read the two columns together:
+one tells you what the notation said, the other tells you which layer supplied
+the final alteration.

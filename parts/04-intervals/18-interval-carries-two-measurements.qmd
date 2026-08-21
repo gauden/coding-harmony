@@ -93,7 +93,7 @@ Two extensions are waiting. Compound intervals continue the inclusive count past
 the octave, and descending pairs need a direction policy. Add them one at a
 time, or a single wrong label will have several plausible causes.
 
-Lesson 19 stops calculating and starts listening. The names come from this
+[Lesson 19](19-interval-sound-dictionary.qmd) stops calculating and starts listening. The names come from this
 two-coordinate system; recognising them by ear is a separate skill that grows
 from repeated hearings.
 

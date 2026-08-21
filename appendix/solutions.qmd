@@ -721,7 +721,7 @@ numbers. Then save meter, rhythm, pitch spelling, resolved pitch with ties, and
 articulation as five distinct stages. In the rhythm version, assert every bar
 total against the printed meter before you enter a single pitch.
 
-Resolve notes through your Lesson 40 function and merge tied durations into one
+Resolve notes through your [Lesson 40](../parts/08-reading-notation/40-key-signatures-defaults.qmd) function and merge tied durations into one
 sounding attack. Render those events directly; importing a MIDI interpretation
 buries the editorial decisions you're trying to see. Automated checks confirm
 meter totals, resolver output, and the absence of extra tied attacks. Unclear

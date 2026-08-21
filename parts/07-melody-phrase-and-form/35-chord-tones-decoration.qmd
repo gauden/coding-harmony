@@ -7,20 +7,26 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Remove the short notes between a melody's longer arrivals and a plain harmonic
-skeleton often appears. Restore them and the line regains momentum, delay, and
-small detours. Some restored pitches may not belong to the harmony sounding at
-that instant, yet their paths into and out of stable tones make them intelligible.
+## Strip the short notes and a skeleton falls out
 
-A *passing tone* fills a step between two chord tones. A *neighbour tone* leaves
-a chord tone by step and returns. A *suspension* carries a tone from the previous
-harmony into the next before resolving downward. An *anticipation* reaches a
-tone of the coming chord before that chord arrives. Each term describes behaviour
-across time; an isolated pitch class cannot tell you which role it is playing.
+Take a melody, delete everything between its long arrivals, and you're usually
+left with a plain harmonic outline. Put the short notes back and the line gets
+its momentum, its delays and its small detours again. Some of the notes you
+restored don't belong to the harmony sounding underneath them. They still make
+sense, because of how they arrive and where they go next.
 
-## Run this
+Four names for four behaviours. A *passing tone* fills the step between two
+chord tones. A *neighbour tone* steps away from a chord tone and comes straight
+back. A *suspension* holds a note from the previous harmony into the next one
+before resolving down. An *anticipation* arrives at a note of the coming chord
+before the chord does.
+
+Every one of those describes behaviour across time. Show me a pitch on its own
+and I can't tell you which role it's playing. That's the whole lesson.
+
+## Four versions of the same outline
 
 ```{.ruby audio=""}
 use_bpm 88
@@ -50,62 +56,73 @@ decorated = [[:c4, 1], [:d4, 1], [:e4, 1], [:f4, 1],
 end
 ```
 
-The skeleton presents four long targets with little motion between them. In the
-array named `passing`, D fills the step from C to E; the later A introduces motion
-between G and C without completing every intervening step. Neighbours circle
-briefly away from a target and back. The most decorated line becomes
-denser as it approaches the final C, giving a directional shape to the same
-underlying harmonic outline.
+The skeleton gives you four long targets and almost no motion between them. In
+`passing`, D fills the step from C to E, and the later A puts motion between G
+and C without walking every rung of the ladder. The neighbours circle away from
+a target and return. The last version thickens as it approaches the final C,
+which hands the same harmonic outline a sense of direction.
 
-## Change one thing
+Play the skeleton and the decorated version back to back. Are those the same
+melody? There's a real argument either way, and it's the argument this lesson
+is about.
 
-1. Change D in the passing line to D-sharp. It still occupies the register
-   between C and E, but the route now consists of unequal semitone motions.
-   Listen for the new emphasis created by the chromatic approach to E.
-2. The program above contains no harmony timeline, so add one before testing a
-   suspension: hold F major for two beats, move to C major for two, sustain F
-   across that boundary, then resolve it down to E. F begins as a chord tone and
-   becomes dissonant only when the harmony changes.
-3. Use the same explicit timeline for an anticipation. Move the final C half a
-   beat before the C-major chord arrives. The early note becomes stable when the
-   harmony catches up; without the chord boundary, the label would be unsupported.
+## Three edits, and one of them needs new scaffolding
 
-## Why it works
+1. Change D in the passing line to D-sharp. It still sits between C and E, but
+   now the two steps are unequal, and the chromatic approach puts a harder
+   emphasis on E.
 
-Chord membership must be evaluated at a particular time. C is stable over C
-major, may decorate another harmony, and can anticipate a coming A-minor chord.
-To classify the melodic event, a program needs the harmony aligned with its
-onset and duration. The note value alone is insufficient.
+2. There's no harmony timeline in that program, so you'll have to add one before
+   you can test a suspension. Hold F major for two beats, move to C major for
+   two, sustain F across the boundary, then resolve it down to E. F starts life
+   as a chord tone and turns dissonant only when the harmony moves underneath it.
 
-Reduction chooses notes that appear structurally stable, often because of their
-metric position, duration, or harmonic membership. Decoration then explains the
-routes between those points. The process is interpretive and loses information.
-When rhythm or harmony is ambiguous, two plausible reductions may preserve
-different skeletons. Playing both makes that analytical disagreement audible.
+3. Use the same timeline for an anticipation. Move the final C half a beat
+   earlier than the C major chord. The note becomes stable when the harmony
+   catches up with it. Without that chord boundary in the data, the label has
+   nothing to stand on.
 
-The example arrays keep pitch beside duration. A richer event record could add
-`:role`, but playback would still consume the original note and timing. The
-role belongs to the analytical description rather than to the physical act of
-rendering a pitch. Keeping those concerns apart allows an interpretation to
-change without silently rewriting the source melody.
+## Why the label needs a clock
 
-Metric position changes the likely reading. A dissonant step on a weak half-beat
-can pass almost unnoticed. Sustain the same pitch across a strong beat and it
-asks for a stronger explanation, perhaps as a suspension. Duration, preparation,
-and destination contribute too. Set membership can flag a non-chord tone, but
-it cannot name the behaviour without examining neighbouring events in time.
+Chord membership is a question about a moment. C is stable over C major, it
+decorates plenty of other harmonies, and it can anticipate an A minor chord
+that hasn't arrived. To classify a melodic event, your program needs the
+harmony lined up against that event's onset and duration. The note value alone
+gets you nowhere.
 
-Reduction also provides a way to compose. Begin with stable destinations and
-decide whether each gap needs direct motion, delay, or a brief departure and
-return. Add one decoration, then replay the phrase. If every opening receives an
-ornament, the destinations can lose their hierarchy. The program's alternating
-versions keep that trade-off available to the ear.
+Reduction picks the notes that look structurally stable, usually from metric
+position, duration and harmonic membership. Decoration then explains the routes
+between them. It's interpretive, and it throws information away. When rhythm or
+harmony is ambiguous, two defensible reductions keep different skeletons, and
+playing both turns an analytical disagreement into something you can hear.
 
-## Take it further
+The arrays here keep pitch next to duration. A richer event could carry a
+`:role` field, and playback would still consume only the note and the timing.
+Role belongs to the analysis, not to the act of rendering a pitch. Keep those
+apart and you can change your interpretation without quietly rewriting the
+melody underneath it.
+
+Metric position moves the reading more than you'd expect. A dissonant step on a
+weak half-beat slips by. Sustain that same pitch across a strong beat and it
+demands a bigger explanation, probably as a suspension. Duration, preparation
+and destination all weigh in. Set membership will flag a non-chord tone for you.
+It can't name the behaviour without looking at the neighbours in time.
+
+Reduction works as a composing method too. Start from stable destinations, then
+decide whether each gap wants direct motion, a delay, or a quick departure and
+return. Add one decoration and replay. Decorate every opening and the
+destinations lose their hierarchy, which is a real cost and easy to miss. The
+alternating versions above keep that trade-off in front of your ears.
+
+## Label your own decorations
 
 Write a two-bar melody over C major followed by G major. Include one passing
-tone, neighbour, suspension, and anticipation, and label each role in an event
-hash containing `:note`, `:start`, `:duration`, and `:role`. The renderer should
-ignore the analytical field. Then print and play a reduction containing only
-`:chord_tone` events. Compare the plain destinations with the full line and
-check that every decoration can be explained by its preparation and destination.
+tone, one neighbour, one suspension and one anticipation, and label each role in
+an event hash holding `:note`, `:start`, `:duration` and `:role`. Your renderer
+must ignore the analytical field entirely.
+
+Then print and play a reduction containing only the `:chord_tone` events, and
+compare those bare destinations against the full line. Check that every
+decoration can be explained by where it came from and where it went. If one
+can't, either it's in the wrong place or your label is wrong, and deciding which
+is exactly the skill this lesson is for.

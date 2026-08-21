@@ -31,24 +31,24 @@ at the bottom.
 
 ## Phase 3: Rewrite the rest against those exemplars
 
-- [ ] Lessons 8-17 (Parts 2-3), including the Lesson 16 seeded-randomness defect.
-- [ ] Lessons 18-25 (Parts 4-5).
-- [ ] Lessons 26-37 (Parts 6-7), including the Lesson 29 parallel-motion cadences
+- [x] Lessons 8-17 (Parts 2-3), including the Lesson 16 seeded-randomness defect.
+- [x] Lessons 18-25 (Parts 4-5).
+- [x] Lessons 26-37 (Parts 6-7), including the Lesson 29 parallel-motion cadences
       and the Lesson 31 bass-tenor unison.
-- [ ] Lessons 38-46 (Parts 8-9), including text staff diagrams and four actual
+- [x] Lessons 38-46 (Parts 8-9), including text staff diagrams and four actual
       printed bars for Lesson 41.
-- [ ] Lessons 47-58 (Parts 10-12), including wiring the three capstones onto the
+- [x] Lessons 47-58 (Parts 10-12), including wiring the three capstones onto the
       phrase from `setup.qmd`.
-- [ ] The five appendices, preserving all ten tested solution contracts.
+- [x] The five appendices, preserving all ten tested solution contracts.
 
 ## Phase 4: Integration
 
-- [ ] Turn the 47 bare "Lesson N" mentions into working links.
-- [ ] Pass `uv run pytest` on all nineteen checks.
-- [ ] Pass `scripts/lint-prose.sh`.
-- [ ] Pass `scripts/check-code.sh` with zero Ruby syntax failures.
-- [ ] Render the HTML book and inspect early, middle, late and appendix pages.
-- [ ] Update `README.md`, `CHANGELOG.md` and `DEVELOPMENT.md`.
+- [x] Turn the 47 bare "Lesson N" mentions into working links.
+- [x] Pass `uv run pytest` on all nineteen checks.
+- [x] Pass `scripts/lint-prose.sh`.
+- [x] Pass `scripts/check-code.sh` with zero Ruby syntax failures.
+- [x] Render the HTML book and inspect early, middle, late and appendix pages.
+- [x] Update `README.md`, `CHANGELOG.md` and `DEVELOPMENT.md`.
 
 ## Still owed, and not part of this draft
 

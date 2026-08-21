@@ -7,21 +7,23 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Two performances can share every written pitch and duration yet seem to describe
-different gestures. One clips each note at half its allotted time. Another lets
-notes overlap, leans into the high point, and delays the next arrival by a small
-amount. The score establishes events; performance determines how those events
-occupy the air.
+## Two performances, identical score
 
-*Articulation* describes how notes connect or separate. Dynamics shape amplitude
-over time, while phrasing uses accent, timing, and contour to group events into
-larger motions. The distinction is clearest when the event data remains strict
-and several renderers interpret it. Expressive choices then stay visible
-as policies instead of becoming unexplained edits to the score.
+Two players can hit every written pitch and duration and still describe
+completely different gestures. One clips each note to half its allotted time.
+The other lets notes overlap, leans into the high point, and holds the next
+arrival back by a hair. Your score fixes the events. Performance decides how
+those events occupy the air.
 
-## Run this
+*Articulation* covers how notes connect or separate. Dynamics shape amplitude
+over time, and phrasing uses accent, timing and contour to group events into
+larger motions. All three get much clearer when you hold the event data strict
+and let several renderers interpret it. Your expressive choices stay visible as
+policies, and stop being unexplained edits to the notes.
+
+## One score, two renderers
 
 ```{.ruby audio=""}
 use_bpm 82
@@ -58,62 +60,68 @@ sleep 2
 play_events score, true
 ```
 
-The first renderer treats every event alike: equal amplitude and a sound lasting
-half of its nominal slot. The second grows toward G, allows that high point to
-last, and delays the following E slightly. Both performances read the same pitch
-and score-time values. Listen for a change in grouping rather than a change in
-the tune itself.
+The first renderer treats everything alike: one amplitude, and every sound
+lasting half its nominal slot. The second grows toward G, lets that high point
+ring, and holds the following E back slightly. Both read the same pitches and
+the same score times. What changes is the grouping, not the tune.
 
-## Change one thing
+Can you hear where the second version thinks the phrase peaks? Nothing in
+`score` says. That decision lives entirely in the renderer.
 
-1. Set the strict ratio to `1.05`. Each sounding note now extends past the next
-   onset, producing legato overlap without changing a single event in `score`.
-2. Move the accent from G to the final C. The phrase now gives its greatest
-   amplitude to the arrival rather than to the melodic high point. Notice how
-   that shifts the perceived goal.
-3. Increase the offset from `0.08` to `0.3`. A small hesitation becomes a
-   conspicuous delay, and because the event must still fit its score slot, the
-   time left for sounding is reduced.
+## Push each policy until it breaks
 
-## Why it works
+1. Set the strict ratio to `1.05`. Every sounding note now runs past the next
+   onset, so you get legato overlap without one event in `score` moving.
+2. Move the accent from G to the final C. Now the loudest moment is the arrival
+   instead of the melodic high point, and the phrase suddenly seems to have been
+   heading somewhere else the whole time.
+3. Raise the offset from `0.08` to `0.3`. A small hesitation turns into an
+   obvious delay, and since the event still has to fit its score slot, there's
+   less time left for it to sound.
 
-Every score event follows the shared schema `:note`, `:start`, and `:duration`.
-Start identifies an onset on the metric timeline, while duration reserves a
-slot. The renderer decides how much of that slot actually sounds and at what
-amplitude. Staccato can therefore shorten a note without corrupting the bar
-total or moving the next written onset.
+## Score time and performance time are different variables
 
-Expression becomes a mapping from structural events to playback parameters.
-The high-point rule derives emphasis from pitch; the crescendo derives it from
-position in the phrase; the offset singles out one arrival. Each policy can be
-replaced or combined without editing the source notes, which makes disagreements
-about performance concrete enough to inspect.
+Every event uses the shared schema: `:note`, `:start`, `:duration`. Start fixes
+an onset on the metric timeline, duration reserves a slot. The renderer decides
+how much of that slot actually sounds, and how loudly. That's why staccato can
+shorten a note without corrupting the bar total or shifting the next written
+onset.
 
-A quantised rendering may sound rigid, but useful deviation depends on musical
-style and on the scale of the gesture. The two passes provide an audible
-comparison, not a proof that the shaped one is superior. Ruby can validate the
-program, but only listening on the intended system can reveal whether an
-eight-hundredths-of-a-beat offset is perceptible or whether the amplitude curve feels
-misplaced.
+Expression, then, is a mapping from structural events to playback parameters.
+The high-point rule takes emphasis from pitch, the crescendo takes it from
+position in the phrase, and the offset singles out one arrival. Swap any policy
+or stack them, and the source notes never move. Arguments about performance
+become concrete enough to inspect and rerun.
 
-Amplitude is relative. Raising every event to `0.9` makes the phrase louder but
-does not create a high point. A crescendo suggests direction because successive
-values form a slope; an accent creates a local contrast with its neighbours.
-The policies can assign the same numeric amplitude to one note while producing
-different phrase shapes around it.
+A quantised rendering sounds rigid, though how much deviation helps depends on
+style and on the size of the gesture. These two passes give you a comparison,
+not a verdict that the shaped one wins. Ruby validates the program. Only
+listening on your own system tells you whether eight hundredths of a beat is
+perceptible, or whether the amplitude curve is pointed at the wrong note.
 
+Amplitude is relative, which trips people up. Push every event to `0.9` and the
+phrase gets louder without acquiring a high point. A crescendo reads as
+direction because successive values form a slope; an accent reads as emphasis
+because it contrasts with its neighbours. Two policies can hand one note the
+same number and still build different shapes around it.
+
+One design decision here is worth naming, because it's invisible until it bites.
 This renderer sleeps through each full event slot, so a positive onset offset
-reduces the available sounding time. Another design could preserve the note's
-duration and push all later onsets, changing the complete timeline. Once score
-time and performance time have separate variables, neither choice has to remain
-implicit. Name the renderer or its fields so the selected timing policy can be
-understood without reverse-engineering the sleeps.
+eats into sounding time. A different renderer could preserve the note's duration
+and push every later onset instead, which changes the whole timeline. Once score
+time and performance time have separate variables, neither choice stays
+implicit. Name your renderer or its fields so the timing policy is readable
+without anyone reverse-engineering the sleeps.
 
-## Take it further
+## Three performances from one score
 
-Add optional `:amp` and `:articulation` fields to selected events. Teach
-`play_events` to interpret `:staccato`, `:legato`, and `:accent`, falling back
-to renderer defaults when a field is absent. Produce detached, fully legato,
-and phrase-shaped performances from the same score. Keep every pitch, start, and
-duration unchanged, then compare the renderers by the kinds of connection and
-emphasis they produce.
+Add optional `:amp` and `:articulation` fields to some events, and teach
+`play_events` to interpret `:staccato`, `:legato` and `:accent`, falling back to
+renderer defaults when a field is missing. Produce a detached performance, a
+fully legato one, and a phrase-shaped one.
+
+Every pitch, start and duration stays exactly where it is. That constraint is
+the exercise: if you find yourself wanting to edit the score, the thing you
+actually want is another renderer policy. Compare the three by the kinds of
+connection and emphasis they produce, and note which policy you'd reach for
+first next time.

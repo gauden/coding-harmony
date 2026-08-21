@@ -100,7 +100,7 @@ came before it, running on memory, or you'll impose a new one for no reason you
 can name. Play the three profiles in a different order and watch that neutral
 stream change character without changing a single sample.
 
-Lesson 14 adds rests and sustained events while leaving this duration
+[Lesson 14](14-rests-dots-ties.qmd) adds rests and sustained events while leaving this duration
 arithmetic intact. A bar keeps occupying its time when one position has no
 attack, and a note can cross a boundary without being struck again.
 

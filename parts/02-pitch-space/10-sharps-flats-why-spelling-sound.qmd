@@ -79,11 +79,11 @@ needs.
 Interval naming shows the cost in one line. C-sharp to E spans the letters
 C-D-E, so it's some kind of third. D-flat to E spans D-E, so it's some kind of
 second. Both cover three semitones. Subtracting MIDI numbers reports the
-distance and can't recover the letter span, which is why Lesson 18 measures
+distance and can't recover the letter span, which is why [Lesson 18](../04-intervals/18-interval-carries-two-measurements.qmd) measures
 both.
 
 Until then, read the two views together. Identical sounds confirm the shared
-address; distinct labels preserve what the address collapsed. Lesson 11 dodges
+address; distinct labels preserve what the address collapsed. [Lesson 11](11-pentatonic-scale-with-no-wrong-notes.qmd) dodges
 the whole question for a while by asking Sonic Pi for a ready-made five-note
 collection and treating its members as plain numbers.
 

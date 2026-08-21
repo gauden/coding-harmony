@@ -7,21 +7,23 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Add another stacked third above a triad and a fourth melodic line enters the
-chord. C-E-G-B sounds spacious, with B pressed close to the upper C. Lower that
-note to B-flat and the chord acquires another direction. The lower major triad
-has not moved; the seventh has changed the harmony's tension and likely
-destination.
+## One more third, and the chord starts wanting something
 
-A *seventh chord* contains four tones built in thirds. Major seventh, minor
-seventh, dominant seventh, and half-diminished seventh each correspond to a
-different offset array. The dominant seventh is especially revealing. G-B-D-F
-contains the tritone B-F, and both of those notes lie a semitone away from stable
-tones in a C-major tonic chord.
+Stack another third on top of a triad and a fourth line joins the chord.
+C-E-G-B opens out, with B pressed hard against the C above it. Lower that B a
+semitone to B-flat and the chord acquires a direction it didn't have a moment
+ago. Nothing in the lower triad moved. One note changed the chord's tension and
+its likely destination.
 
-## Run this
+A *seventh chord* holds four tones stacked in thirds. Major seventh, minor
+seventh, dominant seventh and half-diminished seventh are four offset arrays and
+not four unrelated objects. The dominant seventh is the one to watch. G-B-D-F
+contains the tritone B-F, and both of those notes sit one semitone away from a
+stable tone in a C-major triad.
+
+## Four qualities, then one resolution taken apart
 
 ```{.ruby audio=""}
 use_bpm 76
@@ -62,59 +64,67 @@ play_resolution dominant, tonic, nil
 4.times { |voice| play_resolution dominant, tonic, voice }
 ```
 
-Each quality first sounds as a block, where four pitches merge into one harmony,
-and then as an arpeggio, where its offset pattern becomes easier to follow. The
-G7-to-C resolution is subsequently dismantled by voice. Listen for B rising to
-C while F falls to E. Those contrary semitone motions supply much of the
-cadence's force.
+Each quality arrives twice: as a block, where four pitches merge into one
+harmony, and as an arpeggio, where the offset pattern becomes something you can
+follow. Then G7 resolves to C, once with all four voices and then four more
+times with one voice at a time. Listen for B rising to C and F falling to E.
+Those two contrary semitones supply most of the force you hear in the full
+version. Which one do you expect to be harder to pick out on its own?
 
-## Change one thing
+## Break the tritone three ways
 
-1. Remove F from `dominant`. G major can still point toward C through B's
-   leading-tone motion, but the tritone and its contracting pair of resolutions
-   have disappeared.
-2. Send F upward to G rather than downward to E. G belongs to the arriving tonic
-   chord, so the harmony still closes, but the tritone expands instead of
-   contracting. Compare that motion with the stronger contrary semitone pair.
-3. Lower B to B-flat. The interval inside the chord changes, and B-flat no longer
-   leads upward to C in the same way. Hear the loss of ordinary C-major dominant
-   function before treating it as a one-integer edit.
+1. Remove F from `dominant`. Plain G major still points toward C through B's
+   leading-tone pull, but the tritone is gone and so is its contracting pair of
+   resolutions.
 
-## Why it works
+2. Send F up to G in place of down to E. G belongs to the arriving tonic, so the
+   harmony still closes, and now the tritone expands. Compare that against the
+   contrary pair you heard first.
 
-Seventh-chord quality can be represented as offsets from a root. Major 7 and
-dominant 7 differ only at the top note. Minor 7 lowers both third and seventh;
-half-diminished 7 lowers the fifth as well. The names make these sound like four
-separate objects, while the arrays reveal a close family connected by local
-changes.
+3. Lower B to B-flat. The interval inside the chord changes, and B-flat won't
+   lead up to C the way B did. You've just removed ordinary C-major dominant
+   function with a one-integer edit, so hear what leaves before you file it as a
+   small change.
 
-Inside G7, B and F span six semitones. Each is one semitone from a stable C-major
-tone. When B rises and F falls, the tritone contracts into the major third C-E.
-G can remain as a common tone, and D can move to either C or E. The ear groups
-the result as a chord progression, but its explanatory motion belongs to four
-simultaneous melodies.
+## A family connected by single steps
 
-The `solo` argument is a diagnostic switch. It lets one indexed melody sound
-without rewriting the underlying chord data. Dense harmony often conceals the
-short movement that creates its effect, so isolating voices is the harmonic
-equivalent of inspecting one variable in a crowded trace.
+Seventh-chord quality lives in the offsets from a root. Major 7 and dominant 7
+differ at the top note only. Minor 7 lowers third and seventh; half-diminished 7
+lowers the fifth as well. Their names make them sound like four separate
+categories, and the arrays show you a family related by one lowered note at a
+time.
 
-Function depends on root and context as well as quality. C-E-G-B-flat is a C
-dominant seventh and points readily toward F. C-E-G-B is a C major seventh and
-can colour a tonic in C major. One offset makes that difference, which means the
-shared lower triad cannot name the chord's likely job. Listen to the seventh
-before reducing these qualities to neighbouring dictionary entries.
+Inside G7, B and F stand six semitones apart, and each is one semitone from a
+stable C-major tone. When B rises and F falls, that tritone contracts into the
+major third C-E. G can stay put as a common tone, and D goes to either C or E.
+Your ear files the result as a chord progression. What explains it is four
+simultaneous melodies, three of which barely move.
 
-Doubling belongs to another layer. The offset arrays state each chord tone once,
-but a four-voice arrangement may double the tonic and omit the fifth. That is a
-voicing policy applied after construction. Keeping it separate allows one chord
-record to feed a keyboard block, an arpeggio, or four independent lines without
-changing the harmonic definition.
+The `solo` argument is a diagnostic switch. It lets one indexed line sound
+without touching the chord data underneath it. Dense harmony hides the short
+motions that produce its effect, so isolating a voice here does what printing
+one variable does in a crowded trace.
 
-## Take it further
+Function depends on root and context, not on quality alone. C-E-G-B-flat is a C
+dominant seventh and leans toward F. C-E-G-B is a C major seventh and can sit
+happily as a tonic in C major. One offset separates them, which means the shared
+lower triad can't tell you what job either chord is doing. Listen to the seventh
+before you reduce these qualities to neighbouring dictionary entries.
 
-Extend Lesson 27's candidate set with inversions of G7 and C. Search for a pair
-in which B moves to C, F moves to E, no line leaps more than five semitones, and
-no voices cross. Print the chosen voicings and their total movement. Then play
-the full resolution followed by each line alone, checking that the small motions
-you encoded remain audible when the chord is reassembled.
+Doubling belongs to a later layer. These offset arrays state each chord tone
+once, while a four-voice arrangement often doubles the root and drops the fifth.
+That's a voicing policy applied after construction, and keeping it separate lets
+one chord record feed a keyboard block, an arpeggio, or four independent lines
+without redefining the harmony.
+
+## Find a resolution that obeys every rule
+
+Extend [Lesson 27](27-inversions-voicing.qmd)'s candidate set with inversions of G7 and of C. Search for a
+pair where B moves to C, F moves to E, no line leaps more than five semitones,
+and no two voices cross. Print the voicings you chose along with their total
+movement.
+
+Then play the full resolution followed by each line alone. The constraints are
+arithmetic and they either hold or they don't; whether the small motions you
+encoded are still audible once the chord is reassembled is a separate question,
+and only listening answers it.

@@ -108,9 +108,9 @@ Sonic Pi represents the division in finite floating-point precision too, and
 literal you could type. The run is bounded at sixteen cycles, which keeps the
 remaining numerical error well below anything this exercise asks you to hear.
 
-Part 4 turns from distance in time to distance in pitch. Lesson 18 puts the
-semitone arithmetic from Lesson 2 together with the spelling metadata you
-preserved in Lesson 10, because naming an interval takes both at once.
+Part 4 turns from distance in time to distance in pitch. [Lesson 18](../04-intervals/18-interval-carries-two-measurements.qmd) puts the
+semitone arithmetic from [Lesson 2](../00-getting-a-sound-out/02-notes-are-integers.qmd) together with the spelling metadata you
+preserved in [Lesson 10](../02-pitch-space/10-sharps-flats-why-spelling-sound.qmd), because naming an interval takes both at once.
 
 ## Sixteen cycles with a marker
 

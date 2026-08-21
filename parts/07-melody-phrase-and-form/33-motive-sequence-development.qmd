@@ -7,21 +7,24 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Three notes can organise a much longer melody if their relationships survive
-change. Repeat the cell higher and the connection remains exposed. Double its
-durations and recognition becomes slower, though the shape is still present.
-Keep only its first two notes and even the fragment can point back to the source.
+## Three notes can run a whole melody
 
-A *motive* is a short musical idea that remains recognisable under some
-transformation. A *sequence* restates it at another pitch level. *Development*
-uses operations such as transposition, inversion, augmentation, and fragmentation
-to make repeated material acquire new consequences. A literal statement tells
-the listener what the object is; later changes reveal how far its identity can
-bend without breaking.
+Take a three-note cell and repeat it two semitones higher. You'll spot the
+connection instantly. Double its durations and recognition slows down without
+disappearing. Keep only the first two notes and the fragment still points back
+at where it came from. One small object, several different disguises, and your
+ear tracks it through all of them.
 
-## Run this
+A *motive* is a short musical idea that survives transformation. A *sequence*
+restates it at a new pitch level. *Development* is what happens when you apply
+operations like transposition, inversion, augmentation and fragmentation until
+repeated material starts having consequences. The first plain statement tells
+you what the object is. Everything after that tells you how far its identity
+bends before it breaks.
+
+## Eight bars from one cell
 
 ```{.ruby audio=""}
 use_bpm 108
@@ -61,61 +64,70 @@ bars = [
 end
 ```
 
-The opening cell returns at new pitch levels, reflected around an axis, stretched
-to twice its duration, and reduced to a fragment. Repeat the eight-bar plan and
-one source object supplies a sixteen-bar melody. Listen for recognition arriving
-at different speeds: transposition announces itself quickly, while inversion or
-fragmentation may become clear only after the cell has finished.
+The cell comes back at new pitch levels, reflected around an axis, stretched to
+twice its length, and cut down to a fragment. Repeat the eight-bar plan once and
+a single source object has supplied you with sixteen bars of melody. Recognition
+arrives at different speeds along the way: transposition announces itself almost
+immediately, while inversion and fragmentation sometimes land only after the
+cell has already finished. Which bar is the first one where you lose the thread?
 
-## Change one thing
+## Crowd it, reflect it, wear it out
 
-1. Replace sequence offsets `2` and `5` with `1` and `2`. The successive entries
-   now crowd together. Notice whether they merge into one rising thought instead
-   of sounding like statements made at distinct levels.
-2. Move the inversion axis from the first note to 63. Reflection preserves the
-   signed-distance rule but places the result in another register, showing that
-   an operation and its chosen reference are separate decisions.
-3. Repeat the unaltered cell four times. Mark the point, if there is one, when
-   repetition stops confirming the idea and begins to hold the music still.
-   Then compare that span with the developed version.
+1. Change the sequence offsets from `2` and `5` to `1` and `2`. The entries now
+   crowd together. Listen for whether they still read as statements at distinct
+   levels or merge into one long rising thought.
 
-## Why it works
+2. Move the inversion axis from the first note to 63. Reflection follows the
+   same signed-distance rule and lands somewhere else entirely, which shows you
+   that an operation and its reference point are two separate decisions.
 
-Transposition adds one constant to all pitches and preserves every interval.
-Inversion reflects signed distances around an axis, turning an upward minor
-third into a downward one. Augmentation scales duration; fragmentation selects
-a subsequence. Each transformation keeps certain invariants and releases others,
-which is why the motive can remain present without returning unchanged.
+3. Repeat the unaltered cell four times in a row. Mark the exact bar where
+   repetition stops confirming the idea and starts holding the music still. Then
+   play the developed version again and compare that span.
 
-The `bars` array holds compositional decisions while `play_phrase` handles their
-realisation. Transformed passages derive from `cell` rather than copied literals,
-so changing the source also changes its descendants. That is musically useful:
-you can revise the identity of the motive and hear the whole piece respond,
-instead of repairing scattered imitations by hand.
+## What each operation keeps
+
+Transposition adds a constant to every pitch and preserves all the intervals.
+Inversion reflects signed distances around an axis, so an upward minor third
+becomes a downward one. Augmentation scales duration. Fragmentation selects a
+subsequence. Each operation keeps some invariants and releases others, which is
+exactly why the motive can stay present without ever returning unchanged.
+
+The `bars` array holds your compositional decisions and `play_phrase` handles
+realisation. Every transformed passage derives from `cell` and none of them are
+copied literals, so editing the source changes all its descendants at once. Try
+it: change `cell` to `[60, 64, 62]` and the whole sixteen bars reorganise around
+a major third. Repairing scattered copies by hand would have cost you the
+experiment.
 
 A sequence becomes legible through recurrence at successive pitch levels. Two
-statements may be enough to establish the rule; additional ones confirm it, and
-may eventually exhaust it. There is no universal count at which that happens.
-The editable offsets and repetition count turn the judgement into something you
-can audition in this phrase instead of inheriting as advice.
+statements usually establish the rule, further ones confirm it, and enough of
+them exhaust it. There's no universal count for where that tips over. Because
+both the offsets and the repeat count are editable, you can audition the
+judgement in this phrase instead of inheriting it as advice.
 
-Placement also changes the meaning of a transformation. A transposed cell placed
-next to its source behaves as continuation. The same data after several bars can
-feel like recollection. Register, cadence, and accompaniment can strengthen or
-weaken that relation. Transformation functions capture local pitch and duration
-rules; the `bars` plan gives those results a rhetorical position in time.
+Placement changes what a transformation means. A transposed cell sitting next to
+its source behaves like continuation. The identical data several bars later
+feels like recollection. Register, cadence and accompaniment all strengthen or
+weaken that relation. Your transformation functions capture local pitch and
+duration rules; the `bars` plan gives each result a position in time, and
+position is half of what the listener responds to.
 
-The closing bar demonstrates extension by appending C to the original cell.
-Prepend the same extra note instead and the source may stop sounding like the
-beginning, even though all three values remain. Recognition depends on boundary
-and emphasis as well as membership, so development is partly a matter of where
-the preserved material is allowed to speak.
+The closing bar extends the cell by appending C to the end. Put the same extra
+note at the front and the original three notes stop sounding like a beginning,
+even though every value is still there. Recognition depends on boundaries and
+emphasis as much as on membership, so development is partly a question of where
+you let the preserved material speak.
 
-## Take it further
+## Sixteen bars, one source array
 
-Build a sixteen-bar plan from one four-note motive. Include a literal return, a
-three-stage sequence, one inversion, one augmented statement, and a two-note
-fragment. Derive every altered pitch list from the source rather than copying
-the resulting values. Print a label before each bar, then listen without watching
-the log and note which transformations announce themselves. The labels let you
-compare the generated structure with the form the ear actually follows.
+Build a sixteen-bar plan out of a single four-note motive. Include a literal
+return, a three-stage sequence, one inversion, one augmented statement and a
+two-note fragment. Derive every altered pitch list through your functions and
+copy no resulting values into the plan.
+
+Print a label before each bar, then run it once without watching the log and
+note which transformations announced themselves and which slipped past. Compare
+that list against the labels afterwards. Where the two disagree, you've found
+the point where a transformation you can see in the source stopped being a
+transformation you can hear.

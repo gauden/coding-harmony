@@ -7,51 +7,50 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-This capstone follows one monophonic source far enough to reveal more than a
-single phrase. Choose thirty-two to sixty-four bars from the shortlist made in
-Lesson 42. The source should contain several phrases, a discernible high point,
-some repeated material, and at least one passage that does not yield on the
-first hearing or reading. That resistance gives the transcription method real
-work to do. Use the four-pass pipeline from
-[Lesson 43](../09-transcription/43-four-pass-pipeline.qmd) and the debugging
-checks in [Lesson 46](../09-transcription/46-debug-transcription-like-software.qmd)
-on a short excerpt before expanding the project.
+## The phrase you played before [Lesson 1](../00-getting-a-sound-out/01-hello-sound.qmd)
 
-The completed work has two layers with different responsibilities. A faithful
-event list records pitch, absolute start, duration, articulation, dynamics, and
-phrase membership as evidence from the source. An expressive renderer decides
-how Sonic Pi presents that evidence. Measure or time references and uncertainty
-markers remain attached to the events, so any disputed claim can be traced back
-to the score page or recording interval that produced it.
+`[:e4, :g4, :a4, :b4, :d5, :b4, :a4, :g4]`. You ran that in the setup buffer,
+before any of this started: eight symbols and a sleep. E minor pentatonic over
+an E2 bass, picked so nothing could clash while you found Run.
 
-Assess the whole candidate before choosing it. Check its widest leap, complete
-range, fastest rhythm, accidentals, ornaments, repeated passages, and the
-clarity of its source. Four exposed opening bars can lead into a middle section
-whose attacks are buried. A less famous but cleanly documented melody often
-supports a better capstone because every stage, from transcription to expressive
-comparison, remains inspectable.
+Those eight pitches carry all three capstones: a solo melody here, an
+accompaniment in [Lesson 56](56-capstone-b-melody-accompaniment.qmd), two voices in [Lesson 57](57-capstone-c-two-voice-polyphony.qmd). Nothing new gets invented,
+which is the point. Fifty-four lessons went into describing music, and here's
+where you find out what that bought you. Same eight notes. Much more to say
+about them.
 
-## Run this
+Two layers, two jobs. An event list records pitch, start, duration, dynamics,
+articulation and phrase as evidence. A renderer decides how Sonic Pi presents
+it. Measure references ride along, so a disputed claim leads back to its bar.
 
-The block models the final representation in two bars. Global starts place
-every event on one timeline, while measure and phrase fields preserve useful
-review coordinates. The renderer reads articulation and amplitude to shape the
-sound without manufacturing a second copy of the notes.
+## Eight notes with a shape and a peak
+
+Four bars, built as a *period*: an antecedent that ends unresolved, a consequent
+that answers it. Both open with the same four notes. Phrase `:a` stops on G4,
+hanging. Phrase `:b` lands on E4. One changed note, and that's the difference
+between a question and an answer.
 
 ```{.ruby audio=""}
 use_bpm 74
 use_synth :piano
 
 score = [
-  {measure: 1, phrase: :a, note: :c4, start: 0.0, duration: 1.0, amp: 0.62, articulation: :legato},
-  {measure: 1, phrase: :a, note: :d4, start: 1.0, duration: 1.0, amp: 0.68, articulation: :legato},
-  {measure: 1, phrase: :a, note: :e4, start: 2.0, duration: 2.0, amp: 0.78, articulation: :accent},
-  {measure: 2, phrase: :a, note: :g4, start: 4.0, duration: 1.0, amp: 0.86, articulation: :accent},
-  {measure: 2, phrase: :a, note: :e4, start: 5.0, duration: 1.0, amp: 0.72, articulation: :detached},
-  {measure: 2, phrase: :a, note: :d4, start: 6.0, duration: 1.0, amp: 0.66, articulation: :legato},
-  {measure: 2, phrase: :a, note: :c4, start: 7.0, duration: 1.0, amp: 0.58, articulation: :legato}
+  {measure: 1, phrase: :a, note: :e4, start: 0.0, duration: 1.0, amp: 0.58, articulation: :legato},
+  {measure: 1, phrase: :a, note: :g4, start: 1.0, duration: 1.0, amp: 0.62, articulation: :legato},
+  {measure: 1, phrase: :a, note: :a4, start: 2.0, duration: 1.0, amp: 0.66, articulation: :legato},
+  {measure: 1, phrase: :a, note: :b4, start: 3.0, duration: 1.0, amp: 0.72, articulation: :legato},
+  {measure: 2, phrase: :a, note: :d5, start: 4.0, duration: 2.0, amp: 0.80, articulation: :accent},
+  {measure: 2, phrase: :a, note: :b4, start: 6.0, duration: 1.0, amp: 0.70, articulation: :legato},
+  {measure: 2, phrase: :a, note: :g4, start: 7.0, duration: 1.0, amp: 0.62, articulation: :legato},
+  {measure: 3, phrase: :b, note: :e4, start: 8.0, duration: 1.0, amp: 0.60, articulation: :legato},
+  {measure: 3, phrase: :b, note: :g4, start: 9.0, duration: 1.0, amp: 0.65, articulation: :legato},
+  {measure: 3, phrase: :b, note: :a4, start: 10.0, duration: 1.0, amp: 0.70, articulation: :detached},
+  {measure: 3, phrase: :b, note: :b4, start: 11.0, duration: 1.0, amp: 0.76, articulation: :legato},
+  {measure: 4, phrase: :b, note: :d5, start: 12.0, duration: 2.0, amp: 0.90, articulation: :accent},
+  {measure: 4, phrase: :b, note: :b4, start: 14.0, duration: 1.0, amp: 0.74, articulation: :legato},
+  {measure: 4, phrase: :b, note: :e4, start: 15.0, duration: 1.0, amp: 0.60, articulation: :legato}
 ]
 
 define :play_events do |events|
@@ -71,61 +70,52 @@ end
 play_events score
 ```
 
-Pitch and amplitude rise together toward G4, marking it in the data as the
-intended high point, then both subside toward C. Audition must establish whether
-that intention comes across. The detached E shortens only its sounding release.
-Its notated duration still occupies a full beat, so the following D arrives at
-the same absolute start and the score timeline remains unchanged.
+D5 arrives twice, and the second is louder. Pitch marks the ceiling, amplitude
+marks bar 4 as the climax, and the line falls away to E. You can't tell from the
+data whether that intention reaches a listener.
 
-## Change one thing
+The detached A4 in bar 3 shortens only its release. Its notated duration still
+fills a beat, so B4 arrives at 11.0 as before. Score timeline and audible length
+stay separate: [Lesson 7](../01-why-sound-has-structure/07-envelope-instrument.qmd)'s distinction, turning up where it matters.
 
-1. Set every `amp` to 0.7. The melodic contour still reaches G4, but amplitude
-   no longer reinforces that high point. Compare the surviving pitch climax
-   with the flatter dynamic shape, then decide whether the original values were
-   copied from source markings or added by your renderer.
-2. Restore the amplitudes and change G's articulation from `:accent` to
-   `:legato`. The note remains highest and loudest, though its attack becomes
-   less pronounced. This separates structural importance from the emphasis of
-   a particular performance.
-3. Add `source_time` or `source_page` to every event and a `REVIEW` field to one
-   uncertain note. Print those fields before playback. No sound should change;
-   the new benefit is a direct path from the event to its evidence.
+## Flatten the dynamics, then the accent
 
-## Why it works
+1. Set every `amp` to 0.7. The contour still reaches D5 twice, and it doesn't
+   tell you which arrival matters. Where did those numbers come from: source
+   markings, or choices you made?
+2. Restore the amplitudes and change the bar-4 D5 from `:accent` to `:legato`.
+   Still highest, still loudest, softer attack. That splits structural
+   importance from one performer's emphasis.
+3. Add `source_time` to every event and a `REVIEW` field to a note you doubt.
+   Print them before playback. No sound changes; you gain a path from any event
+   back to its evidence.
 
-One event schema allows specialised tools to agree about the same score.
-Bar-total checks use starts and durations. Range and leap reports use notes.
-The renderer reads articulation and amplitude. Provenance tools read measures
-and source locations. Because every tool receives the same shape of data, no
-helper needs a private representation for one phrase or exception.
+## What one schema lets every tool share
 
-Absolute starts make gaps and overlaps visible without allowing an early error
-to shift every later coordinate. Measure numbers preserve the source's own
-reference system. Phrase labels add a formal view without splitting events
-into duplicated section arrays. When a repeated phrase returns with a variant,
-store the new events and label their relationship to the earlier phrase. An
-alias would falsely claim that the two passages are identical.
+One event shape means every tool agrees about the same score. Bar checks read
+starts and durations. Range reports read notes. The renderer reads articulation
+and amplitude. Provenance reads measures. No helper needs its own
+representation for one awkward phrase.
 
-Review should move between scales. Validate every bar first, then loop each
-phrase against its source. Step back to compare the full melodic contour and
-finally hear the expressive rendering from beginning to end. A local pitch can
-be correct while the phrase direction feels wrong; a set of correct phrases
-can still produce an unbalanced whole. Each scale reveals a different kind of
-error.
+Absolute starts make gaps and overlaps visible and stop an early mistake
+shifting every later coordinate. Phrase labels give a formal view without
+duplicating events into section arrays. When a repeated phrase returns varied,
+store the new events and label the relationship. An alias would claim they're
+identical. Here `:a` and `:b` share six notes and part company on the seventh.
 
-Ruby syntax and validation tests can inspect the representation, but they
-cannot establish that it matches a recording or that the articulation carries
-the intended phrase. Keep the lesson at `draft` until a person has worked
-through every requested comparison in Sonic Pi and recorded the remaining
-uncertainties honestly.
+Review at more than one scale. Validate every bar, loop each phrase against its
+source, step back for the whole contour, then hear the expressive rendering end
+to end. A pitch can be locally right while the phrase is wrong.
 
-## Take it further
+## Take the phrase to thirty-two bars
 
-Complete the thirty-two-to-sixty-four-bar transcription. Include a source
-record, bar-by-bar validation report, global range, phrase labels, articulation,
-dynamics, and a list of uncertain passages with exact source coordinates. Feed
-one score array into two renderers: a strict statement of pitch and time, then
-an expressive version. Compare them phrase by phrase and explain every
-performance change. Pitch and duration must remain identical between versions,
-while the expressive rendering should make high points, repetitions, and
-cadences easier to hear.
+Now do it for real. Take thirty-two to sixty-four bars from your [Lesson 42](../09-transcription/42-finding-music-you-can-legally-use.qmd) list, run the [Lesson 43](../09-transcription/43-four-pass-pipeline.qmd) pipeline and the [Lesson 46](../09-transcription/46-debug-transcription-like-software.qmd) checks on a short
+excerpt, then expand. Pick a source with several phrases, a clear high point,
+repeated material, and one passage that resists. That resistance gives the
+method real work.
+
+Deliver a source record, a bar-by-bar validation report, global range, phrase
+labels, articulation, dynamics, and every uncertain passage with source
+coordinates. Then feed one score array into two renderers, strict and
+expressive. Pitch and duration stay identical. Compare phrase by phrase and
+account for every performance change.

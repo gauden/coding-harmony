@@ -7,21 +7,42 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-The top bass-staff line represents A3, while the bottom treble line represents
-E4. Middle C lies in the space between the two staves and can be written on a
-short ledger line approached from either direction. Rather than separate pitch
-systems for the two clefs, the grand staff presents two windows onto one
-continuous coordinate space.
+## Two windows onto one ladder of pitch
 
-The *bass clef* anchors F3 on the second line from the top. In the middle-C
-coordinates introduced in Lesson 38, the bottom bass line G2 is `-10` and the
-top line A3 is `-2`. A *grand staff* aligns bass and treble so low and high
-voices share a timeline. Changing clef changes which span is convenient to
-display; it does not change the pitch arithmetic underneath.
+Bass clef isn't a second pitch system. It's the same ladder, shown lower down. A
+*bass clef* nails F3 to the fourth line up, and the letters run on from there.
+In [Lesson 38](38-treble-clef-coordinate-system.qmd)'s coordinates the bottom bass line G2 sits at
+-10, the top line A3 at -2.
 
-## Run this
+Middle C is the hinge: one ledger line above the bass staff, one below the
+treble, the same key either way. A *grand staff* stacks both windows over one
+timeline.
+
+## Both staves, drawn in characters
+
+```text
+coord  note  midi
+   2    E4    64    ------------------    treble line 1
+   1    D4    62
+   0    C4    60         ---------        middle C, ledger either way
+  -1    B3    59
+  -2    A3    57    ------------------    bass line 5
+  -3    G3    55
+  -4    F3    53    ------------------    bass line 4, the clef's F
+  -5    E3    52
+  -6    D3    50    ------------------    bass line 3
+  -7    C3    48
+  -8    B2    47    ------------------    bass line 2
+  -9    A2    45
+ -10    G2    43    ------------------    bass line 1
+```
+
+Engraved staff figures are still to come. Treat this sketch as scaffolding, not
+notation. Three coordinates lie between the staves: B3, middle C, D4.
+
+## Two hands, one clock
 
 ```{.ruby audio=""}
 use_bpm 84
@@ -63,54 +84,39 @@ in_thread { play_events bass, :fm }
 play_events melody, :piano
 ```
 
-The two voices cover the same sixteen beats in different registers. Their event
-records share one schema, and the concurrent renderers start against the same
-clock. Because staff positions remain visible until conversion, you can enter
-the low and high staves from the page first and inspect the resulting MIDI values
-as a later, separate step.
+Sixteen beats, two registers, one clock. Both arrays share the same event keys,
+and `in_thread` starts the low renderer as the main thread begins the high one.
+Positions stay visible up to conversion, so you type both staves straight off
+the page.
 
-## Change one thing
+## Move the bass, keep the letters
 
-1. Add seven to every bass position. Each note rises by one diatonic octave and
-   keeps its letter name, but the low voice now presses into the melody's range.
-   Listen for loss of separation without mistaking it for a pitch-decoding error.
-2. Exchange the two synths. Register remains unchanged, yet timbre redistributes
-   attention between the voices. This distinguishes what the clef encodes from
-   what the renderer contributes.
-3. Give both voices a coordinate-zero middle C on the final beat. They resolve
-   to the same MIDI number, demonstrating that middle C belongs to the shared
-   system rather than to either clef alone.
+1. Add seven to every bass position. Each note climbs a diatonic octave and
+   keeps its letter, but the low voice now crowds the melody. Which line do you
+   lose first?
+2. Swap the two synths. Register doesn't change, yet your attention does. That
+   separates the clef's job from the renderer's.
+3. End both voices on a coordinate-zero middle C. They land on the same MIDI
+   number from opposite directions.
 
-## Why it works
+## One function reads both clefs
 
-Both clefs call `staff_midi` because position zero has been defined for the
-whole pitch space. Reading bass is still a matter of measuring a diatonic offset
-from middle C, exactly as in treble. A clef-specific function could begin from
-its own anchor, but after applying the correct offset it would reach the same
-global coordinate.
+`staff_midi` never asks which clef you're in, because coordinate 0 was defined
+once for the whole pitch space. To read bass, you measure a diatonic offset from
+middle C, exactly as you do in treble.
 
-The grand staff also suggests a concurrency model. Bass and melody remain
-independent event arrays while sharing one clock. `in_thread` starts the low
-renderer as the main thread begins the high one. Common start times keep vertical
-alignments intact; separate arrays allow one voice to be corrected without
-shifting events in the other.
+The grand staff doubles as a concurrency diagram: two event arrays, one clock.
+Shared starts hold the page's vertical alignments together; separate arrays let
+you fix one voice without shifting the other.
 
-Keyboard scores often associate bass clef with the left hand and treble with the
-right, but clef and hand are different concepts. Hands cross, and instruments
-other than keyboards read both clefs. Naming the arrays by musical range avoids
-embedding a performance convention in the decoded score.
+Clef and hand aren't the same thing. Hands cross, plenty of instruments read
+both clefs, and naming your arrays for musical range keeps that convention out
+of the score.
 
-Absolute starts make vertical alignment testable. Events with the same `:start`
-sound together even when their note heads occupy different staves. Barlines give
-the voices common metric checkpoints. Before playback, compare the final start
-plus duration for both arrays; unequal totals should be explained by the source,
-not discovered later as apparent thread drift.
+## Eight bars across two staves
 
-## Take it further
-
-Encode eight bars of two-voice music from a printed grand staff. Preserve each
-original staff coordinate beside `:note`, `:start`, and `:duration`, and assert
-that the two voices reach the same final beat. Include a ledger-line note in
-each clef and one middle C shared between them. Render the lines with contrasting
-synths, then use the stored coordinates to trace any doubtful pitch back to its
-place on the page.
+Encode eight bars of two-voice music from a printed grand staff. Keep each staff
+coordinate beside `:note`, `:start`, and `:duration`, and assert both voices
+reach the same final beat. Include a ledger-line note in each clef and one shared
+middle C. Render with contrasting synths, then trace any doubtful
+pitch back through its coordinate.

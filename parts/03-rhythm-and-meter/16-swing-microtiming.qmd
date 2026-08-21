@@ -114,7 +114,7 @@ Beat values become milliseconds only through tempo. At 120 BPM, `0.01` beats is
 physical deviation grows as you slow down. For a fixed physical delay, convert
 with `milliseconds * bpm / 60000.0` and say in a comment why.
 
-Lesson 17 swaps displaced pairs for two exact subdivisions running at once. The
+[Lesson 17](17-tuplets-3-against-2.qmd) swaps displaced pairs for two exact subdivisions running at once. The
 shared cycle boundary again prevents drift, and each layer divides the span by
 a different count.
 

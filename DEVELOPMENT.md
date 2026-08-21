@@ -5,16 +5,18 @@
 When the user says `resume`, read `TODO.md`, this file, `STYLE.md`, and
 `git status --short`. Continue from the first unticked item without regenerating
 or overwriting completed prose. Run the focused tests for the files being changed
-before advancing to the next phase. If this first-draft checklist remains fully
-ticked, report that state and use the second-draft list below for any newly
-requested work.
+before advancing to the next phase. If every phase in `TODO.md` is ticked, report
+that state and work from the "Still owed" list at the bottom of it.
+
+Read Lessons 1 and 6 before writing any prose. `STYLE.md` describes the voice;
+those lessons are the voice, and where the two seem to disagree the lessons win.
 
 ## Goal
 
-Produce a complete first draft of *Music Theory Through Sonic Pi*: 58 sequential
-lessons, the front matter, and five appendices. The manuscript must be coherent
-enough for an editor to read top to bottom, while clearly remaining a first draft
-until examples have been auditioned in Sonic Pi.
+*Music Theory Through Sonic Pi*: 58 sequential lessons, the front matter, and
+five appendices, written so that a programmer who cannot read a note will
+actually keep reading. The manuscript must hold together top to bottom while
+staying honest that no example has been auditioned in Sonic Pi.
 
 ## Roles
 
@@ -28,8 +30,15 @@ until examples have been auditioned in Sonic Pi.
 ## Acceptance criteria
 
 - Exactly 58 lesson files remain in curriculum order.
-- Every lesson has `status: draft`, the standard five instructional sections,
-  substantive prose, and at least one non-placeholder Ruby example.
+- Every lesson has `status: draft`, at least three sections, a numbered set of
+  variations to try, substantive prose, and a non-placeholder Ruby example.
+  Section headings name their own lesson; the suite requires at least 25 distinct
+  heading patterns across the book and caps any generic title at 20 lessons.
+- Every lesson clears the voice checks in `tests/test_book_draft.py`:
+  contractions, second person, a real question, sentence-length variation, hedge
+  density, the em dash budget, and the contrast-formula cap.
+- Lesson lengths vary with the material. The suite rejects a manuscript where
+  every lesson is written to the same size.
 - No generated syllabus planning callout or `TODO` placeholder remains in a lesson.
 - Prose clears `scripts/lint-prose.sh`.
 - Extracted Ruby clears `ruby -c` through `scripts/check-code.sh`.
@@ -38,6 +47,52 @@ until examples have been auditioned in Sonic Pi.
   manual sound QA; `draft` is not silently promoted to `tested`.
 
 ## Session log
+
+### 2026-08-21
+
+- Measured the second draft's voice before changing anything. Over 41,160 words
+  of lesson prose with code stripped: zero verbal contractions, 8 question marks
+  across 58 lessons, 567 hedges, 26% of sentences opening on an article, and 108
+  uses of "rather than" or "instead of" where the banned "not X but Y" had been.
+  All 58 lessons shared one heading signature, one code block and a 724-1011
+  word band. Recorded the diagnosis in `plan.html`.
+- Identified the cause as specification rather than execution. `STYLE.md` was a
+  ban list with no positive model, and `tests/test_book_draft.py` hard-coded
+  `REQUIRED_HEADINGS` plus a word floor into every lesson, so the template was a
+  passing test rather than a habit.
+- Rewrote `STYLE.md` around six mandates with worked before/after pairs, and
+  replaced the form tests with voice tests measuring contractions, second
+  person, article-led sentences, questions, sentence-length variation, hedge
+  density, em dash budget and contrast-formula reflex, plus anti-uniformity
+  checks on heading patterns and lesson length. Baseline: 9 voice checks red, 10
+  structural invariants green.
+- Wrote the preface, setup chapter and Lessons 1-7 by hand as the reference
+  corpus, on the principle that an agent given rules produces avoidance while an
+  agent given instances produces prose.
+- Ran six parallel rewrite lanes against those exemplars. Three completed
+  (Lessons 8-25 and the five appendices); three hit a session limit partway, and
+  the coordinator finished Lessons 35-37, 45-46 and 57-58 directly.
+- Verified every lane independently rather than trusting its report, including
+  diffing all Ruby blocks against their pre-rewrite versions to confirm that
+  only the intended code changes landed.
+- Final measurements across the 58 lessons: 422 contractions, 76 questions, 8
+  hedges, 15% article openings, 15% of sentences under 8 words, lengths from 627
+  to 1331 words with a standard deviation of 180, and 58 distinct heading
+  patterns out of 58.
+- Fixed seven substantive defects found by reading: the `:sine` demonstrations
+  in Lessons 6 and 22, the seeded-randomness comparison in Lesson 16, the
+  parallel cadences and uneven seam in Lesson 29, the bass-tenor unison in
+  Lesson 31, the scale-degree cluster in Lesson 25, and the missing printed bars
+  in Lesson 41. Removed an invented first-person recollection from Lesson 46.
+- Linkified 116 cross-references. One bug worth recording: the first pass also
+  rewrote "Lesson 1" inside `setup.qmd`'s YAML title, and because a title
+  propagates to the sidebar, that single link produced an unresolved-target
+  warning on all 64 other pages. Front matter is now excluded.
+- Final checks: 19 pytest tests pass, prose lint is clean across 72 files, all
+  83 extracted Ruby snippets clear syntax, `git diff --check` is clean, and
+  Quarto renders all 65 HTML pages with zero warnings. A static scan of the
+  built book found no broken local links, the status callout present on all 58
+  lesson pages, and the joint author string on all 65.
 
 ### 2026-08-20
 
@@ -150,9 +205,10 @@ until examples have been auditioned in Sonic Pi.
 
 ## Current state
 
-The expository second-draft pass is complete, independently audited, committed,
-and pushed. Every item in `TODO.md` is ticked. All lessons remain honestly marked
-`draft` until a human runs them in Sonic Pi and checks their listening claims.
+The third-draft voice rewrite is complete. Every item in Phases 1 to 4 of
+`TODO.md` is ticked. All lessons remain honestly marked `draft` until a human
+runs them in Sonic Pi and checks their listening claims; each one now says so in
+a callout at the top of the page rather than by hedging its prose.
 
 ## Second-draft and manual QA
 

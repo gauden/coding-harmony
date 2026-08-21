@@ -7,57 +7,52 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Choose a two-voice invention, canon, or contrapuntal excerpt whose lines can be
-followed both separately and together. The project asks your representation to
-preserve those two views. Each voice needs its own events, measure references,
-phrase or motive labels, and uncertainty markers; combined playback must then
-reproduce the source's vertical coordination. Revisit the independent-voice
-model in
+## The same eight notes, now chasing themselves
+
+[Lesson 55](55-capstone-solo-melody.qmd) gave that setup phrase a shape. [Lesson 56](56-capstone-b-melody-accompaniment.qmd) gave it a floor to stand on.
+This one hands it to a second voice and starts them two beats apart.
+
+`[:e4, :g4, :a4, :b4, :d5, :b4, :a4, :g4]` still. E minor pentatonic was chosen
+back in the setup buffer because nothing in it can clash, and that decision pays
+off exactly here: a canon needs every vertical combination to work, and a
+pentatonic collection has no semitones in it to go wrong.
+
+Two voices means your representation has to hold two views at once. Each voice
+needs its own events, measure references, motive labels and uncertainty markers.
+Combined playback then has to reproduce the vertical coordination. Go back to
+the independent-voice model in
 [Lesson 47](../10-texture-and-arrangement/47-independent-voices.qmd) and the
 entry-delay analysis in
-[Lesson 51](../10-texture-and-arrangement/51-canon-imitation.qmd) first. The
-capstone combines those concurrency decisions with the source checks from Part
-9.
+[Lesson 51](../10-texture-and-arrangement/51-canon-imitation.qmd) before you
+start.
 
-Polyphonic transcription adds vertical evidence to the horizontal work of
-following a melody. A pitch may be correct within its own line yet enter too
-early against the other voice, changing the interval and implied harmony. Check
-bar totals within each voice first. Then compare their shared boundaries and
-inspect the vertical interval created whenever either line attacks.
-
-Annotations for motives, imitative entries, cadences, and implied harmony help
-connect those two views. They are analytical claims about the events, not
-instructions for changing them. Keep the labels beside the score so a reader
-can review the interpretation while playback continues to depend on pitch and
-time alone.
-
-## Run this
-
-The model gives each voice an independent eight-beat array. Motive labels reveal
-where subject material passes between the lines, and a final alignment check
-confirms that the two horizontal sequences agree on the end of the excerpt.
+## Two lines, one entry delay
 
 ```{.ruby audio=""}
 use_bpm 86
 
+# The setup phrase, one note per beat, as the subject.
 upper = [
-  {note: 60, start: 0.0, duration: 1.0, motive: :subject},
-  {note: 62, start: 1.0, duration: 1.0, motive: :subject},
-  {note: 64, start: 2.0, duration: 2.0, motive: :subject},
-  {note: 67, start: 4.0, duration: 1.0, motive: :answer},
-  {note: 65, start: 5.0, duration: 1.0, motive: :answer},
-  {note: 64, start: 6.0, duration: 2.0, motive: :cadence}
+  {note: 64, start: 0.0, duration: 1.0, motive: :subject},
+  {note: 67, start: 1.0, duration: 1.0, motive: :subject},
+  {note: 69, start: 2.0, duration: 1.0, motive: :subject},
+  {note: 71, start: 3.0, duration: 1.0, motive: :subject},
+  {note: 74, start: 4.0, duration: 2.0, motive: :peak},
+  {note: 71, start: 6.0, duration: 1.0, motive: :cadence},
+  {note: 67, start: 7.0, duration: 1.0, motive: :cadence}
 ]
 
+# The same subject an octave down, entering two beats late.
 lower = [
-  {note: 48, start: 0.0, duration: 2.0, motive: :support},
-  {note: 55, start: 2.0, duration: 1.0, motive: :subject},
-  {note: 57, start: 3.0, duration: 1.0, motive: :subject},
-  {note: 59, start: 4.0, duration: 2.0, motive: :subject},
-  {note: 53, start: 6.0, duration: 1.0, motive: :cadence},
-  {note: 48, start: 7.0, duration: 1.0, motive: :cadence}
+  {note: 52, start: 0.0, duration: 2.0, motive: :support},
+  {note: 52, start: 2.0, duration: 1.0, motive: :subject},
+  {note: 55, start: 3.0, duration: 1.0, motive: :subject},
+  {note: 57, start: 4.0, duration: 1.0, motive: :subject},
+  {note: 59, start: 5.0, duration: 1.0, motive: :subject},
+  {note: 62, start: 6.0, duration: 1.0, motive: :peak},
+  {note: 52, start: 7.0, duration: 1.0, motive: :cadence}
 ]
 
 define :play_events do |events, synth_name, amp, pan_position|
@@ -65,77 +60,88 @@ define :play_events do |events, synth_name, amp, pan_position|
   cursor = 0.0
   events.each do |event|
     sleep event[:start] - cursor
-    play event[:note],
-      release: event[:duration] * 0.82,
-      amp: amp,
-      pan: pan_position
+    play event[:note], release: event[:duration] * 0.82,
+      amp: amp, pan: pan_position
     cursor = event[:start]
+  end
+  sleep events.last[:duration]
+end
+
+# Every attack in either voice is a vertical event worth inspecting.
+define :verticals do |top, bottom|
+  onsets = (top + bottom).map { |event| event[:start] }.uniq.sort
+  onsets.map do |moment|
+    sounding = lambda do |voice|
+      event = voice.reverse.find { |e| e[:start] <= moment }
+      event && event[:start] + event[:duration] > moment ? event[:note] : nil
+    end
+    high = sounding.call(top)
+    low = sounding.call(bottom)
+    [moment, high && low ? high - low : nil]
   end
 end
 
-upper_end = upper.last[:start] + upper.last[:duration]
-lower_end = lower.last[:start] + lower.last[:duration]
-raise "voice alignment failure" unless upper_end == lower_end
+ends = [upper, lower].map { |v| v.last[:start] + v.last[:duration] }
+raise "voices end at different times: #{ends}" unless ends.uniq.length == 1
 
-in_thread { play_events upper, :piano, 0.75, 0.25 }
-play_events lower, :pluck, 0.65, -0.25
+verticals(upper, lower).each { |moment, gap| puts "beat #{moment}: #{gap}" }
+
+in_thread { play_events upper, :piano, 0.8, -0.3 }
+play_events lower, :pluck, 0.7, 0.3
 ```
 
-The lower voice begins with longer supporting notes. At beat 2 it takes up a
-related rising subject while the upper line proceeds toward its answer and
-cadence. Gentle panning helps the ear retain each strand, yet the pan positions
-live in the renderer and make no claim about the written score.
+Read the log before you judge the sound. Every vertical gap is 9, 12, 15, 16 or
+17 semitones: sixths, octaves, tenths and elevenths. No seconds, no sevenths.
+That isn't skill, it's the pentatonic collection doing the work, and it's the
+reason this scale is where beginners are pointed.
 
-## Change one thing
+Now listen. Can you follow the lower voice once the upper reaches its peak? The
+pan settings help. So does the second synth.
 
-1. Delay only the lower subject events by 0.5 beats while leaving the opening
-   support and final cadence fixed. The existing endpoint check still passes,
-   which exposes its limit: it cannot detect internal overlap or a displaced
-   entry. Add an ordering or overlap check before deciding whether the edit is
-   valid.
-2. Restore the starts and transpose the lower subject notes upward by twelve
-   semitones. Their contour and pitch classes remain recognisable, but the
-   lower voice may cross above the upper. Listen for whether your attention
-   follows register, timbre, or the established melodic identity after crossing.
-3. Restore the register and mute each `play_events` call in turn. The isolated
-   voice should still have purposeful attacks, contour, and phrase direction.
-   If it sounds like scattered chord filling, return to its event boundaries
-   and compare them with the source before adjusting the combined balance.
+## Make the coordination harder
 
-## Why it works
+1. Change the lower voice's entry from beat 2 to beat 1. Every vertical
+   relationship shifts, and the imitation gets tighter and harder to track. Run
+   `verticals` again and compare the two lists before deciding which you prefer.
+2. Give both voices the same synth and set both pans to 0. The pitches and
+   timings are untouched, and the two lines become much harder to separate.
+   Timbre and space were doing more work than the notes were.
+3. Move the lower voice's peak D from beat 6 to beat 5, colliding with the upper
+   voice's held D5. Two octaves of the same pitch class at once. The alignment
+   check still passes, because it only looks at endings.
 
-Independent arrays preserve horizontal identity: you can ask what one voice
-does next without filtering a mixed event list. Global starts preserve vertical
-alignment: you can ask what the other voice sustains when this attack occurs.
-Both representations are necessary because counterpoint is heard along each
-line and across the lines at the same time.
+## What the two views each catch
 
-An interval report uses straightforward pitch arithmetic. Gather every distinct
-attack time, find the note active in each voice, and subtract the lower pitch
-from the upper. Reduction with `% 12` reveals interval class, but retaining the
-full number shows compound intervals, register, and crossing. A dissonance can
-be correct when prepared, placed, and resolved convincingly. The report points
-to a relationship that needs analysis; it does not forbid a class of sounds.
+Bar totals inside one voice catch horizontal errors: a missing tie, a dotted
+value entered plain. They're blind to everything vertical. A pitch can be
+perfectly correct within its own line and enter a beat early against the other
+one, changing the interval and the implied harmony without breaking a single
+total.
 
-Motive labels can attach directly to events like tags. Two entries may share a
-subject label even when one is transposed or rhythmically varied. Cadences and
-implied harmonies often describe spans rather than single attacks. In a longer
-work, a separate annotations array with `:start` and `:duration` can express
-those spans more faithfully without duplicating the score.
+That's why `verticals` exists. It rebuilds what's actually sounding at every
+onset in either voice, which is a different question from what either array says
+on its own. The `sounding` lambda searches backwards for the last event that
+started at or before the moment, then checks it hasn't already finished. Rests
+and held notes both fall out of that correctly.
 
-Automated checks can confirm syntax, metric totals, final alignment, and the
-intervals implied by entered pitches. They cannot establish that either voice
-matches the page or recording. Loop each part against the source alone, then
-compare the combination at exposed entries and cadences. Human listening is the
-step that joins independently valid data to the musical claim.
+Motive labels are analytical claims about the events, not instructions to the
+renderer. Playback consumes `:note`, `:start` and `:duration` and ignores
+`:motive` entirely. Keep it that way. The moment your labels start affecting the
+sound, you can no longer revise an interpretation without editing the music.
 
-## Take it further
+The alignment check earns its place by being narrow and honest about it. It
+proves both voices end together and nothing else, as variation 3 demonstrates.
+A check that quietly seemed to cover more would be worse than this one.
 
-Transcribe at least sixteen bars of two-voice polyphony. Deliver a separate
-array for each voice, duration checks for every bar, an automatic final-alignment
-check, and precise source coordinates. Annotate motives, imitative entries,
-cadences, and implied harmonies at the scope each claim requires. Generate a
-vertical interval report at every distinct attack and explain each crossing or
-exposed dissonance it flags. Audition the voices separately and together. The
-combined rendering should match the source, while either line remains readable,
-playable, and musically coherent on its own.
+## Build your own two-voice excerpt
+
+Pick a two-voice invention, canon or contrapuntal excerpt whose lines you can
+follow separately and together. Encode each voice with its own events, measure
+references, motive labels and uncertainty markers, and record the source
+properly using the ledger from [Lesson 42](../09-transcription/42-finding-music-you-can-legally-use.qmd).
+
+Validate each voice horizontally first, then run something like `verticals`
+across the pair and inspect every interval at every attack. Where a vertical
+looks wrong, you now have two candidates: a wrong pitch, or a right pitch in the
+wrong place. Write down which one you concluded and why, because in three months
+that reasoning is the only part you won't be able to reconstruct.

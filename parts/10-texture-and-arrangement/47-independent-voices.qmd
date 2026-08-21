@@ -7,32 +7,35 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Two simultaneous melodies form *polyphony* when the ear can follow each as a
-line with its own direction. Different pitches alone do not create that
-independence. A voice becomes legible through its rhythm, contour, register,
-and place in the phrase. If both parts attack together for the same durations,
-they tend to fuse into a harmonised melody, with one line heard as filling
-beneath the other.
+## Two melodies, or one melody with filling underneath
 
-Sonic Pi's concurrency gives the musical distinction a natural program
-structure. A `live_loop` or `in_thread` allows each voice to advance through
-its own events. `cue` announces a timing boundary and `sync` waits for it. The
-voices can differ inside the bar while meeting again on a shared grid, provided
-each process sleeps for the amount of musical time its data claims.
+Part 9 left you with a single line and a method for proving it matches its
+source. Add a second line and the question changes shape. Two parts sounding at
+once don't add up to *polyphony*, a texture where your ear follows each line as
+a thing with its own direction. Give both parts identical attacks and identical
+durations and they fuse. You'll hear one melody, thickened.
 
-Store each voice in a separate score structure. Tempo, meter, and phrase
-boundaries may be shared, but mutable note arrays should not be. A loop that
-rotates or edits shared data can alter another voice between readings and turn
-a musical problem into a concurrency bug whose sound is difficult to explain.
+Disagreement is what pries them apart: different rhythm, different contour,
+different register, different position in the phrase. Sonic Pi's concurrency
+happens to fit that musical distinction exactly. A `live_loop` or an `in_thread`
+lets each voice walk its own events at its own pace, `cue` announces a timing
+boundary, and `sync` waits for one. Your voices can disagree inside the bar and
+still meet on a shared grid, provided each process sleeps for exactly the
+musical time its data claims.
 
-## Run this
+Give every voice its own array. Tempo, meter and phrase boundaries are shared;
+mutable note arrays are not. A loop that rotates or edits shared data changes
+another voice between readings, and then you're debugging a concurrency fault
+wearing a musical costume.
 
-A clock loop announces the beginning of every four-beat bar. Melody and bass
-wait for the same announcement, then read independent arrays. Their event
-counts and attack patterns differ, yet both score structures account for the
-same four beats before returning to the clock.
+## A clock, a melody, and a bass
+
+Below, one loop does nothing but announce the start of each four-beat bar. The
+melody and the bass both wait for that announcement, then read arrays that share
+no data at all. The melody makes four attacks; the bass makes three. Which of
+the two do you expect to be easier to follow?
 
 ```{.ruby audio=""}
 use_bpm 88
@@ -77,59 +80,57 @@ live_loop :lower_voice do
 end
 ```
 
-At each bar cue, the two lines begin from a known shared boundary. The melody
-makes four attacks and holds B; the bass moves only three times, with its last
-note arriving under the melody's sustained tone. That disagreement of attack
-patterns helps the lower part remain audible as a line instead of disappearing
-into a sequence of vertical sonorities.
+This repeats until you stop it, so learn the shortcut before you run it: `Cmd-.`
+on macOS, `Alt-.` elsewhere. Four or five bars is plenty.
 
-## Change one thing
+Both parts leave the same known boundary at every cue. The melody climbs and
+then parks on B for two beats. Underneath that held B, the bass moves twice more.
+That's the moment the lower part stops being the bottom of a chord and starts
+being a line, because it's doing something while the melody is doing nothing.
 
-1. Shorten the last bass duration from 1.0 to 0.75. The lower loop reaches
-   `sync` a quarter beat early and waits there. Listen to the gap before the
-   next downbeat. The clock prevents accumulating drift, but it cannot make the
-   incomplete bar sound complete.
-2. Restore the duration, then give the bass the melody's attack pattern while
-   keeping the bass pitches. When the two parts articulate together, the
-   texture begins to sound chordal. Compare that fusion with the original
-   moment where the bass moves beneath the held B.
-3. In a separate renderer, transpose each melody note twelve semitones upward.
-   The larger register gap makes the lines easier to follow, although their
-   rhythmic relationship has not changed. This isolates spacing from timing.
+## Break the bar total on purpose
 
-## Why it works
+1. Shorten the last bass duration from `1.0` to `0.75`. The lower loop now
+   reaches `sync` a quarter of a beat early and waits there. Listen to the hole
+   that opens before the next downbeat. The clock stops the error accumulating,
+   and it can't make a short bar sound complete.
+2. Restore the duration, then give the bass the melody's four start times while
+   keeping the bass pitches. Articulate together and the texture turns chordal.
+   Compare that against the original, where the bass moved under a held note.
+3. Add twelve to every melody note in the renderer. Timing hasn't moved at all,
+   so anything you hear differently belongs to spacing. Wide registers make two
+   lines easier to hold apart even when their rhythms agree.
 
-Each voice behaves like a small state machine: find the next absolute start,
-play the event, advance its cursor, and arrive at the shared boundary. The
-familiar `:note`, `:start`, and `:duration` keys carry the event model from the
-transcription lessons into arrangement. The clock contains coordination rather
-than pitches. As a result, replacing the melody array does not rewrite the bass
-or change the clock's account of a bar.
+## Why the cue survives sixteen bars
 
-Sonic Pi schedules musical time separately from the wall-clock time needed for
-ordinary Ruby statements. Over sixteen bars, correctly totalled loops return
-to the cue together rather than separating gradually. An incorrect total
-creates a repeatable early wait, a gap, or a missed boundary. Begin timing
-diagnosis by adding the durations; a balance or synth adjustment cannot repair
-a voice that claims the wrong amount of time.
+Each voice is a small state machine: find the next absolute start, sleep the
+difference, play, advance the cursor, arrive at the shared boundary. Those
+`:note`, `:start` and `:duration` keys are the same ones you built transcriptions
+from in Part 9, which is the point. Arrangement doesn't get a new schema. The
+clock holds coordination and no pitches, so swapping the melody array leaves the
+bass and the clock untouched.
 
-`sync` also expresses musical form. A bar cue suits a groove whose parts renew
-every four beats. A phrase cue may be clearer when the voices contain unequal
-bars but share an eight- or sixteen-beat arrival. Synchronising every note would
-couple the lines so tightly that their independent processes offer little
-benefit. Choose the largest boundary that keeps the intended form stable.
+Sonic Pi counts musical time separately from the wall-clock time your Ruby
+statements consume. Sixteen bars later, loops whose durations total correctly
+still arrive at the cue together. A wrong total gives you a repeatable early
+wait, a gap, or a boundary that gets missed entirely. So start every timing
+diagnosis by adding the durations. No amount of balancing or synth-swapping
+fixes a voice that claims the wrong amount of time.
 
-This example repeats indefinitely; stop it with Cmd-. or Alt-. Ruby can check
-the syntax and duration data outside Sonic Pi. Whether the registers are
-balanced and whether each line remains perceptually independent still require
-listening to the running loops.
+`sync` also encodes musical form. Cue every bar when the parts renew every four
+beats. Cue every phrase when the voices run unequal bars but share an eight- or
+sixteen-beat arrival. Synchronise every note and you've coupled the lines so
+tightly that separate processes buy you nothing. Pick the largest boundary that
+holds your form together.
 
-## Take it further
+## Build eight bars that hold together
 
-Build an eight-bar two-part arrangement and allow it to repeat for sixteen
-bars. Keep upper and lower events in separate arrays, validate every bar total,
-and choose one cue per bar or phrase. Give the lines recognisably different
-attack patterns and begin with at least an octave between their registers.
-During review, mute each part in turn: the remaining line should still reveal a
-coherent contour. The combined loop should stay aligned while either score can
-be transposed or replaced without editing the other.
+Write a two-part arrangement of eight bars and let it repeat for sixteen. Keep
+upper and lower events in separate arrays, check every bar total, and choose one
+cue per bar or per phrase. Give the lines attack patterns you can tell apart at
+a glance, and start them at least an octave from each other.
+
+Then mute each part in turn and listen to what's left. A line that survives on
+its own has a contour; a line that sounds like scattered filling doesn't. The
+combined loop should stay locked, and either score should be transposable or
+replaceable without your touching the other one.

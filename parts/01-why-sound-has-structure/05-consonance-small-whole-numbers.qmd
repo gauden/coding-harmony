@@ -45,7 +45,7 @@ play_ratio 220, 311, 220
 
 Sine waves are the right choice here, and the reason matters. Each one carries a
 single frequency, so nothing you hear comes from partials interacting; it comes
-from the two tones themselves. (Lesson 6 needs the opposite, and says so.)
+from the two tones themselves. ([Lesson 6](06-twelve-notes-one-compromise.qmd) needs the opposite, and says so.)
 
 The 2:1 pair fuses so completely that the upper tone stops sounding like a
 separate note and starts sounding like brightness added to the lower one. The
@@ -99,7 +99,7 @@ reaching for a bigger explanation.
 
 Pure ratios work beautifully while you stay put. Tune a perfect fifth above C
 and it's exact. But the piece moves to D, then to E-flat, and a keyboard has
-only twelve keys to serve all of them. Something has to give. Lesson 6 is about
+only twelve keys to serve all of them. Something has to give. [Lesson 6](06-twelve-notes-one-compromise.qmd) is about
 what gives, and by how much.
 
 ## Take it further

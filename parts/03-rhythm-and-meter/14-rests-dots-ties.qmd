@@ -84,7 +84,7 @@ One last distinction catches people. A rest guarantees no new attack.
 It doesn't guarantee silence, because the previous note's release keeps fading
 into it. For a real hole, shorten the envelope before it too.
 
-Lesson 15 returns to a fixed grid and asks what happens when attacks dodge its
+[Lesson 15](15-syncopation-grid.qmd) returns to a fixed grid and asks what happens when attacks dodge its
 strongest positions. An unplayed slot shapes a rhythm as hard as a played one.
 
 ## Two bars, eight beats

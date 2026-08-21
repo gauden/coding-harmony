@@ -7,36 +7,38 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-A transcription begins with a musical source, but it also begins with a
-decision about evidence. You need to know which score or recording you heard,
-where to find it again, and what its stated terms allow you to do. Treating that
-paperwork as something to reconstruct after the notes are entered creates
-trouble when two editions disagree about a measure or the original page can no
-longer be recovered for a shared arrangement.
+## A source is evidence, not just notes
 
-Source libraries require different kinds of care. IMSLP contains scans and
-editions whose legal status can vary by item and jurisdiction. Mutopia presents
-typeset scores with terms displayed for each item. MuseScore contains community
-uploads, so access to a page does not by itself settle the rights attached to
-the upload. *Public domain* is a legal status, not another name for old music.
-The underlying composition may be free of copyright while a recent engraving,
-translation, performance, or arrangement remains protected.
+Every transcription starts with a piece of music. It also starts with a
+decision about evidence: which score or recording you actually heard, how to
+find it again, and what its terms let you do with it. Leave that paperwork
+until after the notes are typed and you'll pay for it twice: once when two
+editions disagree about measure 7, and again when you want to share an
+arrangement and can't say where the original came from.
 
-The practical answer is a small source record kept beside the score data. Give
-it the title, composer, edition or arranger, repository, stable page address,
-displayed licence statement, access date, and the bars you plan to transcribe.
-This record is not decoration around the musical work. It is the route back to
-the evidence when a pitch, measure number, or permission later needs checking.
+Different libraries need different care. IMSLP holds scans and editions whose
+legal status varies item by item and country by country. Mutopia publishes
+typeset scores with terms displayed alongside each one. MuseScore hosts
+community uploads, so being able to open a page settles nothing about the
+rights attached to it. *Public domain* is a legal status, not a synonym for old
+music. A composition can be free of copyright while the engraving, translation,
+performance, or arrangement in front of you is still protected.
 
-## Run this
+What you want is a small source record living beside the score data: title,
+composer, edition or arranger, repository, stable page address, the displayed
+licence statement, the date you looked, and the bars you plan to transcribe.
+That record isn't decoration wrapped around the music. It's your route back to
+the evidence when a pitch, a measure number, or a permission needs checking.
 
-This program keeps the source description and a first audition in the same
-object. Its seven-note phrase is invented, which avoids making any claim about
-a named edition while the fields are still placeholders. Notice that the
-metadata can be incomplete without preventing playback. That is precisely why
-the log prints the missing information where you cannot overlook it.
+## Play it, then read what's missing
+
+This program keeps the source description and a first audition in one object.
+Its seven-note phrase is invented, which avoids making any claim about a named
+edition while the fields are still placeholders. Notice the metadata can be
+incomplete without stopping playback. That's exactly why the log prints the
+gaps where you can't miss them.
 
 ```{.ruby audio=""}
 use_bpm 84
@@ -61,64 +63,63 @@ puts "Source: #{candidate[:repository]}"
 puts "Licence note: #{candidate[:licence]}"
 ```
 
-The phrase rises from C to G and returns, ending with a long C that sounds
-settled. At the same time, the log exposes the unfinished repository and
-licence fields. The music can play, but the candidate is not yet ready to
-become the basis of a shareable transcription. Keeping both facts visible
-prevents a pleasant audition from quietly outrunning the source work.
+The phrase climbs from C to G and comes home, and the long final C settles it.
+Meanwhile the log shows you an unfinished repository and an unfinished licence.
+Music plays; the candidate isn't ready to become anything you can share.
+Keeping both facts in view stops a pleasant audition from outrunning the source
+work behind it.
 
-## Change one thing
+## Fill in the real fields
 
-1. Replace the repository and licence strings with the wording from one real
-   candidate page. Preserve that wording instead of paraphrasing it. Run the
-   phrase again and read the log as if you had received it from someone else:
-   could you recover the same page without asking which version they meant?
+1. Replace the repository and licence strings with the wording from one actual
+   candidate page. Copy it, don't paraphrase it. Run the phrase again and read
+   the log as if a stranger had sent it to you. Could you find that exact page
+   from what it says?
 2. Replace the invented notes and durations with one complete phrase from a
-   candidate whose stated terms fit your intended use. Keep the bar range with
-   the data. Listen for the phrase ending rather than stopping merely because
-   four measures have elapsed; a cut through a cadence will make the extract
-   feel interrupted.
-3. Add an edition or arranger field. If the page supplies neither, record
-   `"not stated"`. Playback stays identical, which makes the lesson useful:
-   provenance can improve even when no audible property changes.
+   candidate whose stated terms fit what you intend to do. Keep the bar range
+   with the data. Stop at the end of the phrase, not at the end of four
+   measures: a cut through a cadence leaves the extract sounding interrupted.
+3. Add an edition or arranger field. When the page gives neither, write
+   `"not stated"`. Playback doesn't change at all, and that's the point.
+   Provenance can improve while nothing audible moves.
 
-## Why it works
+## Bytes never carry their own permissions
 
-Programmers are accustomed to values whose later treatment depends on
-metadata. A file's bytes cannot tell you whether redistribution is permitted;
-the same bytes can arrive under different terms. Pitches have the same
-limitation. Two pages may encode the same composition while the scan,
-engraving, editorial additions, or arrangement on each page has a different
-status.
+You already know values whose handling depends on metadata travelling beside
+them. A file's bytes can't tell you whether you're allowed to redistribute
+them, and identical bytes arrive under different terms all the time. Pitches
+have the same limitation. Two pages can carry the same composition while the
+scan, engraving, editorial additions, and arrangement on each sit in different
+legal positions.
 
-Provenance also improves musical debugging. Suppose measure 7 sounds wrong a
-week after entry. With a source record, you can reopen the exact artefact and
-compare the event against a stable coordinate. Without it, even the phrase
-"measure 7" may be ambiguous: another edition may count a pickup differently,
-renumber a section, or print a variant reading. The edition field explains why
-two careful transcriptions can disagree.
+Provenance pays off in musical debugging too. Suppose measure 7 sounds wrong a
+week after you typed it. With a source record you reopen the exact artefact and
+compare the event against a fixed coordinate. Without one, even "measure 7" is
+ambiguous, because another edition counts the pickup differently, renumbers a
+section, or prints a variant reading. The edition field is often the whole
+explanation for why two careful transcriptions disagree.
 
-A shortlist helps reveal these practical differences before you commit to a
-long project. Twenty candidates is enough to compare range, texture, score
-clarity, recording availability, and displayed terms. For a first ear
-transcription, a clear monophonic line lets you hear individual attacks. For a
-score-entry project, readable engraving and stable measure numbers reduce the
-number of unrelated uncertainties. Musical ambition is easier to sustain when
-the evidence itself is usable.
+Building a shortlist surfaces these differences early. Twenty candidates is
+enough to compare range, texture, score clarity, recording availability, and
+displayed terms. For a first ear transcription, pick a clear monophonic line
+where you can hear individual attacks. For score entry, pick readable engraving
+and stable measure numbers, so the only hard questions are the musical ones.
 
-This workflow is not legal advice. Copyright duration and public-domain rules
-depend on jurisdiction, and a composer's death date does not settle the status
-of every edition or recording. When a page is unclear, choose a source with an
-explicit statement or obtain advice suited to the place and manner in which
-you intend to publish.
+None of this is legal advice. Copyright duration and public-domain rules depend
+on jurisdiction, and a composer's death date settles nothing about a given
+edition or recording. When a page is unclear, either choose a source that
+states its terms explicitly or get advice suited to where and how you plan to
+publish.
 
-## Take it further
+## Twenty candidates, three choices
 
 Create `sources.md` and describe twenty candidates. For each one, record a
 stable page address, the displayed licence or public-domain statement, the date
-you accessed it, the named edition or arranger, approximate difficulty,
-texture, and a proposed bar range. Then reduce the list to three choices: one
-melody for transcription by ear, one score for exact entry, and one larger
-capstone candidate. Write the entries so another reader can recover every
-source and understand why each extract is musically workable without having to
-ask which version you meant.
+you accessed it, the named edition or arranger, rough difficulty, texture, and
+a proposed bar range. Then cut the list to three: one melody to transcribe by
+ear, one score for exact entry, and one larger capstone candidate.
+
+Write the entries so another reader can recover every source and see why each
+extract is musically workable, without having to ask which version you meant.
+[Lesson 43](43-four-pass-pipeline.qmd) puts the first of those three through a four-pass pipeline, and the
+bar range you chose becomes the excerpt.

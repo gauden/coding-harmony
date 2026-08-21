@@ -38,7 +38,7 @@ with sound itself, then turn pitch and time into data. Acoustics explains why
 certain relationships keep recurring. Rhythm, intervals, scales and harmony give
 those relationships names. Notation shows up in Part 8, long after you can
 already hear the things it notates, and transcription comes last of all. By the
-capstones, that six-element array from Lesson 1 has grown into named voices
+capstones, that six-element array from [Lesson 1](parts/00-getting-a-sound-out/01-hello-sound.qmd) has grown into named voices
 sharing a timeline. The representation grows because the music keeps asking more
 of it.
 

@@ -7,31 +7,35 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-The lowest sounding pitch changes how the notes above it are understood. A root
-on every downbeat makes a progression easy to identify, though the result can
-soon feel predetermined. A bass line acquires direction when it treats those
-roots as destinations and connects them with chord tones, passing tones, and
-*approach notes*, pitches a semitone above or below the next target.
+## The note underneath decides what the chord is
 
-Begin with the unadorned roots because they provide an audible reference. If
-that version does not state the progression clearly, extra motion will disguise
-the harmonic fault rather than solve it. Once the roots work, preserve their
-downbeat arrivals and change the route between them. The comparison then tells
-you what the connective notes contribute.
+Whatever sits lowest changes how you hear everything above it. Put the root on
+every downbeat and the progression becomes trivially easy to identify, which is
+useful for about eight bars and then starts to feel like a spreadsheet. A bass
+line gets direction when you treat those roots as destinations and connect them:
+chord tones, passing tones, and *approach notes*, pitches a semitone above or
+below the next target.
 
-Rhythm helps the bass become a line rather than the bottom member of a chord.
-It might sustain a downbeat, walk in quarter notes, or anticipate the next root
-off the beat. What gives the part independence is that its pattern responds to
-the harmony without copying every duration of the melody.
+Start with bare roots anyway, because they give you a reference. If your
+progression doesn't state itself clearly with four long roots, adding motion
+will hide the fault, not fix it. Once the roots work, keep their downbeat
+arrivals fixed and change only the route between them. Now the comparison tells
+you exactly what the connective notes contribute.
 
-## Run this
+Rhythm is the other half. A bass sustains a downbeat, walks in quarter notes, or
+arrives at the next root early, off the beat. Its pattern answers the harmony
+without copying the melody's durations, and that's what turns the bottom of a
+chord into a part you can follow.
 
-The progression moves through C, A minor, F, and G. The first pass exposes its
-four roots, one to a bar. The walking version fills each bar with quarter notes:
-root, fifth, a directional passing tone, and a chromatic approach from below to
-the next downbeat.
+## Four roots, then four routes
+
+The progression runs C, A minor, F, G. First you'll hear the four roots alone,
+one per bar. Then the walking version fills each bar with quarter notes: root,
+fifth, a directional passing tone, and a chromatic approach from below into the
+next downbeat. Both passes reach the same four roots at the same four moments,
+so what is the second one actually adding?
 
 ```{.ruby audio=""}
 use_bpm 92
@@ -65,58 +69,59 @@ sleep 2
 play_walking_bass roots
 ```
 
-The long roots in the first statement act as four harmonic pillars. In the
-second, those pillars remain on the downbeats, but the bass is already leaning
-toward the next one by beat 4. Listen especially to the semitone between each
-approach note and the following root. That small distance makes the arrival
-sound intended rather than arbitrary.
+Four pillars in the first statement. In the second, those pillars stay exactly
+where they were, but by beat 4 the bass is already leaning into the next one.
+Listen to the semitone between each approach note and the root that follows it.
+That single half-step is what makes the arrival sound intended.
 
-## Change one thing
+## Reroute the walk
 
-1. Make `approach` equal `next_root + 1`. Each chromatic note now falls into its
-   target from above. Compare the direction before all four roots; one formula
-   need not produce equally convincing voice leading at every boundary.
-2. Restore the approach and change `fifth` to `root + 12`. The octave reinforces
-   the root but supplies less harmonic contrast than the fifth. Listen for a
-   wider line whose second beat repeats identity instead of adding a new chord
-   tone.
+1. Change `approach` to `next_root + 1` so every chromatic note falls into its
+   target from above. Compare the approach into all four roots. One formula
+   won't give you equally convincing voice leading at every boundary.
+2. Restore the approach and set `fifth` to `root + 12`. An octave reinforces the
+   root and adds no new chord tone. The line gets wider, and its second beat now
+   repeats an identity you already had.
 3. Zip the four pitches with durations `[1.5, 0.5, 1, 1]`. The bar still totals
-   four beats, but the held opening root and quick second event change the
-   line's gait. Compare that rhythm against a melody of steady quarter notes.
+   four beats. A held opening root followed by a quick second event changes the
+   gait completely, and against a melody in steady quarter notes you'll hear the
+   two parts stop marching in step.
 
-## Why it works
+## What the approach note buys you
 
-Downbeat roots define the sequence because low register gives them unusual
-perceptual weight. Notes between those roots can be unstable for a moment if
-the structural targets arrive clearly and on time. A chromatic approach lies
-outside the current chord, yet its half-step resolution immediately explains
-why it was there.
+Low register carries unusual perceptual weight, which is why downbeat roots
+define the sequence on their own. Everything between them can be unstable for a
+moment, so long as the structural targets land clearly and on time. A chromatic
+approach sits outside the current chord, and its half-step resolution explains
+its presence the instant it arrives.
 
-Passing tones need a route. When two roots are a third apart, a scale step can
-fill the space with obvious direction. Across a larger interval, chord tones on
-strong beats make the path easier to hear, while less stable pitches tend to
-work better in metrically weaker positions. These are interacting constraints,
-not a table of universally permitted notes: the next root, current chord,
-meter, and melodic register all shape the choice.
+Passing tones need somewhere to go. Two roots a third apart leave room for a
+single scale step with obvious direction. Across a wider interval, put chord
+tones on strong beats and the less stable pitches in weak metrical positions.
+These constraints interact; they aren't a lookup table of permitted notes. Next
+root, current chord, meter and melodic register all pull on the same choice.
 
-The code keeps the four roots as source data and calculates connective notes in
-one function. That leaves the root-only bass available as a regression test.
-If the walking version arrives on a different downbeat, examine its indexing
-and duration sum before replacing individual pitches. The harmony may be
-correct while the timeline is not.
+The four roots stay as source data and one function derives everything else,
+which leaves the root-only bass sitting there as a regression test. If your
+walking version lands on the wrong downbeat, check the indexing and the duration
+sum before you start replacing pitches. Harmony and timeline fail
+independently.
 
-Low register also changes timbre. A piano pitch that remains distinct can turn
-to undifferentiated rumble on an FM or sub-bass synth because its partials
-accumulate differently through speakers and headphones. Try raising the entire
-line an octave before reducing amplitude. The problem may be spectral density,
-and volume alone will leave that density intact.
+Down here, timbre changes too. A pitch that stays articulate on a piano turns to
+undifferentiated rumble on an FM or sub-bass synth, because its partials stack
+up differently through speakers than through headphones. Try the whole line an
+octave higher before you reach for the amp. Turning down a muddy line leaves the
+mud exactly where it was.
 
-## Take it further
+## Walk an eight-bar progression
 
-Choose an eight-bar progression from an earlier harmony lesson. Render one root
-per bar, then derive a walking line that reaches those same roots on every
-downbeat. Include at least four chromatic approaches and four diatonic passing
-tones, identifying each in comments so its purpose can be reviewed. Give the
-walking line a rhythm distinct from the melody and validate each bar's total.
-Play root and walking versions in sequence, listening for whether the added
-motion clarifies the route between chords without weakening their arrivals.
+Take an eight-bar progression from an earlier harmony lesson. Render one root
+per bar first. Then derive a walking line that hits those same roots on every
+downbeat, with at least four chromatic approaches and four diatonic passing
+tones, each named in a comment so you can review your own reasoning later.
+
+Give the walking line a rhythm your melody doesn't have, and validate every
+bar's total. Play the root version and the walking version back to back. You're
+listening for one thing: whether the added motion clarifies the route between
+chords, or whether it has quietly weakened the arrivals it was supposed to
+prepare.

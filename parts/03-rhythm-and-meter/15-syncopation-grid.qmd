@@ -124,7 +124,7 @@ and you'll only find that out by listening to it cycle. Treat rotation as a
 compositional decision you make with your ears, not as an implementation
 detail.
 
-Lesson 16 keeps pairs of eighth notes intact and moves the onset inside each
+[Lesson 16](16-swing-microtiming.qmd) keeps pairs of eighth notes intact and moves the onset inside each
 pair by less than a beat. The question changes from which grid slot an attack
 occupies to where it sits between two boundaries that never move.
 

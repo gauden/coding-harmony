@@ -105,7 +105,7 @@ if a result needs relocating, transpose the whole thing by twelve semitones.
 Clipping the one offending note would wreck the interval pattern that inversion
 exists to preserve.
 
-Lesson 3 leaves these arrays completely alone and changes their tempo. That
+[Lesson 3](03-time-beats-seconds.qmd) leaves these arrays completely alone and changes their tempo. That
 separation is worth as much as this one: pitch data survives a new rate the same
 way this phrase survived reversal and reflection.
 

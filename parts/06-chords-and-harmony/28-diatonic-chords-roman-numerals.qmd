@@ -7,21 +7,23 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Choose degrees 1, 3, and 5 of a major scale and you have its tonic triad. Begin
-on degree 2 and choose every other degree again; another chord appears without
-introducing a pitch from outside the key. Continue from all seven starting
-points and the scale itself determines a family of triads. Their different
-qualities emerge from its unequal spacing.
+## A scale hands you seven chords for free
 
-These are *diatonic chords*. Roman numerals name their scale position and encode
-quality: uppercase for major, lowercase for minor, with a diminished marker on
-degree 7. A progression such as `I, V, vi, IV` therefore stores relationships
-instead of fixed note names. Bind it to another key and every pitch changes,
-while the sequence of harmonic jobs stays recognisable.
+Take degrees 1, 3 and 5 of a major scale and you have its tonic triad. Start on
+degree 2 and take every other degree again, and another chord appears without
+one note from outside the key. Do that from all seven starting points and the
+scale has quietly handed you a family of seven triads. You never chose their
+qualities. The scale's uneven spacing chose for you.
 
-## Run this
+These are the *diatonic chords*, and Roman numerals name them by scale position
+while encoding quality in the case: uppercase for major, lowercase for minor,
+with a marker on the diminished chord at degree 7. So `I, V, vi, IV` stores
+relationships and not note names. Bind that sequence to a different key and
+every pitch changes while the sequence of harmonic jobs stays recognisable.
+
+## One symbolic plan, four keys
 
 ```{.ruby audio=""}
 use_bpm 96
@@ -51,61 +53,69 @@ progression = [:I, :V, :vi, :IV]
 end
 ```
 
-The four passes climb through different keys while tracing the same harmonic
-route. I establishes home; V raises the expectation of return; vi diverts that
-expectation toward a related minor chord; IV opens another path back toward I.
-Because one symbolic array drives every rendering, the common behaviour is
-easier to hear than it would be in four unrelated note lists.
+You get four passes that climb through four keys along one harmonic route. I
+sets up home. V raises the expectation of a return. vi takes that expectation
+and points it at a related minor chord instead. IV opens a second road back
+toward I. Because one symbolic array drives every rendering, the shared shape is
+much easier to hear than it would be in four unrelated note lists.
 
-## Change one thing
+## Bend the plan, then look inside it
 
-1. Replace the progression with `[:I, :IV, :V, :I]`. Hear how V now spends its
-   tension on an immediate tonic rather than on a diversion to vi. The final
-   boundary should close more firmly.
-2. Print the seven C-major triads as MIDI integers and compare the sizes of their
-   two thirds. The resulting pattern is major, minor, minor, major, major, minor,
-   diminished; it is derived rather than stored in the code.
-3. Arpeggiate each chord in the renderer. The progression and pitch content stay
-   fixed, while separate attacks reveal which alternating scale degrees make
-   each harmony.
+1. Swap the progression for `[:I, :IV, :V, :I]`. V now spends its tension on an
+   immediate tonic and the last boundary closes harder. Which version would you
+   rather loop for two minutes?
 
-## Why it works
+2. Print the seven C-major triads as MIDI integers and compare the size of each
+   chord's two thirds. You'll get major, minor, minor, major, major, minor,
+   diminished. Nothing in the code stores that pattern; it falls out of the
+   scale.
 
-The scale array contains seven distinct degrees and a repeated octave. To build
-a triad, select every other degree. Modular indexing wraps the upper selections
-to the beginning of the seven-note collection; octave correction then restores
-their ascending order above the current chord root.
+3. Arpeggiate each chord inside the renderer. Progression and pitch content stay
+   fixed, and the separate attacks show you which alternating scale degrees
+   built each harmony.
 
-No quality table is needed. The spacing already present in the major scale
-produces the familiar major-minor-minor-major-major-minor-diminished pattern.
-Roman-numeral symbols become keys into that generated chord array. Score data
-can then say what progression is intended, while the renderer decides which
-concrete notes express it in the current key.
+## Why the numerals earn their place
 
-Case carries information that a bare integer degree would lose. `:V` states both
-position and the major quality expected in a major key. Later, a chromatic chord
-may alter that default, and an explicit symbolic layer gives the alteration a
-place to be represented. Reducing everything to zero-based indices too early
-would erase the distinction the notation is trying to communicate.
+The scale array holds seven distinct degrees plus a repeated octave. To build a
+triad you take every other one. Modular indexing wraps the upper picks back to
+the start of the seven-note collection, and the octave correction puts them
+above the chord's own root again so the array ascends.
+
+No quality table appears anywhere in the code. The spacing already sitting in
+the major scale produces the whole major-minor-minor-major-major-minor-
+diminished sequence, which is a nice check on your understanding: if you can
+predict all seven qualities from the step formula, you've understood the scale
+and not memorised a chart.
+
+Case carries information that a bare degree number would lose. `:V` states a
+position and the major quality that position takes in a major key. Later on a
+chromatic chord will alter that default, and a symbolic layer gives the
+alteration somewhere to live. Collapse everything to zero-based indices too
+early and you erase the distinction the notation exists to carry.
 
 Roman numerals also make comparison across keys practical. The dominant of C
-major and the dominant of F major contain different pitch classes, but both
-occupy the same formal position and direct energy toward their own tonic. This
-is late binding in a musical form: the progression stores intent, and
-`render_progression` resolves it against a root. A collection of MIDI arrays can
-be transposed, but it does not explain why one chord follows another.
+major and the dominant of F major share no pitch classes at all, yet both do the
+same job and pull toward their own tonic. That's late binding in musical form:
+the progression stores intent, and `render_progression` resolves it against
+whatever root you hand it. A list of MIDI arrays transposes perfectly well and
+still can't tell you why one chord follows another.
 
-The lookup exposes the limits of the short symbol. Major `:I` and minor `:i`
-need distinct defaults, while inversion is better stored as another field than
-encoded in a proliferation of names. A fuller record could hold `:degree`,
-`:quality`, and `:bass`, leaving concrete voicing to the renderer. For this
-diatonic comparison, the compact symbols work because their defaults are clear.
+The lookup hash also shows the limits of a short symbol. Major `:I` and minor
+`:i` need different defaults, and inversion belongs in its own field, not in a
+proliferating set of names. A fuller record would carry `:degree`, `:quality`
+and `:bass`, leaving the concrete voicing to the renderer. For a diatonic
+comparison in one mode, these compact symbols work because their defaults are
+unambiguous.
 
-## Take it further
+## Test the plan before you voice it
 
-Write `progression_notes(root, numerals)` so it returns chord arrays without
-playing them. Evaluate `[:vi, :IV, :I, :V]` in all twelve roots. Each result
-should contain four three-note chords, and every pitch class should belong to
-the corresponding major key. Once those structural checks pass, choose one key
-and render it with inversions selected using Lesson 27's `voice_near` idea. The
-same symbolic plan should survive both validation and voicing.
+Write `progression_notes(root, numerals)` so that it returns chord arrays
+without playing anything, then evaluate `[:vi, :IV, :I, :V]` in all twelve
+roots. Every result should hold four three-note chords, and every pitch class
+should belong to the matching major key. Those checks are cheap and they run
+silently.
+
+Once they pass, pick one key and render it with inversions chosen by [Lesson 27](27-inversions-voicing.qmd)'s
+`voice_near`. Print the movement totals beside the root-position version. Your
+symbolic plan should survive both the structural test and the voicing search
+without a single edit, which is the whole point of keeping it symbolic.

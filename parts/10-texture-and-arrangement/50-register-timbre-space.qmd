@@ -7,33 +7,27 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Correct chords do not guarantee a clear arrangement. When two voices occupy a
-similar pitch range, use comparable envelopes, and sit in the same stereo
-position, their identities can blur even if every note belongs to the harmony.
-Lowering one part changes the balance, but the quieter sound may continue to
-mask or be masked in the same region.
+## Correct chords, unclear arrangement
 
-Three dimensions offer more informative choices. *Register* means pitch
-height. *Timbre* is the spectral character that distinguishes, for example, a
-hollow sustained tone from a bright pluck. Space includes stereo position and
-the apparent depth produced by direct sound and reflections. Move a part an
-octave, shorten its envelope, pan it away from a neighbour, or use reverb to
-place it behind a drier foreground.
+Every note can belong to the harmony and the result still comes out as porridge.
+Put two voices in one pitch range, give them similar envelopes, leave them in
+the same stereo position, and their identities blur. Turning one down moves the
+balance and leaves both in the same congested region.
 
-Leave volume for the final balance pass. First each musical role needs a
-place where the ear can identify its attacks and follow its continuation. Once
-those places exist, amplitude can decide which role stands forward without
-having to compensate for unresolved overlap.
+Three dimensions get you out. *Register* is pitch height. *Timbre* is the
+spectral character separating a hollow sustained tone from a bright pluck. Space
+covers stereo position and apparent depth. So move a part an octave, shorten its
+envelope, pan it off its neighbour, or push it behind a drier foreground with
+reverb.
 
-## Run this
+Leave volume for last. Give each role a place where you can find its attacks,
+then let amplitude decide which role stands forward.
 
-One four-chord skeleton receives three treatments. The sparse pass states only a
-low root and high chord tone. The dense pass piles one saw voicing and a second
-copy transposed three semitones higher into the middle, changing pitch classes as
-well as density. The wide pass separates a sustained low voice from a high, short
-pluck and gives each a distinct stereo and depth position.
+## One skeleton, three treatments
+
+Four chords get rendered three ways: sparse, dense, wide.
 
 ```{.ruby audio=""}
 use_bpm 78
@@ -74,62 +68,41 @@ sleep 1
 render_skeleton progression, :wide
 ```
 
-In the dense pass, related saw spectra and the added transposition occupy much of
-the same band. Listen for whether that overlap makes individual tones harder to
-trace. The wide pass schedules a low sustain on the left and a high pluck on the
-right; audition is still needed to determine how clearly register, envelope, pan,
-and reverb separate those roles on a particular playback system.
+The dense pass stacks two saw voicings three semitones apart, piling related
+spectra into one band. Can you still trace an individual tone through it? The
+wide pass sends a long low sustain left and a short high pluck right, and it's
+the one to compare everything else against.
 
-## Change one thing
+## Collapse the separation on purpose
 
-1. Remove `+ 24` from the pluck in the wide layout. Its attacks fall toward the
-   sustained part's register while the stereo positions remain separated.
-   Listen for pitch identity becoming less distinct; pan can locate two sounds
-   horizontally without preventing their spectra from competing.
-2. Restore the octave shift and set both pans to 0. Register and envelope still
-   distinguish the centred parts. This comparison reveals how much separation
-   survives when stereo position stops contributing.
-3. Raise the reverb mix to 0.75. The sustained voice recedes and its direct
-   attack loses definition as reflections become more prominent. Return to
-   0.35 before adding any echo to the pluck, so depth changes remain attributable
-   to one effect at a time.
+1. Drop `+ 24` from the wide layout's pluck. Its attacks fall back toward the
+   sustained part's register while the pans stay put. Pan locates two sounds
+   horizontally; it can't stop their spectra competing.
+2. Restore the octave and set both pans to 0. Register and envelope still
+   separate the centred parts. You're hearing how much clarity survives once
+   stereo position stops helping.
+3. Raise the reverb mix to 0.75. The sustained voice recedes and its attack
+   loses its edge. Return to 0.35 before you touch anything else.
 
-## Why it works
+## Masking, and three ways around it
 
-*Masking* occurs when sounds make one another harder to perceive because they
-occupy similar frequency bands at similar times. Register separation reduces
-some of that spectral overlap. Contrasting envelopes keep attacks and sustains
-from competing continuously. Panning provides interaural level and timing cues,
-while reverb changes the balance between direct and reflected sound and thus
-the apparent distance of a source.
+*Masking* is what happens when sounds occupy similar frequency bands at similar
+times and make each other harder to perceive. Register separation thins the
+overlap. Contrasting envelopes stop attacks and sustains competing continuously.
+Panning supplies level and timing differences between your ears, and reverb
+shifts the ratio of direct to reflected sound, which is what sets a source's
+apparent distance.
 
-The dimensions interact. Moving a saw's fundamental downward does not remove
-its many upper partials from the middle register. A sine-like bass may leave
-more space above it. Likewise, a short release can open useful gaps, but a long
-reverb tail may immediately refill them. Change one dimension, listen for the
-specific collision it addresses, and then decide whether another dimension is
-still needed.
+They interact, which is why fixing one sometimes fixes nothing. Drop a saw's
+fundamental and its upper partials stay where they were. A short release opens a
+gap; a long reverb tail refills it. Depth is relational too: a reverberant voice
+sounds distant because a drier voice gives you a foreground. Put every part in
+the same big room and the whole image recedes together.
 
-The harmonic skeleton remains input data; `layout` controls rendering. All three
-versions receive the same chord records in the same order, but the dense renderer
-adds three semitones rather than an octave and therefore changes the pitch-class
-content. Its cloudiness cannot be attributed to layout alone. Replace `+ 15`
-with `+ 12` or `+ 24` when you want a controlled comparison that preserves the
-harmony and varies only register, density, and sound design.
+## Diagnose your own collisions
 
-Depth is relational. A reverberant voice sounds distant because a drier voice
-provides a foreground against which to hear it. If every part uses the same
-large room and wet mix, the whole image recedes together and the distinction
-disappears. Audition the layout on headphones and speakers at a moderate level;
-stereo cues and low-frequency response can differ enough to expose a collision
-that one playback system concealed.
-
-## Take it further
-
-Arrange the same eight-bar harmonic skeleton in sparse, dense, and wide
-versions, leaving the chord data untouched. Use two roles in the sparse
-arrangement and at least four in the dense one. In the wide version, distinguish
-each role from its nearest neighbour along two dimensions chosen from register,
-synth, envelope, pan, and effect depth. For every collision you hear, write a
-one-line diagnosis that names the competing roles and dimension. Address the
-collision without changing chord roots or reaching first for the master level.
+Arrange one eight-bar skeleton three ways without editing the chord data: two
+roles sparse, four or more dense, and a wide version where every role differs
+from its neighbour along two dimensions. For each collision you hear, write one
+line naming the competing roles and the dimension they're fighting over. Fix it
+without moving a chord root, and keep your hands off the master level.

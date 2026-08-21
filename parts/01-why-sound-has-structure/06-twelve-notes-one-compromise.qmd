@@ -29,7 +29,7 @@ semitone, spread across twelve keys, actually sound like?
 
 ## Why this example can't use a sine
 
-Lesson 5 used `synth :sine` and was right to. Here it would destroy the entire
+[Lesson 5](05-consonance-small-whole-numbers.qmd) used `synth :sine` and was right to. Here it would destroy the entire
 demonstration, so it's worth being explicit about why.
 
 The audible difference between just and equal-tempered intonation comes almost
@@ -122,7 +122,7 @@ does. Keeping both representations visible heads off a common confusion: `:e4`
 names a keyboard location. It promises nothing about a pure `5:4` relationship
 with any particular C.
 
-Lesson 7 holds pitch and oscillator completely still and varies amplitude
+[Lesson 7](07-envelope-instrument.qmd) holds pitch and oscillator completely still and varies amplitude
 through time, which turns the envelope itself into the musical object.
 
 ## Take it further

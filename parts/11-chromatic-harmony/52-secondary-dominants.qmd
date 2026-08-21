@@ -7,32 +7,32 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-A dominant chord makes a particular future chord feel likely: its tonic, a
-fifth below. A *secondary dominant* directs that expectation toward one of the
-other diatonic chords in the home key. For a moment, the target receives the
-kind of emphasis normally reserved for the tonic. The progression can then
-continue without abandoning its original key.
+## One raised note, aimed at the next chord
 
-In C major, G is the dominant and D major is the dominant of G. The F-sharp in
-D major lies outside the C-major scale and has a theoretical tendency to rise
-by semitone to G when the chords are voiced to realise that motion. The label
-V/V means "dominant of the dominant."
-The slash names the chord being approached; it does not by itself announce that
-the entire key has changed.
+A dominant chord makes a particular future likely: its own tonic, a fifth below.
+A *secondary dominant* points that same expectation at some chord other than the
+home tonic. For one bar, an ordinary diatonic chord gets treated like a tonic,
+and the music carries on without ever leaving its key.
 
-Use controlled comparison to isolate the changed chord. Place D minor, the
-ordinary diatonic ii chord, before G. Then raise its F to F-sharp, creating D
-major, while leaving rhythm, voicing, and synth alone. One changed pitch is
-enough to alter the force of arrival.
+In C major, G is the dominant, and the dominant of G is D major. That D major
+contains F-sharp, which lives outside the C-major scale and wants to rise a
+semitone to G when you voice the chords so it can. The label for it is V/V,
+which reads "dominant of the dominant." The slash names the chord being
+approached. By itself, the slash claims nothing about the key having changed.
 
-## Run this
+Controlled comparison, then. Put D minor, the plain diatonic ii, in front of G.
+Then raise its F to F-sharp, turning it into D major, and leave rhythm, voicing
+and synth exactly where they were. One pitch is the entire difference between
+the two passes.
 
-The first four-chord statement stays within C major. In the second, a single
-quality value changes D minor into D major. Roots and qualities remain visible
-as data, so the chromatic intervention can be read as readily as it can be
-heard.
+## D minor and D major, side by side
+
+Both progressions run four chords and land on the same C. Roots and qualities
+stay visible as data, so you can read the chromatic intervention as easily as
+you can hear it. Only one pitch differs between the two passes. Will you hear
+the difference at the D chord, or at the G that follows it?
 
 ```{.ruby audio=""}
 use_bpm 72
@@ -66,62 +66,63 @@ sleep 2
 play_progression tonicised
 ```
 
-D minor supplies a diatonic route to G. D major introduces F-sharp and makes the
-dominant relation to the following G explicit in the chord data.
-The root-position chords in this program do not place F-sharp next to a higher G
-in one voice, so they demonstrate harmonic preparation rather than the specific
-semitone resolution. Both versions arrive on the same chord; listen for whether
-the altered path makes that arrival feel more strongly prepared.
+D minor gets you to G diatonically. D major gets you to G by declaring, in the
+chord data itself, that G is the target. Listen for whether the second arrival
+feels more prepared than the first.
 
-## Change one thing
+One honest limitation before you draw conclusions. These chords are all in root
+position, so F-sharp never sits directly below a higher G in a single voice.
+What you're hearing is harmonic preparation, not the semitone resolution itself.
+You'll build that resolution by hand in the exercise.
 
-1. Change the target G major to G minor in both arrays. D major still points
-   toward a root a fifth below, but the B-flat at resolution changes the colour
-   of the arrival. Listen for what the dominant relation preserves and what the
-   target quality changes.
+## Redirect the pull
+
+1. Change the target G major to G minor in both arrays. D major still points at
+   a root a fifth below it, and the B-flat that arrives recolours the whole
+   destination. Listen for what survives the change and what doesn't.
 2. Restore G major and make the D chord `:dom7`. The added C forms a tritone
-   with F-sharp and introduces another tendency tone. Compare the greater
-   urgency of the seventh chord with the plainer D-major triad.
-3. Move D major away from G so that D minor intervenes before the expected
-   target. The chromatic pitches are unchanged, but their promised arrival is
-   delayed or denied. Hear how a chord that was directional can begin to sound
-   unexplained when its context no longer answers it.
+   with F-sharp, which gives you a second tendency tone pulling in the opposite
+   direction. Compare that urgency against the plainer triad.
+3. Move D major away from G, so that D minor comes between them. Same chromatic
+   pitches, arrival delayed. A chord that sounded directed starts to sound
+   unexplained the moment its context stops answering it.
 
-## Why it works
+## Reading V/V as a nested address
 
-The home key supplies a family of diatonic chords. A secondary dominant borrows
-the dominant-to-tonic relation and applies it locally to one member of that
-family. Choose the target root, move a perfect fifth above it, and construct a
-major triad or dominant seventh. Because the new chord is being built relative
-to the target rather than the home scale, it often contains at least one
-chromatic pitch.
+Your home key hands you a family of diatonic chords. A secondary dominant
+borrows the dominant-to-tonic relation and applies it locally to one member of
+that family. Pick the target root, go a perfect fifth above it, build a major
+triad or a dominant seventh. Since you built the new chord relative to the
+target and not to the home scale, it usually brings at least one chromatic pitch
+with it.
 
-This emphasis is called *tonicisation* when it remains local. The target is
-brightly prepared, but subsequent chords continue to support the home tonic. A
-modulation lasts long enough for the ear to adopt a new tonic and reinterpret
-later scale degrees around it. The presence of an outside pitch cannot decide
-between the two. What follows the chromatic chord, and for how long, supplies
-the stronger evidence.
+Slash notation works like a nested lookup. V/V resolves the right-hand V first,
+finding the temporary target, then asks for V in relation to that. Your code can
+resolve it in exactly those two stages: locate the target root in the current
+key, move seven semitones above it, build the quality that creates the pull.
 
-Slash notation resembles a nested address. V/V first identifies V as the
-temporary target, then asks for V in relation to that target. Code can resolve
-the address in the same two stages: find the target root in the current key,
-move seven semitones above it, then build the major or dominant-seventh quality
-that creates the pull.
+When the emphasis stays local, the word for it is *tonicisation*: the target
+gets brightly prepared, and the chords after it go on supporting the home tonic.
+A *modulation* lasts long enough for your ear to adopt the new tonic and
+reinterpret everything around it. An outside pitch can't tell you which of the
+two you've got. What comes next, and for how long, is the evidence that decides
+it. [Lesson 53](53-modulation-state-change.qmd) takes that question up directly.
 
-Voice leading can make that calculation perceptible. In C major, F-sharp often
-rises to G while the other D-major notes find nearby positions in the G chord.
-The root-position renderer above does not realise that line; a nearest-voicing
-renderer would be needed to compare it directly. If F-sharp is hidden in a
-distant octave or directed downward, the written V/V remains present while one
-of its clearest melodic cues is weakened.
+Voice leading is what makes the theory audible. In C major, F-sharp rises to G
+while the other D-major notes find nearby positions in the G chord. Bury that
+F-sharp in a distant octave, or send it downward, and the V/V is still written
+on the page with its clearest melodic cue switched off.
 
-## Take it further
+## Tonicise a chord of your own
 
 Write an eight-bar diatonic progression in a major key. Choose one diatonic
-chord other than I and precede it with that chord's dominant. Keep original and
-tonicised versions in parallel data arrays and render them consecutively with
-the same rhythm, voicing, and synth. Label the temporary target, slash numeral,
-and every chromatic pitch. The altered version should produce one clearly
-prepared local arrival, followed by enough unchanged harmony to confirm that
+chord other than I and put that chord's own dominant in front of it. Keep the
+original and tonicised versions in parallel data arrays and render them one
+after the other with the same rhythm, voicing and synth.
+
+Then voice the secondary dominant and its target as explicit note lists, close
+enough together that the chromatic pitch resolves by step in a single voice. In
+C major approaching G, that means F-sharp3 rising to G3 while no other voice
+moves more than two semitones. Label the temporary target, the slash numeral and
+every chromatic pitch. Leave enough unchanged harmony after the arrival to prove
 the original key still governs the passage.

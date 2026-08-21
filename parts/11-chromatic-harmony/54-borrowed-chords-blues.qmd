@@ -7,31 +7,26 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-An outside pitch does not always announce a secondary dominant. *Modal mixture*
-borrows material from the parallel major or minor while retaining the same
-tonic. In C major, F minor comes from C minor. Its A-flat often descends by
-semitone to G in the return to C, producing the characteristic minor-iv-to-I
-colour without asking the ear to adopt another tonic.
+## Not every outside note is going somewhere
 
-The blues supplies another chromatic grammar. A twelve-bar blues may use
-dominant seventh sonorities on I, IV, and V. In common-practice tonal syntax, a
-dominant seventh usually points a fifth downward toward its tonic. In blues,
-the minor seventh can remain part of the chord's stable colour and voice-leading
-language even on I.
+Lessons 52 and 53 taught you to read a chromatic pitch as a signpost. Here are
+two grammars where it isn't one. *Modal mixture* borrows from the parallel major
+or minor while keeping the same tonic. In C major, F minor comes straight out of
+C minor, and its A-flat slides down to G on the way back to C. No new tonic. You
+borrowed a colour.
 
-Context tells you which explanation fits. Listen for the chromatic chord's
-behaviour after it arrives. Does it direct energy toward a temporary target,
-draw a lowered degree from the parallel mode, or belong to a style in which
-dominant-seventh quality carries a different function? The pitch alone cannot
-answer that question.
+The blues runs on a rule of its own: dominant sevenths on I, IV and V alike.
+Everywhere else a dominant seventh points a fifth downward; here it's stable
+colour, even on I. So when an outside note turns up, ask what it does next. Does
+it press toward a target, borrow a lowered degree, or follow another style's
+rules? The pitch alone can't tell you.
 
-## Run this
+## Minor iv, then twelve bars of sevenths
 
-The opening phrase places major IV and borrowed minor iv next to each other
-before returning to I. A second example stores the twelve-bar blues as scale
-degrees, then renders every degree as a dominant seventh rooted in C.
+Major IV sits next to borrowed minor iv on the way back to I. Then a twelve-bar
+blues, stored as degrees, each rendered as a dominant seventh in C.
 
 ```{.ruby audio=""}
 use_bpm 82
@@ -55,61 +50,45 @@ twelve_bar.each do |degree|
 end
 ```
 
-When F major becomes F minor, A changes to A-flat and the return to the G inside
-C major contracts to a semitone. That smooth descent gives the borrowed chord
-its audible path home. In the blues sequence, every root carries a major third
-and minor seventh, including C7 on the tonic, so the familiar friction persists
-without requiring eleven separate resolutions.
+When F major turns into F minor, A drops to A-flat, and your step back to G
+contracts to a semitone. That contraction is the borrowed chord's route home. In
+the blues, every root carries a major third and a minor seventh, C7 included, so
+the friction never resolves.
 
-## Change one thing
+## Strip the quality, move the tonic
 
-1. Replace F minor with A-flat major before the final C. Both chords can be
-   borrowed from C minor and both contain A-flat, yet A-flat in the bass creates
-   different weight and motion. Compare the colour of the shared pitch with the
-   strength of the two bass routes into C.
-2. Change `:dom7` to `:major` in the blues renderer. The twelve-bar degree
-   sequence remains intact, but the minor sevenths disappear. Listen for how
-   much of the blues sonority came from chord quality rather than form alone.
-3. Set `tonic` first to `note(:e3)` and then to `note(:a2)`. The degree array and
-   offsets stay unchanged. The form transposes faithfully, while the register
-   changes the density and apparent weight of the same voicings.
+1. Replace F minor with A-flat major before the final C. Both come from C minor,
+   both contain A-flat, and the bass routes into C differ. Which one gets you
+   home with more weight?
+2. Change `:dom7` to `:major` in the blues renderer. The degrees are untouched,
+   so the sevenths are the only casualty. How much of the blues was in the form,
+   and how much in the quality?
+3. Set `tonic` to `note(:e3)`, then `note(:a2)`. Degrees and offsets hold still.
+   The form transposes faithfully; register changes the weight of identical
+   voicings.
 
-## Why it works
+## Lowered degrees colour, raised degrees point
 
-Parallel keys share a tonic while using different scale degrees. Borrowing from
-parallel minor introduces lowered degrees into major; flat 3, flat 6, and flat
-7 are common sources. Minor iv contains flat 6, whose semitone descent to scale
-degree 5 gives the return to I smooth and conspicuous voice leading.
+Parallel keys share a tonic and disagree about the scale between. Borrow from
+parallel minor and you pull flat 3, flat 6 and flat 7 into major. Minor iv
+carries flat 6, whose semitone descent to degree 5 is the voice leading you just
+heard.
 
-Secondary dominants often introduce a raised pitch that aims at another chord.
-Borrowed chords often introduce lowered pitches that colour motion toward the
-existing tonic. This contrast is a listening heuristic, not a complete theory
-of chromatic harmony. It does, however, give you a useful first question when
-an outside note appears: which nearby motion explains it?
+So here's your first question about any chromatic note: raised or lowered?
+Secondary dominants raise one and aim it somewhere. Borrowed chords lower one
+and colour the motion around a tonic that hasn't budged. It's a heuristic, and
+it fails often enough to keep you honest.
 
-The twelve-bar blues is stored as degrees because the form can be transposed.
-The renderer maps I, IV, and V to root offsets and gives each root the same
-dominant-seventh quality. In this model, I7 is intentionally visible rather
-than patched as an exception in a diatonic quality table. The style supplies
-the rule under which the sonority makes sense.
+Your form lives in the degree array because form transposes. Giving every root
+the same seventh quality makes I7 visible as a rule of the style, not an
+exception patched into a quality table. Treat the array as one model. Sources
+vary in length, turnaround and substitutions; when a recording disagrees, encode
+what it does.
 
-A performance would add groove, melodic blue notes, particular voicings, and
-timbre. The block chords omit those features so you can hear the four-bar
-groups and the V-IV-I turnaround before texture competes with harmony. Add a
-rhythmic layer only after those formal landmarks can be identified.
+## Two chromatic phrases, side by side
 
-The array describes one conventional model, not every blues. Sources vary in
-length, turnaround, substitutions, chord qualities, and formal detail. When a
-recording differs, encode its behaviour and record the context instead of
-forcing it to agree with the example's twelve entries.
-
-## Take it further
-
-Render one twelve-bar degree array in C, E, and A without copying its form data.
-Then add a separate four-bar phrase in a major key containing one borrowed
-chord. Comment on every chromatic pitch, naming parallel minor,
-dominant-seventh quality, or another specific rule as its source. Compare the
-borrowed phrase with a secondary-dominant phrase from Lesson 52. Your analysis
-should account for why each outside note appears, and the playback should make
-the local pull of tonicisation distinct from the colour of mixture around an
-unchanged tonic.
+Render one twelve-bar degree array in C, E and A without copying its form data.
+Then write a four-bar phrase in a major key with one borrowed chord, commenting
+every chromatic pitch with its source. Put it beside a secondary-dominant phrase
+from [Lesson 52](52-secondary-dominants.qmd) and listen for the difference: a note that pulls somewhere, a
+note that changes the light.

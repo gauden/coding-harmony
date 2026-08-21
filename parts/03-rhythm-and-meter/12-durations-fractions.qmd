@@ -114,7 +114,7 @@ as the time until the next onset and, through `finish`, as part of the
 articulation of the current sound. One number is doing two jobs. So this format
 can't describe two notes that overlap while a third starts in the gap between
 them. Later event scores split `:start` from `:duration` for exactly that
-reason, and Lesson 14 takes the first step by giving every event an explicit
+reason, and [Lesson 14](14-rests-dots-ties.qmd) takes the first step by giving every event an explicit
 `:start` field. Here, sequential prefix sums are enough, and they keep the
 arithmetic audible.
 
@@ -125,9 +125,9 @@ elapsed, leaving a hole. A long tail can still be ringing when the next attack
 arrives, gluing two events together. Neither one moved an onset. When you're
 checking rhythm, listen to the attack positions and treat the tail as
 articulation, the same distinction you drew between `release` and `sleep` in
-Lesson 7.
+[Lesson 7](../01-why-sound-has-structure/07-envelope-instrument.qmd).
 
-Lesson 13 fixes the subdivisions at equal length and adds recurring accents on
+[Lesson 13](13-bars-accent-that-makes-meter-audible.qmd) fixes the subdivisions at equal length and adds recurring accents on
 top of them. The duration sum will define how much time a bar occupies; the
 accents will tell your ear how that time is grouped.
 

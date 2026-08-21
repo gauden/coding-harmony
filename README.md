@@ -19,10 +19,13 @@ worked models, and `tests/test_book_draft.py` measures the prose against it.
 
 ## Status
 
-The complete first draft has received a book-wide expository rewrite: 58 lessons
+The book has been rewritten end to end in an approachable voice: 58 lessons
 across 13 parts, the preface and setup chapter, five reference appendices, and
-worked entries for all 58 optional exercises. Every lesson remains marked
-`draft` until its code and listening claims pass documented human audition.
+worked entries for all 58 optional exercises. Section headings now name their
+own lesson, lengths run from 627 to 1331 words, and the draft's uncertainty
+lives in one callout at the head of each lesson so the prose can say plainly
+what you will hear. Every lesson remains marked `draft` until its code and
+listening claims pass documented human audition.
 
 The rendered draft is globally attributed to **GPT 5.6 Sol at High Reasoning and
 Claude Opus 5**. It is undergoing revision and independent testing; no

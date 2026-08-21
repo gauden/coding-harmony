@@ -6,7 +6,7 @@ Transcription starts with somebody else's artifact, which makes source keeping a
 musical problem as well as a legal one. The exact edition or recording you
 worked from decides what you can inspect, what you can share, and where you go
 back to when two details disagree. This ledger records that provenance, and
-Lesson 42 walks you through one entry before any external file lands in your
+[Lesson 42](../parts/09-transcription/42-finding-music-you-can-legally-use.qmd) walks you through one entry before any external file lands in your
 repository.
 
 Public-domain status differs by country. A modern typeset edition of an old work

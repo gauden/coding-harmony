@@ -78,7 +78,7 @@ on a pickup, decorates the target, or sits between two degrees you've
 misremembered. Store the exact two notes and the direction. When an anchor keeps
 producing wrong answers, delete it.
 
-Lesson 20 turns this reference material into a drill: prompt, pause, reveal.
+[Lesson 20](20-build-your-own-drill-harness.qmd) turns this reference material into a drill: prompt, pause, reveal.
 
 ## Start with four rows
 

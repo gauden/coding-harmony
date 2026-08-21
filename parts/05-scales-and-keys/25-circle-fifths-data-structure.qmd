@@ -59,7 +59,7 @@ the structural claim of the lesson sitting in a single integer.
 The triads will sound like they keep rearranging themselves, and they do. These
 are pitch classes, so anything crossing B wraps back down below the root, and G
 major arrives as D-G-B. The chord is right and the voicing is an accident of the
-modulo. Lesson 27 is where voicing stops being an accident.
+modulo. [Lesson 27](../06-chords-and-harmony/27-inversions-voicing.qmd) is where voicing stops being an accident.
 
 Now look at the `names` array beside the numbers. Pitch class 6 appears as
 `:fs`, though nothing in the arithmetic chose that over G-flat. Which spelling
@@ -115,7 +115,7 @@ G-sharp. Nobody needs to memorise the sequence; it falls out of the addition.
 Relative minor is another one-line transformation, `(root - 3) % 12`. A relative
 major and minor hold the same seven pitch classes and the same key signature,
 and they differ in which note the music treats as home. You've already heard
-what that difference does, back in Lesson 22, when swapping a C drone for A
+what that difference does, back in [Lesson 22](22-scale-degrees-pull-toward-home.qmd), when swapping a C drone for A
 turned the same melody inside out.
 
 ## Where integers stop being enough
@@ -124,7 +124,7 @@ Pitch class 6 is pitch class 6. Your speakers can't tell you whether it's
 F-sharp or G-flat, and neither can the modulo arithmetic, but the distinction is
 real: F-sharp major and G-flat major have different key signatures, different
 staff spellings, and different implications for what comes next. That's why the
-program carries a parallel `names` array. As in Lesson 10, the moment two
+program carries a parallel `names` array. As in [Lesson 10](../02-pitch-space/10-sharps-flats-why-spelling-sound.qmd), the moment two
 identical numbers need different written names, your data model needs a named
 field to hold the difference.
 

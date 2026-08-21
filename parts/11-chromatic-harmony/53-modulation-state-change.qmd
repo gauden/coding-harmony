@@ -7,29 +7,34 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-A *modulation* changes the key context that gives scale degrees and chords their
-meaning. The change is rarely carried by a single note. A passage accumulates
-evidence, confirms another tonic with characteristic motion, and stays there
-long enough for the ear to reorganise its expectations. A later passage may
-reverse the process and make the original tonic feel like home again.
+## The same numeral, two different chords
 
-In code, the current tonic can be treated as state. A Roman numeral is a
-relative address resolved against that state: V means G major while C is tonic,
-but it means D major after G becomes tonic. The symbol remains V because the
-function is comparable; the pitches change because the context has changed.
+[Lesson 52](52-secondary-dominants.qmd) left you with a question it couldn't answer: how do you tell a chord
+that borrows a bit of glamour from a chord that actually moves house? A
+*modulation* changes the key context that gives every scale degree and chord its
+meaning, and no single note carries that change. Instead, a passage accumulates
+evidence, confirms a new tonic with a cadence, and stays there long enough for
+your ear to reorganise around it. Later it can reverse the whole thing and make
+the original tonic feel like home again.
 
-A *pivot chord* helps move between contexts because it belongs diatonically to
-both. E minor can be heard as iii in C major and reinterpreted as vi in G major.
-The chord itself remains ambiguous. D major followed by G supplies the evidence
-that makes the second reading persuasive.
+Treat the current tonic as state and this gets much easier to think about. A
+Roman numeral is a relative address that you resolve against that state. V means
+G major while C is tonic; V means D major once G is tonic. The symbol doesn't
+change, because the function hasn't. The pitches change because the context did.
 
-## Run this
+*Pivot chords* ease the transition by belonging diatonically to both keys. E
+minor is iii in C major and vi in G major, perfectly happy being either. It
+commits to nothing on its own. D major followed by G makes the second reading
+stick.
 
-The schedule makes its interpretive state explicit by storing a key tonic next
-to every degree. It begins in C, treats E minor as a pivot into a four-chord G
-section, and then resolves G and C under the restored C-major context.
+## Eight chords that change their minds
+
+The schedule below stores a key tonic beside every degree, so interpretive state
+sits in the data. It opens in C, pivots on E minor into four bars of G, then
+resolves back under C. Watch the last three rows: G arrives as a tonic and
+returns as a dominant. Which G will sound settled?
 
 ```{.ruby audio=""}
 use_bpm 68
@@ -63,56 +68,58 @@ schedule.each do |event|
 end
 ```
 
-E minor alone does not force the ear to leave C. The following D-major-to-G
-motion and continued chords in G make the new state credible. Near the end, the
-same G-major sonority changes function: under C-major state it becomes V, whose
-arrival on C restores the original tonic.
+E minor on its own doesn't push you out of C. The D major that follows does,
+along with G and two more chords behaving as though G were home. Near the end
+one sonority shifts job: that same G gets relabelled V under C-major state, and
+its arrival on C puts you back where you started.
 
-## Change one thing
+## Weaken the new key, then reinforce it
 
-1. Remove the first G-major tonic after D major. The dominant loses its immediate
-   confirmation and the new state becomes less secure. Listen for the difference
-   between a brief emphasis on G and a context in which later numerals are
-   genuinely heard relative to G.
-2. Restore the arrival and repeat IV, V, I in G twice. The longer cadence pattern
-   gives the ear time to accept G as home. At the return, notice how G can first
-   sound settled and then be reinterpreted as V of C.
-3. Replace the E-minor pivot with A minor. A minor is vi in C and ii in G, so it
-   offers a different common chord before D major and G. Compare the preparatory
-   colour while keeping the destination and confirming cadence the same.
+1. Delete the G-major tonic that follows D major. The dominant loses its
+   confirmation and the new state never firms up. Listen for the gap between a
+   passing emphasis on G and a context where the later numerals genuinely sound
+   relative to G.
+2. Restore that arrival and repeat IV, V, I in G twice over. Now your ear has
+   time to accept G as home. When the return comes, notice how G first sounds
+   settled and only afterwards turns back into V of C.
+3. Swap the E-minor pivot for A minor. A minor is vi in C and ii in G, so it
+   prepares the same destination through a different door. Keep the cadence
+   identical and compare the colour of the two approaches.
 
-## Why it works
+## Key as state, numeral as address
 
-Key is a context that predicts motion. The same pitch-class set can carry more
-than one Roman-numeral label, and the useful label is the one that explains
-what follows. A pivot delays commitment because either key can account for it.
-A dominant-tonic cadence in the new key reduces that ambiguity by producing a
-strongly directed arrival.
+Key is a context that predicts motion. One pitch-class set can carry more than
+one Roman-numeral label, and the label worth using is the one that explains what
+happens next. Pivots postpone commitment because both keys account for them.
+Cadence in the new key cuts the ambiguity, with an arrival only one reading
+explains.
 
-The example stores state on every event instead of hiding it in a mutable
-global variable. This repetition is valuable while learning: the schedule
-shows exactly which tonic resolves each degree. A later abstraction may retain
-`current_key` and update it at named boundaries, but its output should still
-make those changes inspectable rather than relying on invisible context.
+This example puts state on every event and keeps no mutable global anywhere.
+That repetition earns its keep while you're learning: the schedule shows exactly
+which tonic resolves each degree. Later you can hold `current_key` and update it
+at named boundaries, so long as the output still makes those boundaries
+inspectable.
 
-Roman numerals work as relative addresses rather than fixed chord names.
-Resolving them late allows the same functional pattern to appear in C, G, or
-another key. It also reveals a common modulation bug. If an event after the
-state change is accidentally resolved against the old tonic, its notes may be
-diatonic in isolation while behaving incoherently in the passage.
+Numerals as relative addresses buy you portability: the same functional pattern
+plays in C, in G, in anything. They also expose a modulation bug you'll write at
+least once. Resolve an event after the state change against the old tonic by
+accident and its notes come out diatonic in isolation while behaving
+incoherently in the passage. Nothing raises. Nothing crashes. It stays quietly
+wrong until you print the key beside the numeral and read the two together.
 
-The ear weighs several kinds of evidence: repetition of the new tonic,
-cadential strength, time spent in the new context, bass arrival, and melodic
-emphasis. One secondary dominant may resemble the opening of a modulation.
-Only the following bars show whether the new address becomes a temporary
-spotlight or the governing state.
+Your ear weighs several things at once: how often the new tonic recurs, how
+strong the cadence is, how long you stay, where the bass lands. One secondary
+dominant looks exactly like the first move of a modulation. Only the bars after
+it tell you which you got.
 
-## Take it further
+## Twelve bars out and back
 
-Build a twelve-bar passage that begins in a major key, moves to its dominant key
-for four bars, and returns. Use a pivot chord on each transition. Store key
-context separately from Roman numeral and resolve the sounding pitches in a
-function. Print both fields before each chord so the interpretive boundary can
-be audited. In comments, name the chord where you first hear the new state as
-established and the chord where the return becomes convincing. The passage
-should make both changes audible, not merely visible in its labels.
+Build a twelve-bar passage that starts in a major key, spends four bars in its
+dominant key, and comes home. Pivot at each transition. Store key context apart
+from the numeral, resolve the pitches in a function, and print both fields
+before every chord so you can audit the boundary.
+
+In comments, name the chord where you first hear the new state as established,
+and the chord where the return becomes convincing. Those two claims are the
+whole exercise. Labels can assert a modulation; only playback shows the bar
+where it happened.

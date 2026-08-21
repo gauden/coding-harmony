@@ -24,7 +24,7 @@ you point it. Better still, the formula tells your ear where to listen. Two of
 those seven gaps are single semitones, and they sit between degrees 3 and 4 and
 between 7 and 8. Move one of them and you haven't built a broken major scale.
 You've built a different pattern with a different sound, which is the whole
-subject of Lesson 24.
+subject of [Lesson 24](24-modes-over-drone.qmd).
 
 ## Build it, play it, check it
 

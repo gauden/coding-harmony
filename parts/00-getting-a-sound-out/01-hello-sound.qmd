@@ -91,7 +91,7 @@ tells you nothing, because that's a judgement only your ears can make. Code
 feedback confirms Sonic Pi understood you. It has no opinion about the music.
 
 This boundary comes back constantly, because it keeps musical questions local.
-Lesson 2 replaces the note names with integers and starts doing arithmetic on
+[Lesson 2](02-notes-are-integers.qmd) replaces the note names with integers and starts doing arithmetic on
 them, and the playback loop won't need to change at all.
 
 ## Take it further

@@ -128,7 +128,7 @@ measuring reaction time. Too long and each trial turns into a chore, and you'll
 do fewer of them. Audition the four-beat value and adjust it until you have room
 for a decision and a written answer, with nothing left over.
 
-The distance arrays here also set up the next construction. Lesson 21 arranges
+The distance arrays here also set up the next construction. [Lesson 21](../05-scales-and-keys/21-major-scale-step-formula.qmd) arranges
 interval steps into a scale formula, turning the same semitone arithmetic from
 isolated prompts into an ordered route through a key. Later drills for scales,
 chords and cadences reuse this generator, response window, replay and logged

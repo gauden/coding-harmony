@@ -7,22 +7,52 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Move a note head one staff position upward and its letter advances by one. The
-corresponding sounding pitch may rise by one semitone or by two. Printed notation
-therefore uses a diatonic coordinate system of letter steps, while MIDI numbers
-use a chromatic coordinate system in which every increment is a semitone. A
-decoder must translate between them rather than treating one visual step as one
-MIDI step.
+## One step up the page, one letter up the alphabet
 
-The *staff* consists of five lines and the four spaces between them. A *treble
-clef* fixes G4 on the second line from the bottom; all nearby letters follow from
-that anchor in the repeating A-to-G cycle. Middle C sits on its own short ledger
-line below the staff. If middle C is coordinate zero, the bottom treble line E4
-is coordinate two, with the intervening D4 in the space below.
+Move a note head up one position on the staff and its letter advances by one.
+That part is easy. What the page won't tell you is whether the pitch rose by one
+semitone or by two. Printed notation counts in letters, MIDI counts in
+semitones, and the two run at different rates. Treat one visual step as one MIDI
+step and you'll be wrong on a third of your notes.
 
-## Run this
+The *staff* is five lines and the four spaces between them. A *treble clef*
+fixes G4 on the second line from the bottom, and every other letter follows from
+that anchor around the repeating A-to-G cycle. Middle C hangs below the staff on
+a short ledger line of its own. Call it coordinate 0, count one per line-or-space
+step, and the bottom line E4 lands on 2, with D4 in the space below at 1.
+
+## The staff, drawn in characters
+
+Here's the coordinate space as a table you can read down. Every number agrees
+with what `staff_record` computes below.
+
+```text
+coord  note  midi   treble staff
+  11    G5    79                          space above the staff
+  10    F5    77    ------------------    fifth line
+   9    E5    76                          fourth space
+   8    D5    74    ------------------    fourth line
+   7    C5    72                          third space
+   6    B4    71    ------------------    third line
+   5    A4    69                          second space
+   4    G4    67    ------------------    second line, the clef's G
+   3    F4    65                          first space
+   2    E4    64    ------------------    first line
+   1    D4    62                          space below the staff
+   0    C4    60         ---------        middle C, its own ledger line
+  -1    B3    59
+  -2    A3    57         ---------        second ledger line
+```
+
+Engraved staff figures are still to come in this book. Read the sketch above as
+scaffolding, never as a replacement for real notation.
+
+Watch the two left columns drift apart. Coordinates step by one every time.
+MIDI steps by one from E4 to F4 and from B4 to C5, and by two everywhere else.
+
+## Eight positions in a row
 
 ```{.ruby audio=""}
 use_bpm 90
@@ -52,54 +82,55 @@ end
 (0..7).each { |position| puts staff_record(position, letters, semitones) }
 ```
 
-The eight positions rise in consecutive letters from E4 through E5. On the page,
-each move is exactly one line-or-space step. In the log, the MIDI differences
-alternate irregularly between one and two semitones, because E-F and B-C are
-smaller than the other natural-letter steps. This is the translation the
-coordinate function is responsible for making.
+Eight even steps up the page, E4 through E5, one letter at a time. Your ear
+hears something less even. Positions 2 and 3 sit one step apart, and so do 3
+and 4. Which pair sounds wider to you?
 
-## Change one thing
+Sing them back before reading on. The log answers it in the MIDI column, but
+your ear gets there first.
 
-1. Replace the list with `[0, 2, 4, 6]`. Starting at middle C and skipping every
-   other diatonic position selects C4, E4, G4, and B4. Play them together and
-   the regular visual skips become a C-major seventh chord.
-2. Alternate positions `2` and `3`: E to F is one staff step and one semitone.
-   Then alternate `3` and `4`: F to G occupies the same visual distance but spans
-   two semitones. Keep the tempo fixed so pitch distance carries the contrast.
-3. Add positions `-1` and `-2`. Ruby's modulo and floor division extend the
-   letter and octave cycles below middle C without requiring a second lookup
-   table for negative coordinates.
+## Change the list, not the function
 
-## Why it works
+1. Replace the list with `[0, 2, 4, 6]`. Skipping every other position from
+   middle C picks out C4, E4, G4, and B4. Regular visual skips, and they spell a
+   C major seventh chord.
+2. Alternate positions `2` and `3`, then `3` and `4`. E to F is one staff step
+   and one semitone; F to G is the same step on the page and twice the distance
+   in the air.
+3. Add positions `-1` and `-2` from the foot of the diagram. Ruby's modulo and
+   floor division carry the letter and octave cycles below middle C without a
+   second lookup table.
 
-The seven letter names form a ring. Position modulo seven selects the letter;
-floor division counts completed letter cycles and adjusts the octave. Only after
-those diatonic coordinates are known does the `semitones` hash convert the name
-to a chromatic distance. The two spaces remain separate in the code because they
-measure different things.
+## Two counters, one conversion
 
-Treble clef is an offset convention: by assigning a known pitch to one line, it
-determines every other position. Memorised line and space mnemonics can provide
-quick checks, but they split one continuous system into two lists. The coordinate
-model handles lines, spaces, and ledger lines with the same operation, which is
-more useful when a melody leaves the five-line staff.
+Seven letter names form a ring. Position modulo seven picks the letter, floor
+division counts completed trips around it and bumps the octave, and only then
+does the `semitones` hash turn a name into a chromatic distance. Diatonic first,
+chromatic second. The two spaces stay separate in the code because they measure
+different things.
 
-Accidentals and key signatures modify the chromatic result in Lesson 40 without
-moving the note head. F and F-sharp occupy the same staff coordinate because
-both retain the letter F; the sharp changes the final semitone lookup. This is
-another reason not to infer MIDI distance directly from vertical spacing.
+Treble clef is an offset convention. Nail one known pitch to one line and the
+rest of the page follows. Line and space mnemonics give you quick spot checks,
+but they split one system into two memorised lists and stop working the moment a
+melody leaves the five lines. Coordinates handle all three cases alike.
 
-Printed notation carries time as well as pitch through note heads, stems, beams,
-rests, and dots. Those marks are deliberately absent from the decoder here so
-vertical position is the only changing field. Lesson 41 restores rhythm by
-placing pitch coordinate and duration in separate event keys. A beam can then
-change timing without becoming entangled in pitch translation.
+[Lesson 40](40-key-signatures-defaults.qmd) lets accidentals and key signatures change the chromatic result
+without moving the note head. F and F-sharp share coordinate 3, because both are
+still the letter F; the sharp arrives later, in the semitone lookup. That's one
+more reason not to read MIDI distance off vertical spacing.
 
-## Take it further
+Real notation carries time too, through stems, beams, rests, and dots. None of
+it is here, deliberately, so vertical position is the only field that changes.
+[Lesson 41](41-decode-four-printed-bars.qmd) hands rhythm back in a separate `:duration` key.
 
-Generate a Markdown table for positions `-2` through `10`. Include coordinate,
-line-or-space classification, letter, octave, Sonic Pi symbol, and MIDI integer,
-and mark middle C plus the five treble lines. Then choose eight note heads from
-a printed source, enter their coordinates, and play the decoded sequence without
-copying note names from an existing transcription. Use the source page to check
-the coordinates and the log to check the conversion; they catch different errors.
+## Build the card you'd tape to the monitor
+
+Generate a Markdown table for coordinates `-2` through `10`: the coordinate, whether
+it's a line or a space, the letter, the octave, the Sonic Pi symbol, and the MIDI
+integer. Mark middle C at coordinate 0 and mark the five treble lines. Print it.
+You'll want it for the rest of Part 8.
+
+Then pick eight note heads from a printed source, type in their coordinates, and
+play the sequence without copying note names from anyone else's transcription.
+Check coordinates against the page, conversion against the log. They catch
+different mistakes.

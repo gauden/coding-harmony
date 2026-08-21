@@ -7,32 +7,43 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Pitch, rhythm, and expression arrive together in a recording, but entering
-them together makes errors surprisingly hard to locate. If an early duration is
-wrong, every later entrance moves; correcting a pitch can then obscure whether
-the original fault belongs to the transcription, the source, or the latest edit.
+## Four kinds of evidence, arriving all at once
 
-A four-pass transcription gives each kind of evidence its own turn. Pass 1
-maps tempo, meter, pickup, and phrase boundaries. Pass 2 enters attacks and
-durations on a neutral pitch. Pass 3 adds the contour and a few secure anchor
-pitches. Pass 4 resolves exact pitches, articulation, dynamics, and small
-timing details. The representation grows richer, but its established timing
-structure remains available for comparison.
+A recording hands you pitch, rhythm, and expression in the same instant, and the
+obvious move is to type them in the same instant too. Try it on eight bars and
+watch what happens. One duration comes out short in bar 2, every later entrance
+slides half a beat forward, and by bar 6 you're hearing something that matches
+nothing on the recording. You correct a pitch. Now you can't tell whether the
+original fault was yours, the source's, or the fix you just made.
 
-This order is useful even when a particular note seems immediately clear. A
-confident pitch can sit inside a bar that is half a beat short. Keep uncertain
-events in the data and mark them with a searchable comment such as `REVIEW`.
-That label turns doubt into a concrete queue: it says what still needs evidence
-without asking the rest of the transcription to wait.
+The trouble isn't that you made a mistake. It's that the mistake had nowhere to
+be isolated. When one array carries four kinds of claim at once, every fault
+looks like every other fault.
 
-## Run this
+So give each kind of evidence its own turn. Pass 1 maps tempo, meter, pickup,
+and phrase boundaries. Pass 2 enters attacks and durations on a single neutral
+pitch. Pass 3 adds contour and a few anchor pitches you're confident about. Pass
+4 settles the exact pitches, then articulation, dynamics, and the small timing
+details. The representation gets richer at every stage while the timing
+structure established in pass 2 stays put, available for comparison the whole
+way through.
 
-The example lets you hear the same four-beat phrase at three stages of the
-pipeline. Integer notes stand for MIDI pitches because the relationship between
-an anchor and an offset is easier to see as arithmetic. Pass 1 is represented
-by the fixed tempo and four-beat total around the playable data.
+Hold that order even when a note seems obvious on first hearing. A confident
+pitch will happily sit inside a bar that's half a beat short, and it'll sound
+fine on its own. Keep uncertain events in the data and mark them with a
+searchable comment such as `REVIEW`. That word turns a vague misgiving into a
+queue you can work through: it says what still needs evidence without making
+the rest of the transcription wait for it.
+
+## One phrase, three renderings
+
+The example plays the same four-beat phrase at three stages of the pipeline.
+Integer notes stand in for MIDI pitches, because the relationship between an
+anchor and an offset reads more clearly as arithmetic than as note names. Pass 1
+shows up as the fixed tempo and the four-beat total wrapped around everything
+else.
 
 ```{.ruby audio=""}
 use_bpm 76
@@ -62,61 +73,90 @@ sleep 1
 play_pass exact_notes, rhythm, 1.0
 ```
 
-The repeated C in the first rendering strips away melodic distraction, so the
-six attacks and their spacing are exposed. The contour version then rises to a
-high point and returns. In the final version, provisional offsets give way to
-settled MIDI notes. Through all three statements, the bar still occupies four
-beats. That stable length is the thread connecting the passes.
+Six attacks, four beats, three times over. The repeated C in the first rendering
+strips out melody entirely, so all you have left to attend to is where the
+attacks fall and how far apart they are. Count them. Then the contour version
+climbs to a high point and comes back, and the final version replaces those
+provisional offsets with settled MIDI numbers.
 
-## Change one thing
+Here's the thing worth noticing. Every rendering uses the same `rhythm` array,
+so the timing is bit-for-bit identical across all three. Does the second one
+feel like the same rhythm to you? Most people find the contour version's fourth
+note lands harder than the neutral version's did, and nothing in the durations
+changed to cause that.
 
-1. Change the last rhythm value from 1 to 0.5. Each rendering now finishes half
-   a beat early because all three depend on the same duration array. Listen to
-   the abrupt ending. Later pitch detail cannot repair a timing error inherited
-   from an earlier pass.
-2. Restore the rhythm, then change the fourth contour step from 4 to 3 without
-   changing `exact_notes`. Only the middle rendering reaches a lower high
-   point. The separation shows how a contour hypothesis can be revised without
-   disturbing the final pitch claim.
-3. Put `REVIEW` beside one exact note and use the editor search to find it.
-   Write a short reason with the marker, such as "upper neighbour obscures
-   attack," so the next replay begins with a specific listening question.
+## Break one pass and watch it spread
 
-## Why it works
+1. Change the last rhythm value from `1` to `0.5`. All three renderings now
+   finish half a beat early, because all three read the same duration array.
+   Listen to how abruptly the phrase stops. No amount of pitch detail added
+   later repairs a timing error inherited from an earlier pass.
+2. Restore the rhythm, then change the fourth contour step from `4` to `3` and
+   leave `exact_notes` alone. Only the middle rendering drops to a lower high
+   point. That's a contour hypothesis being revised without touching the final
+   pitch claim, which is precisely the separation the pipeline buys you.
+3. Put `REVIEW` beside one entry in `exact_notes` and find it again with your
+   editor's search. Write a short reason next to the marker, something like
+   "upper neighbour obscures the attack", so your next replay starts with a
+   specific listening question rather than a general unease.
 
-Each pass has a narrow contract. The rhythm pass must account for the meter,
-including rests and ties, but it need not name a pitch. The contour pass keeps
-that timing and describes direction: repeated, higher, or lower. Exact entry
-then tests candidate notes against known anchors without reopening every
-duration. When a disagreement appears, you know which layer contains it.
+## What each pass is allowed to claim
 
-Pass 1 often lives in comments or metadata because its observations concern
-the whole excerpt. Write the meter, estimated tempo, pickup length, source
-times, and phrase boundaries before individual events. Phrase boundaries are
-especially valuable error boundaries. You can confirm four bars, reset your
-count, and begin the next phrase without allowing one missing eighth note to
-shift the remaining minute.
+Each pass has a narrow contract, and the narrowness is the whole point. The
+rhythm pass has to account for every beat in the meter, rests and ties included,
+but it never has to name a pitch. The contour pass keeps that timing untouched
+and describes direction only: same, higher, lower, and roughly how far. Exact
+entry then tests candidate pitches against anchors you already trust, without
+reopening a single duration. When two passes disagree, you know which one holds
+the disagreement.
 
-The event schema stays recognisable while the evidence changes. A reusable
-event eventually contains `:note`, `:start`, and `:duration`, with optional
-`:amp`. At the rhythmic stage, `:note` can carry a neutral placeholder. At the
-contour stage, it can hold a provisional value relative to an anchor. The final
-pass replaces that value with the settled pitch. Stable keys keep diffs
-readable and let duration checks run before the melody is fully known.
+Pass 1 usually lives in comments or metadata, because its observations cover the
+whole excerpt rather than any one event. Write the meter, your tempo estimate,
+the pickup length, the source timestamps, and the phrase boundaries before you
+enter a single note. Those phrase boundaries earn their keep as error
+boundaries. Confirm four bars, reset your count, start the next phrase, and one
+missing eighth note can no longer shift the remaining forty seconds of music.
 
-Programmers can think of the process as a compiler pipeline. An early stage
-establishes structure; later stages enrich the representation; diagnostics
-remain attached to the smallest useful unit. The analogy also explains the
-discipline of the order. If an early structural pass is skipped, the omitted
-information returns later as a debugging problem whose source is harder to
-name.
+The event schema holds still while the evidence changes underneath it. A
+finished event carries `:note`, `:start`, and `:duration`, with `:amp` optional.
+At the rhythmic stage, `:note` holds a neutral placeholder. At the contour
+stage, it holds a provisional value relative to an anchor. Pass 4 replaces that
+value with the settled pitch and nothing else about the structure moves. Stable
+keys keep your diffs readable, and they let bar-duration checks run long before
+the melody is fully known.
 
-## Take it further
+Programmers already have a name for this shape: it's a compiler pipeline. An
+early stage establishes structure, later stages enrich the representation, and
+diagnostics stay attached to the smallest unit that can carry them. The analogy
+explains the discipline of the order, too. Skip an early structural pass and the
+information you skipped doesn't disappear. It comes back later as a debugging
+problem, in a form that's much harder to name.
 
-Choose eight bars from one candidate in your source inventory and create a
-four-pass checklist around a fixed event schema. Save a separate version or
-commit after each pass so you can see what evidence was added and what remained
-stable. Before exact pitch entry begins, every bar duration should validate.
-Leave each unresolved event marked `REVIEW`, together with a note naming the
-evidence that would settle it: a slower loop, a clearer score page, a bass
-anchor, or another hearing of the attack.
+## Why REVIEW beats a mental note
+
+A marker in the data outlives your memory of why you left it. `REVIEW` with no
+explanation is barely better than nothing; `REVIEW: beat 3.5, second attack may
+be a tie` tells a future you exactly which three seconds to replay and what to
+listen for. Grep for the marker and you have a work queue with locations
+attached.
+
+Resist the urge to guess a value so the marker can go away. An entered pitch you
+don't believe is worse than an obvious gap, because it looks finished. Leave the
+doubt visible and keep moving; unresolved events cost you nothing until you
+claim the transcription is done.
+
+## Eight bars, four saved versions
+
+Take eight bars from one candidate in the source inventory you built in Lesson
+42, and work them through a four-pass checklist built around one fixed event
+schema. Save a separate version or commit after each pass, tagged
+`p1-structure`, `p2-rhythm`, `p3-contour`, and `p4-exact`, so you can see what
+evidence arrived and what stayed stable. Every bar duration must validate before
+exact pitch entry begins, and every phrase boundary and anchor must be confirmed
+before pass 4.
+
+Aim for eight checklist rows, one per bar. Leave each unresolved event marked
+`REVIEW` with a note naming the evidence that would settle it: a slower loop, a
+clearer score page, a bass anchor, one more hearing of the attack. [Lesson 44](44-transcribe-by-ear.qmd)
+takes the ear route through this pipeline, and [Lesson 45](45-transcribe-from-score.qmd) takes the score route.
+The passes don't change; only the kind of evidence does.

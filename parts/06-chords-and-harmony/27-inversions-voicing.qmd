@@ -7,20 +7,22 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Play C major as C-E-G, then lift the low C above G. Both versions contain the
-same three pitch classes, yet they do not carry the same weight. The second feels
-lighter because E has become the bass. Harmonic identity can survive an octave
-move while the chord's balance changes beneath it.
+## The same three notes, weighted differently
+
+Play C major as C-E-G, then lift the low C up an octave so E sits at the bottom.
+Same three pitch classes. Different weight. The second version feels lighter,
+because the bass note is what a chord leans on, and E isn't a settled place to
+lean on.
 
 An *inversion* raises one or more low chord tones by an octave. A *voicing* is
-the full choice of register and spacing for every tone. Root position places the
-root in the bass, first inversion the third, and second inversion the fifth.
-Those familiar keyboard shapes are also transformations of an ordered pitch
-array, which makes them available for search rather than manual rearrangement.
+the whole choice of register and spacing for every tone in the chord. Root
+position puts the root in the bass, first inversion the third, second inversion
+the fifth. Those keyboard shapes are also transformations of a sorted array,
+which means you can search for one instead of arranging it by hand.
 
-## Run this
+## A greedy search for the nearest chord
 
 ```{.ruby audio=""}
 use_bpm 78
@@ -62,54 +64,43 @@ roots.each do |root|
 end
 ```
 
-The first three chords rotate C, E, and G through the bass while preserving the
-pitch-class set. The fourth spreads the same harmony over more than two octaves,
-opening a hole in the middle of the sound. In the progression, the search then
-chooses nearby inversions so the parts remain in one register instead of
-following every root through a large leap.
+The first three chords rotate C, E and G through the bass. The fourth spreads
+the same harmony across two octaves and opens a hole in the middle of it. Then
+the progression runs, and `voice_near` holds each chord near the one you just
+heard. Watch the `movement` numbers while you listen.
 
-## Change one thing
+## Take the search apart
 
-1. Play `raw` instead of `chosen` in the progression. Follow the lowest note
-   through both versions: the root-position sequence exposes larger leaps that
-   the nearby voicings often avoid.
-2. Remove `-12` and `12` from the shift list. With octave displacement excluded,
-   the search has fewer legitimate neighbours and some transitions settle for
-   more movement.
+1. Play `raw` in place of `chosen`. Follow the lowest note through both runs.
+   The root-position version jumps wherever the root jumps; the searched version
+   mostly doesn't.
+
+2. Delete `-12` and `12` from the shift list. With octave displacement gone, the
+   search has fewer legal neighbours, and some transitions settle for more
+   movement than they need to.
+
 3. Replace `[48, 67, 76]` with `[60, 64, 67]`. Both reduce to the pitch classes
-   of C major, but one stretches across a wide register and the other forms a
-   compact cluster.
+   of C major. One is stretched thin across the keyboard and the other is a
+   compact block. Which one still sounds like a single object?
 
-## Why it works
+## What the cost function knows, and what it doesn't
 
-Inversion is a cyclic reorder with octave correction. Moving the lowest element
-to the end is not enough, because the values would cease to ascend; adding twelve
-places that pitch above its former neighbours. Each result retains the original
-values modulo twelve, so the pitch-class identity remains intact.
+Inversion is a cyclic reorder with an octave correction. Move the lowest element
+to the end and the array stops ascending, so you add twelve to lift that pitch
+above its old neighbours. Every result keeps the original values modulo twelve, so the
+chord's identity survives.
 
-Voicing introduces register as a separate choice. `voice_near` produces
-candidates, measures their total semitone distance from the previous chord, and
-selects the smallest score. This greedy search knows nothing about keyboard
-style or harmonic function. It still removes conspicuous jumps because its cost
-function makes one useful preference explicit: keep corresponding voices near
-where they were.
-
-That preference is incomplete. The least-moving candidate may put an unstable
-tone in the bass, cross voices, or crowd them into an unhelpful range. Lesson 31
-adds constraints for those cases. Here the deliberately small function exposes
-the search mechanism and leaves room for musical judgement instead of treating
-one number as a complete voicing rule.
-
-The search is finite because the code permits only three octave placements for
-each inversion. In principle, every pitch class has copies in infinitely many
-registers. Instruments and arrangements impose practical ranges, so a real
-voicer also needs upper and lower bounds. Encoding those bounds turns “keep the
-chords nearby” into a reproducible problem with an inspectable candidate set.
+`voice_near` is greedy: at each boundary it builds the candidates, scores each
+one by total semitone distance from the previous chord, and takes the smallest.
+That one preference removes most of the leaps you'd otherwise hear. It knows
+nothing about which tone lands in the bass, whether two voices cross, or whether
+the result sits in a range anyone can sing. [Lesson 31](31-voice-leading-optimisation-problem.qmd) adds those constraints and
+shows you what happens when a low score and good voice leading come apart.
 
 ## Take it further
 
-Add a `bass_pitch_class` argument to `voice_near` and reject candidates whose
-lowest note does not match it. Render C-F-G-C with C and F in root position, G
-in first inversion, and the final C in second inversion. Print the movement
-total for this constrained path beside the all-root-position baseline. The new
-version should move less overall while still obeying every requested bass note.
+Add a `bass_pitch_class` argument to `voice_near` and reject any candidate whose
+lowest note doesn't match it. Render C-F-G-C with C and F in root position, G in
+first inversion and the final C in second inversion. Print the movement total
+for that constrained path beside the all-root-position baseline. Your version
+should move less overall while still landing every bass note you asked for.

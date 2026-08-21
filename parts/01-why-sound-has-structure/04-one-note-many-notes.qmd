@@ -102,7 +102,7 @@ impersonate brightness.
 
 Notice how much you can learn before playback. You can inspect the multiples,
 compare two amplitude curves, or calculate the highest frequency without
-rendering a note. Sound then gives those numbers perceptual meaning. Lesson 5
+rendering a note. Sound then gives those numbers perceptual meaning. [Lesson 5](05-consonance-small-whole-numbers.qmd)
 takes the same alignment idea further: when two fundamentals sit in a small
 whole-number ratio, some of the partials above them coincide.
 

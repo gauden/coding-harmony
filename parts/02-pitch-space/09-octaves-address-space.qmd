@@ -78,7 +78,7 @@ pointer. Add `[0, 3, 5, 7, 5, 2]` to a new root and the phrase relocates with
 its internal steps intact. That's the argument for keeping score data relative
 until a part is handed its range.
 
-Octave transposition connects this back to Lesson 8 exactly. Adding twelve
+Octave transposition connects this back to [Lesson 8](08-twelve-pitch-classes.qmd) exactly. Adding twelve
 changes the MIDI address and leaves the remainder modulo twelve alone. The C2
 phrase and the C6 phrase run the same class pattern in frequency bands four
 octaves apart. One representation proves they're the same thing; the other
@@ -101,7 +101,7 @@ at once. Here's the habit worth forming: when a texture goes muddy, read the
 register addresses before you touch the faders. Turning a line up usually
 increases the masking. Moving it often solves the real conflict.
 
-Lesson 10 finds another reason a MIDI integer isn't the whole story. Register
+[Lesson 10](10-sharps-flats-why-spelling-sound.qmd) finds another reason a MIDI integer isn't the whole story. Register
 lives in the full address. Harmonic intent can live in a note's spelling, and
 two spellings share one address.
 

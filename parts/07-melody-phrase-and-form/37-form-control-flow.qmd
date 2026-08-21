@@ -7,21 +7,24 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-A two-minute piece need not contain two minutes of unrelated note data.
-Repetition gives the listener something to remember, which in turn makes a
-departure legible. When the opening returns after contrasting material, it
-carries both its original identity and the time that has passed since it was
-last heard.
+## Two minutes of music, thirty-two notes
 
-*Form* is the organisation of sections across the span of a piece. Binary form
-uses two large regions; ternary form returns, as in ABA; rondo alternates a
-recurring A with contrasting episodes. For construction, a section can resemble
-a function and the form plan its call sequence. A varied return invokes familiar
-material with altered arguments rather than copying and editing the section.
+A two-minute piece doesn't need two minutes of unrelated note data. Repetition
+gives your listener something to hold, and having something to hold is what
+makes a departure legible in the first place. When the opening comes back after
+contrasting material, it arrives carrying both its original identity and all the
+time that passed while it was away.
 
-## Run this
+*Form* is how sections are organised across the span of a piece. Binary form
+works in two large regions. Ternary form returns, as in ABA. Rondo alternates a
+recurring A against contrasting episodes. For building one, treat a section like
+a function and the form plan like its call sequence. A varied return then means
+invoking familiar material with different arguments, and never means copying the
+section and editing the copy.
+
+## A plan, and the sections it calls
 
 ```{.ruby audio=""}
 use_bpm 60
@@ -56,65 +59,78 @@ form.each do |name, transpose, amp|
 end
 ```
 
-Every section lasts twenty-four beats, so the five calls fill two minutes at 60
-BPM. When A returns, it sounds an octave higher and at lower amplitude. The note
-data identifies it as the same section, while the arguments let elapsed time
-leave a mark on the return. The transition has its own name because connecting
-two regions is a distinct formal job, not an anonymous gap.
+Each section runs twenty-four beats, so five calls fill two minutes at 60 BPM.
+Set a timer if you like; this one takes a while. When A returns it comes back an
+octave higher and quieter. The note data says it's the same section, and the
+arguments let the elapsed time leave a mark on it.
 
-## Change one thing
+The transition gets its own name because connecting two regions is a real formal
+job. It isn't an anonymous gap between the parts that matter.
 
-1. Call A twice before B. The repetition gives the opening more time to settle
-   in memory and postpones contrast. Notice whether the second pass strengthens
-   recognition or begins to exhaust the eight-note material.
-2. Return A at its original register and amplitude. Compare that literal return
-   with the quieter octave version, listening for whether recognition or change
-   dominates the moment.
-3. Change the plan to A-B-A-C-A. More frequent returns turn the design toward
-   rondo and make C an episode framed by familiar material on both sides.
+## Rearrange the plan, not the notes
 
-## Why it works
+1. Call A twice before B. The opening gets more time to settle into memory and
+   contrast gets postponed. Does the second pass strengthen your recognition of
+   A, or start to wear the eight notes out?
+2. Bring A back at its original register and amplitude. Compare that literal
+   return against the quieter octave version. In one of them recognition wins
+   and in the other change does, and which is which will surprise you less than
+   how large the difference is.
+3. Change the plan to A-B-A-C-A. More frequent returns pull the design toward
+   rondo, and C becomes an episode framed by familiar material on both sides.
 
-The `sections` hash stores each body of material once. The `form` array records
-order and realisation arguments, and `play_section` interprets both. Large-scale
-revision can therefore happen in a short, visible plan without duplicating note
-lists. When A changes at the source, all of its returns remain related.
+Each of those is one line in `form`. None of them touches a note.
 
-A section name claims identity; its arguments describe variation. Transposition
-preserves interval relationships while changing register, and amplitude changes
-the listener's perspective on the material. Other arguments might select
-instrumentation, articulation, or omitted phrases. If variation erases the
-recognisable features of a section, assigning a new name may describe the heard
-result more accurately than insisting it remains A.
+## Why the plan is data
 
-The control-flow analogy has a boundary. A listener hears a return through
-memory of everything that intervened, while a runtime assigns no emotional
-weight to the second call of a function. The analogy remains useful for making
-the piece: define reusable units, order them, parameterise legitimate changes,
-and keep that form plan separate from the details of rendering.
+The `sections` hash stores each body of material exactly once. The `form` array
+records order and realisation arguments, and `play_section` interprets both.
+Large-scale revision happens in a short, visible plan, with no duplicated note
+lists anywhere. Change A at the source and every one of its returns stays
+related to it, automatically.
 
-Code boundaries also need audible evidence. A new key, register, texture,
-cadence, or rhythmic profile can announce B. Changing a symbol in the array does
-nothing by itself if B behaves like A. The printed labels support inspection,
-but a listener who cannot see the log should still hear the same divisions.
+A section name is a claim about identity; its arguments describe the variation.
+Transposition preserves interval relationships while moving register, and
+amplitude changes where the listener seems to be standing. Other arguments could
+select instrumentation, articulation, or which phrases to leave out. Push far
+enough and you reach a real question: if variation erases every recognisable
+feature of a section, giving it a new name describes what you actually hear
+better than insisting it's still A.
 
-A transition deserves explicit data when it changes the route between sections.
-Here it lasts as long as A, B, or C, which may cause it to sound like a fourth
-section rather than a bridge. Shorten it to four notes and compare its apparent
-function. Formal labels are analytical judgements supported by proportion and
-behaviour; the renderer does not enforce them as types.
+The control-flow analogy has a limit, and it's worth being precise about where.
+A listener hears a return through memory of everything that happened in between.
+A runtime attaches no weight whatsoever to the second call of a function. The
+analogy is a construction tool, not a theory of listening: define reusable
+units, order them, parameterise the changes you consider legitimate, and keep
+that plan separate from rendering.
 
-Distance in time changes repetition too. A return after twenty seconds may feel
-like immediate confirmation; after a minute, the same notes can feel recovered
-from memory. Keeping the order in a visible array makes those spans measurable
-and easy to revise. The call is unchanged, but its position gives it a new
+Code boundaries also need audible evidence, which is the trap here. A new key,
+register, texture, cadence or rhythmic profile announces B. Changing a symbol in
+an array announces nothing at all. If B behaves like A, your listener hears one
+long section and your form plan is a private fiction. The printed labels are for
+inspection; someone who can't see the log should still hear the divisions.
+
+Proportion carries meaning too. That transition lasts as long as A, B and C do,
+which is long enough that it stops sounding like a bridge and starts sounding
+like a fourth section. Shorten it to four notes and listen again to what it
+seems to be doing. Formal labels are analytical judgements resting on proportion
+and behaviour. Your renderer doesn't enforce them, and it won't warn you.
+
+Distance in time changes repetition as well. A return after twenty seconds feels
+like immediate confirmation. After a minute, the same notes feel recovered from
+somewhere. Keeping the order in a visible array makes those spans measurable and
+cheap to revise. The call doesn't change. Its position hands it a different
 formal consequence.
 
-## Take it further
+## Build a rondo you can hear the seams in
 
 Compose an A-B-A-C-A rondo of at least ninety seconds. Store A once and render
 its returns with two different argument sets. Give B and C distinct pitch ranges
-and rhythmic profiles so the contrast survives without printed labels. Keep the
-form as data, include one named transition, and copy no section arrays. Print
-each section name during playback, then listen once without the log and mark the
-boundaries you can actually hear.
+and rhythmic profiles, so the contrast survives with the labels switched off.
+Keep the form as data, include one named transition, and copy no section arrays.
+
+Then run it twice. The first time, print each section name as it plays. The
+second time, comment the `puts` out, listen straight through, and mark where you
+hear the boundaries. Compare your marks against the plan. Every boundary you
+missed is a place where your form exists in the array and not in the air, and
+that gap is the only thing this exercise is really measuring.
