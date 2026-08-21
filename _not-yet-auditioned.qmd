@@ -1,0 +1,5 @@
+::: {.callout-note appearance="simple"}
+**Not yet auditioned.** The Ruby parses, but nobody has run this lesson in Sonic
+Pi and checked it by ear. Every description of sound below is a claim awaiting a
+listener, not a finding.
+:::

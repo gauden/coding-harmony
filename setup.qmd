@@ -2,11 +2,11 @@
 title: "Before Lesson 1"
 ---
 
-Before the theory begins, establish one reliable path from code to sound.
-Install Sonic Pi 5.0.0 from [sonic-pi.net](https://sonic-pi.net/); the download
-page covers macOS, Windows, Linux, and Raspberry Pi. The version number belongs
-to the musical setup as much as the speakers do. A later release can change a
-synth default and make two people hear different evidence from the same code.
+Before any theory, you need one reliable path from code to sound. Install Sonic
+Pi 5.0.0 from [sonic-pi.net](https://sonic-pi.net/); the download page covers
+macOS, Windows, Linux and Raspberry Pi. Treat the version number as part of your
+setup, as much as the speakers are. A later release can change a synth default,
+and then two people hear different evidence from identical code.
 
 Open Sonic Pi, paste this into an empty buffer, and press **Run**.
 
@@ -14,56 +14,58 @@ Open Sonic Pi, paste this into an empty buffer, and press **Run**.
 play 60
 ```
 
-That single note is a useful dividing line. If you hear it, the program has
-reached the audio output. If you do not, leave the code alone and check the
-volume, selected output device, and Sonic Pi log. Changing a correct line while
-diagnosing the sound path creates a second problem before the first one is
-understood.
+One note, and it draws a useful line. Hear it and your program is reaching the
+audio output. Hear nothing and the problem is somewhere between Sonic Pi and
+your ears, so leave the code alone and check volume, output device, and the log
+pane. If you start editing a correct line while diagnosing silence, you'll have
+two problems before you've understood the first one.
 
-Headphones or speakers with usable bass response help throughout the course.
-Part 1 compares frequencies near 200 Hz, and Part 10 builds bass lines whose
-shape can disappear through small laptop speakers. Keep the level low enough
-that repeated drills remain comfortable.
+Headphones, or speakers with some real bass, will help you throughout. Part 1
+compares frequencies down around 200 Hz, and Part 10 builds bass lines whose
+shape vanishes entirely through small laptop speakers. Keep the level low enough
+that repeated drills stay comfortable.
 
-## Which version
+## Why the version is pinned
 
-Every example targets **Sonic Pi 5.0.0**. The extracted Ruby clears syntax
-checks, but the manuscript has not yet received its complete runtime and
-listening pass. That is why each lesson remains `draft`, and why empty audio
-attributes appear where recordings will eventually go. A syntax check can read
-Ruby grammar; it cannot hear a melody or confirm Sonic Pi's response to a call.
+Every example targets **Sonic Pi 5.0.0**. The extracted Ruby passes syntax
+checks, but the manuscript hasn't yet had its full runtime and listening pass.
+That's why each lesson is marked `draft` and carries a note at the top, and why
+you'll see empty audio attributes where recordings will eventually sit. A syntax
+checker reads Ruby grammar. It can't hear a melody or predict what Sonic Pi does
+with a call.
 
-If your version differs, open **Help, About** and record the number before
-adapting an example. Synth defaults, samples, and function behaviour can move
-between releases. When an example parses but behaves strangely, the log tells
-you what the runtime objected to, while the help pane describes the installed
-API. Those two sources are more useful than guessing at the code.
+Running something else? Open **Help, About**, write the number down, and expect
+to adapt. Synth defaults, samples and function behaviour all move between
+releases. When an example parses but behaves oddly, the log tells you what the
+runtime objected to and the help pane documents the API you actually have
+installed. Both beat guessing at the code.
 
-## The window
+## Three panes worth knowing
 
-Most of the work happens in three areas. **Buffers** hold code; a fresh buffer
-keeps definitions and live loops from an earlier lesson out of the next one.
-The **log** prints messages, notes, and errors, giving you a second account of
-the performance when the sound is ambiguous. The **help** pane documents the
-synths, samples, and functions available in the installed version.
+Almost everything happens in three places. **Buffers** hold code, and a fresh
+one keeps definitions and live loops from the last lesson out of the next.
+The **log** prints messages, notes and errors, giving you a second account of
+the performance when your ears are uncertain. The **help** pane documents the
+synths, samples and functions in your installed version.
 
-On macOS, `Cmd-R` runs the buffer and `Cmd-.` stops all sound. On Windows and
-Linux, use `Alt-R` and `Alt-.`. Learn the stop command before running the first
-live loop.
+On macOS, `Cmd-R` runs the buffer and `Cmd-.` stops everything. On Windows and
+Linux, that's `Alt-R` and `Alt-.`. Learn the stop command before you run your
+first live loop, not after.
 
 ## A first sound
 
-The next program is a preview rather than a test. Paste it into a fresh buffer
-and listen to two repetitions before trying to understand every line. Parts 0
-through 3 will unpack its tempo, synth selection, array, timed playback, and
-concurrent loops. For now, notice that a small amount of data can already
-describe a recognisable musical surface.
+This next program is a preview, not a test. Paste it into a fresh buffer and
+listen through two repetitions before you try to understand every line. Parts 0
+through 3 will unpack its tempo, synth choice, array, timed playback and
+concurrent loops. For now, notice how little data it takes to describe something
+that already sounds like music.
 
 ```{.ruby audio=""}
 use_bpm 96
 use_synth :pluck
 
-# E minor pentatonic keeps the first experiment focused on rhythm and timbre.
+# E minor pentatonic. No note in it can clash with the bass, which keeps this
+# first experiment about rhythm and timbre.
 melody = [:e4, :g4, :a4, :b4, :d5, :b4, :a4, :g4]
 
 live_loop :tune do
@@ -79,33 +81,37 @@ live_loop :bass do
 end
 ```
 
-After two repetitions, replace `:pluck` with `:prophet` and run the buffer again.
-The pitch sequence and timing stay fixed, so the softer attack and longer body
-belong to the instrument. Restore `:pluck`, replace `melody` with
-`[:e4, :f4, :g4, :a4, :b4, :c5, :d5, :e5]`, and listen once more. This time the
-instrument stays put while the note collection changes. Parts 2 and 5 will
-explain why those new notes sit differently over the E in the bass.
+After two repetitions, swap `:pluck` for `:prophet` and run again. Pitches and
+timing haven't moved, so the softer attack and longer body belong entirely to
+the instrument. Now put `:pluck` back and replace `melody` with
+`[:e4, :f4, :g4, :a4, :b4, :c5, :d5, :e5]`. This time the instrument holds still
+while the note collection changes. Do those new notes sit differently over the E
+in the bass? They do, and Parts 2 and 5 explain why.
 
-Press the stop shortcut before continuing. Live loops run until stopped, even
-after you move to another buffer.
+Press the stop shortcut before you carry on. Live loops keep running even after
+you've moved to another buffer.
 
-## How to use the draft
+## How to work through this draft
 
-Work through the lessons in order because the representation accumulates. The
-event schema introduced before harmony returns in notation, transcription, and
-arrangement; later examples can therefore concentrate on music instead of
-rebuilding their data model. Each lesson follows a familiar arc: meet the idea,
-run a complete program, isolate one change, account for what you hear, then use
-the idea in a larger piece of work.
+Go in order. The representation accumulates, and skipping ahead means meeting a
+data model without the reason it exists. The event schema introduced before
+harmony comes back in notation, transcription and arrangement, which is what
+lets later examples concentrate on music instead of rebuilding their scaffolding
+each time.
 
-Use the [solutions appendix](appendix/solutions.qmd) after making a real attempt.
-Use the [glossary](appendix/glossary.qmd) to recover a term and the [Sonic Pi
-cheat sheet](appendix/sonic-pi-cheatsheet.qmd) to recover a call. The [sources
-ledger](appendix/sources.qmd) records the provenance needed for transcription
-material.
+Most lessons follow a familiar arc: meet the idea, run a complete program,
+isolate one change, work out what you heard, then use the idea on something
+bigger. The section headings tell you which part you're in.
 
-When a lesson surprises you, record the version, exact edit, log output, and what
-you heard. Keep syntax failure separate from Sonic Pi runtime failure, and keep
-both separate from timing trouble or disagreement with the prose. That small
-discipline turns "it did not work" into evidence another person can follow. It
-is also the evidence required to move a lesson from `draft` to `tested`.
+Use the [solutions appendix](appendix/solutions.qmd) after a real attempt, not
+before. The [glossary](appendix/glossary.qmd) recovers a term, the [Sonic Pi
+cheat sheet](appendix/sonic-pi-cheatsheet.qmd) recovers a call, and the [sources
+ledger](appendix/sources.qmd) covers the provenance you'll need once you start
+transcribing.
+
+When a lesson surprises you, write down the version, the exact edit, the log
+output, and what you heard. Keep syntax failure separate from Sonic Pi runtime
+failure, and keep both separate from a timing problem or a straightforward
+disagreement with the prose. That small discipline turns "it didn't work" into
+evidence somebody else can follow. It's also exactly what's needed to move a
+lesson from `draft` to `tested`.

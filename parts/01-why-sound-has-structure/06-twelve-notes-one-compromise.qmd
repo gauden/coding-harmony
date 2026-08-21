@@ -7,13 +7,43 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-A tuning system chooses which frequency relationships remain exact and where small discrepancies will appear. Pure fifths make a tempting foundation: multiply a frequency by `3/2` twelve times and the resulting pitch comes close to seven octaves above the start. It does not arrive exactly. The small mismatch between those two routes is the Pythagorean comma.
+## Twelve fifths almost make seven octaves
 
-*Equal temperament* solves the keyboard's routing problem by dividing the octave into twelve equal multiplicative steps. Each semitone has the ratio `2 ** (1.0 / 12)`, and twelve such steps produce an exact `2:1` octave. The cost is that most intervals no longer use their pure small-number ratios.
+Stack twelve pure fifths and you land almost exactly seven octaves up. Almost.
+Multiply by `3/2` twelve times and you overshoot by about a quarter of a
+semitone: nothing at all on one chord, and a disaster once you want to play in
+all twelve keys. That gap is the *Pythagorean comma*, and every tuning system
+ever built is a decision about where to hide it.
 
-The program places that compromise beside a local alternative. One major triad uses the ratios `1:1`, `5:4`, and `3:2`; the other uses equal-tempered offsets of 0, 4, and 7 semitones. Hear each held chord twice if needed: once as a whole sonority, then with attention on the movement inside its major third.
+*Equal temperament* hides it by spreading it evenly. Divide the octave into
+twelve identical multiplicative steps, each with the ratio `2 ** (1.0 / 12)`,
+and twelve of them give you an exact `2:1` octave. What you give up is that
+almost no other interval keeps its pure small-number ratio any more.
+
+The program puts that compromise next to the alternative. One major triad uses
+the ratios `1:1`, `5:4` and `3:2`. The other uses equal-tempered offsets of 0, 4
+and 7 semitones. On paper they're the same chord. So what does a quarter of a
+semitone, spread across twelve keys, actually sound like?
+
+## Why this example can't use a sine
+
+Lesson 5 used `synth :sine` and was right to. Here it would destroy the entire
+demonstration, so it's worth being explicit about why.
+
+The audible difference between just and equal-tempered intonation comes almost
+entirely from *partials that nearly coincide*. Take the root at 220 Hz. Its
+fifth harmonic sits at 1100 Hz. A pure `5:4` third is 275 Hz, and its fourth
+harmonic is also 1100 Hz, exactly. An equal-tempered third is 277.18 Hz, whose
+fourth harmonic is 1108.7 Hz. Those two land 8.7 Hz apart, and 8.7 Hz is a
+shimmer you can hear.
+
+A sine wave has one partial and nothing else. Take away the harmonics and you
+take away the phenomenon, leaving two tones that are 13.7 cents apart in
+separate passes, which nobody can reliably identify. So the example below uses
+`:saw`, which carries every integer harmonic, at a reduced amplitude for
+headroom.
 
 ## Run this
 
@@ -26,42 +56,85 @@ equal_offsets = [0, 4, 7]
 
 define :play_frequencies do |frequencies|
   frequencies.each do |frequency|
-    synth :sine, note: hz_to_midi(frequency), amp: 0.45,
-      sustain: 3, release: 0.5
+    # :saw carries all integer harmonics. The partials are the point here.
+    synth :saw, note: hz_to_midi(frequency), amp: 0.22,
+      attack: 0.05, sustain: 4, release: 0.5
   end
-  sleep 4
+  sleep 5
 end
 
 just = just_ratios.map { |ratio| root_hz * ratio }
 equal = equal_offsets.map { |steps| root_hz * (2 ** (steps / 12.0)) }
+puts "just:  #{just.map { |hz| hz.round(2) }}"
+puts "equal: #{equal.map { |hz| hz.round(2) }}"
 play_frequencies just
 play_frequencies equal
 ```
 
-Both triads implement a major-third and fifth structure, although the audible contrast may be subtler than the numerical formulas suggest. The ratio-built version is expected to have less internal motion around its third; the equal-tempered version may carry a faint shimmer. Those expectations still require audition on the stated synth and playback system. The tempering discrepancy buys a large structural advantage: the same interval offsets can move to any keyboard root.
+The just triad sits still. Its partials coincide exactly, so there's nothing to
+beat and the chord locks into place. The equal-tempered triad shimmers, and the
+shimmer has two speeds in it: roughly 8.7 pulses per second from the third, and
+a much slower undulation of about 0.7 per second from the fifth, whose second
+harmonic misses the root's third harmonic by only three-quarters of a hertz.
+
+If you hear nothing on the first pass, you're not doing it wrong. Sustain each
+chord longer and listen to the region well above the notes you played.
 
 ## Change one thing
 
-1. Change `sustain: 3` to `sustain: 5` and `sleep 4` to `sleep 6`. Slow interaction needs time to unfold, so the longer envelope and observation slot may expose movement that passed unnoticed in the original pass.
+1. Change `synth :saw` back to `synth :sine` and run both chords again. This is
+   the control, and it should be striking: the difference you just heard largely
+   disappears. Where was the effect living, if not in the notes you played?
 
-2. Restore the original duration and change the root from 220 to 330 Hz. The formulas remain unchanged, but the higher register may expose the tuning difference more clearly on your speakers.
+2. Restore `:saw`, then lengthen `sustain` to 8 and `sleep` to 9. Slow beating
+   needs time to complete a cycle. At 0.7 Hz, the fifth's undulation takes about
+   a second and a half to swing through once.
 
-3. Restore 220 Hz. Add 2 to each equal-tempered offset, then multiply every frequency in the ratio-built chord by the equal-tempered whole-tone ratio. Both chords move together, allowing you to compare the systems from a new root rather than comparing two different transpositions.
+3. Restore the original timing and move the root from 220 to 330 Hz. The
+   formulas don't change, but every beat rate scales with the frequencies, so
+   the shimmer speeds up by half again.
 
-## Why it works
+## What each system buys
 
-Tuning maps symbolic intervals onto physical frequency ratios. Ratio-based intonation can make chosen local relationships exact. Equal temperament instead makes transposition uniform: moving four semitones always multiplies a frequency by the same amount, regardless of the starting pitch.
+Tuning maps symbolic intervals onto physical frequency ratios, and each system
+protects something different. Ratio-based intonation makes the local
+relationships exact. Equal temperament makes transposition uniform: four
+semitones always multiplies frequency by the same amount, from any starting
+pitch you like.
 
-The formula closes because raising `2 ** (1.0 / 12)` to the twelfth power gives 2. A stack of pure `3:2` fifths preserves another invariant, and twelve applications do not equal seven exact doublings. Neither system is a failed version of the other. They satisfy different constraints.
+The equal-tempered formula closes because `2 ** (1.0 / 12)` raised to the
+twelfth power is exactly 2. A stack of pure `3:2` fifths preserves a different
+invariant, and twelve of those don't equal seven exact doublings. Neither system
+is a broken version of the other. They satisfy different constraints, and you
+can't have both.
 
-The major third offers the clearest numerical comparison in this chord. The ratio-built frequency is exactly `5/4` of the root, while the equal-tempered version is the fourth power of the semitone ratio. Those two third frequencies occur in separate passes, so they do not beat directly against one another. Instead, each third forms a slightly different relation with its own root and fifth. If the full triad hides that difference, play only the root and third in each pass, then restore all three tones. Isolation locates the relation under comparison; the complete chord restores its musical context.
+The major third is where the numbers diverge most. The pure third is exactly
+`5/4` of the root; the equal-tempered one is the fourth power of the semitone
+ratio, landing 13.7 cents sharp. Those two thirds never sound together in this
+program, so they don't beat against each other. Each simply forms a slightly
+different relation with its own root and fifth. If the full triad hides the
+difference, play root and third alone, then restore all three tones. Isolation
+finds the relation; the complete chord puts it back in context.
 
-Sonic Pi note numbers use equal-tempered keyboard addresses. Explicit hertz values let a program step outside that mapping, as this one does. Keeping both representations visible prevents a common confusion: a symbol such as `:e4` names a keyboard location, not a guarantee of a pure `5:4` relationship with every possible C.
+Sonic Pi's note numbers are equal-tempered keyboard addresses. Explicit hertz
+values let you step outside that mapping, which is exactly what this program
+does. Keeping both representations visible heads off a common confusion: `:e4`
+names a keyboard location. It promises nothing about a pure `5:4` relationship
+with any particular C.
 
-The listening comparison depends on a stable synth and envelope. Change those alongside the tuning and new partials or attacks may conceal the gentle beating you are trying to hear. The next lesson holds pitch and oscillator steady and varies amplitude through time, turning that envelope into the main musical object.
+Lesson 7 holds pitch and oscillator completely still and varies amplitude
+through time, which turns the envelope itself into the musical object.
 
 ## Take it further
 
-Print both triads' frequencies to two decimal places and calculate the hertz difference between their third degrees. Add a pure-fifth stack calculation and print `(1.5 ** 12) / (2 ** 7)`. These values make the two kinds of discrepancy inspectable before the sound begins.
+Print both triads to two decimal places and calculate the hertz difference
+between their thirds. Then print `(1.5 ** 12) / (2 ** 7)` and convert it to
+cents with `1200 * Math.log2(...)`. You should get about 23.5, which is the
+comma from the opening paragraph, now a number on your screen.
 
-Your log should contain the two frequency lists, the third-degree difference, and the comma ratio. Then audition both chords in Sonic Pi 5 through the same synth, amplitude, and envelope. If the contrast remains hidden, reduce each chord to root and third for one pass. Restore the complete triads afterward so the final comparison retains their harmonic context.
+Add one more calculation: for each pair of nearly-coinciding partials, print the
+expected beat rate as the absolute difference in hertz. Then audition both
+chords in Sonic Pi 5 through the same synth, amplitude and envelope, and try to
+count the pulses. If your count is anywhere near the printed rate, you've
+connected an arithmetic prediction to something your ears did independently.
+That's the whole method of this book in one exercise.

@@ -7,13 +7,22 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-In Sonic Pi, `sleep 1` advances the musical clock by one beat. It does not promise a fixed number of seconds. `use_bpm` supplies the conversion, which means a score can describe relationships in musical time and leave performance speed open.
+## `sleep 1` is not one second
 
-Duration values become easier to reason about when they are read as symbolic spans rather than seconds. A half beat remains half of the pulse whether the pulse moves slowly or quickly. That is why the same note and duration arrays can run at 60, 96, or 152 beats per minute without rewriting an event.
+In Sonic Pi, `sleep 1` advances the musical clock by one beat, and that's all it
+promises. `use_bpm` supplies the conversion to seconds. Your score gets to
+describe relationships in musical time and leave the performance speed open.
 
-The program plays one phrase at all three rates. Follow the duration pattern before judging speed: two half-beat notes lead to a full beat, then the pattern answers itself. The event relationships stay fixed even as their wall-clock length changes.
+You'll find durations much easier to reason about once you read them as symbolic spans.
+Half a beat is half the pulse whether the pulse is crawling or sprinting. That's
+why the same note and duration arrays run at 60, 96 or 152 beats per minute
+without touching a single event.
+
+This program plays one phrase at all three rates. Follow the duration pattern
+before you judge the speed you're hearing: two half-beat notes lead into a full beat, then the
+pattern answers itself.
 
 ## Run this
 
@@ -38,32 +47,65 @@ end
 end
 ```
 
-At 60 BPM, one beat lasts one second; at 96 and 152, the same durations occupy progressively less wall-clock time. Listen for whether the slow pass leaves more space around the notes, the middle pass reads as a compact tune, and the fast pass begins to resemble a riff. Those are expectations to test. Nothing in the arrays changes; tempo alters the physical scale on which you perceive them.
+At 60 BPM one beat lasts exactly one second. At 96 and 152, those identical
+durations take progressively less wall-clock time. The slow pass leaves air
+around every note, the middle one reads as a compact tune, and the fast one
+starts to sound like a riff. Nothing in the arrays moved. Tempo changed the
+physical scale you're perceiving them on.
 
-## Change one thing
+## Change the rate, keep the shape
 
-1. Remove the middle tempo and compare 60 directly with 152. Notice whether the large jump makes the shared duration pattern clearer or whether details of articulation become harder to compare without the intermediate rate.
+1. Drop the middle tempo and put 60 straight next to 152. Does the bigger jump
+   make the shared duration pattern easier to hear, or does losing the middle
+   step make articulation harder to compare?
 
-2. Restore the original, then double every duration and double the BPM. The phrase now occupies twice as many beats, but each beat takes half as many seconds. Its approximate wall-clock length remains fixed while its relationship to the pulse changes.
+2. Restore it, then double every duration *and* double the BPM. The phrase now
+   occupies twice as many beats, and each beat takes half as long. Its
+   wall-clock length barely moves while its relationship to the pulse changes
+   completely.
 
-3. Restore the score and change only the final duration to `2`. The global tempo remains unchanged, yet the phrase dwells on its last note. Compare this local change with slowing the entire performance.
+3. Restore the score and change only the final duration to `2`. Global tempo
+   hasn't moved, but the phrase now leans on its last note. That's a local
+   change, and it sounds nothing like slowing the whole performance down.
 
-## Why it works
+## Why the indirection pays
 
-Tempo is a conversion function. At `bpm` beats per minute, one beat lasts `60.0 / bpm` seconds. Sonic Pi lets the score remain in beats while its scheduler places the events in physical time. At 60 BPM the conversion is especially transparent: one beat equals one second. At 120 BPM it equals half a second.
+Tempo is a conversion function. At `bpm` beats per minute, one beat lasts
+`60.0 / bpm` seconds. Your score stays in beats and you never touch seconds and Sonic Pi's scheduler places
+the events in physical time. At 60 BPM the conversion is invisible, since a beat
+is a second. At 120 it's half a second.
 
-This indirection gives the score a stable internal shape. The durations `[0.5, 0.5, 1]` always say that two equal short events occupy the same span as the following long event. A performer can choose a new BPM without changing that relationship. In programming terms, the duration array supplies values in one domain and tempo supplies the conversion at the boundary.
+That indirection is what gives your score a stable internal shape. `[0.5, 0.5, 1]`
+always says two equal short events fill the same span as the long one that
+follows. Pick a new BPM and the relationship survives. In programming terms,
+your own duration array supplies values in one domain and tempo does the conversion
+at the boundary.
 
-The printed BPM labels and the sound check different parts of the program. The log confirms which conversion is active. Playback reveals what that rate does to grouping, articulation, and perceived character. A numerical error may still produce a plausible phrase, so inspect both.
+The printed BPM and the sound are checking different things. The log confirms
+which conversion is live. Playback tells you what that rate did to grouping,
+articulation and character, which is the part you actually care about. A numerical mistake can still produce a plausible
+phrase, so look at both.
 
-Envelope times expressed in beats also pass through this conversion. A release of half a beat lasts half a second at 60 BPM and under a fifth of a second at 152. That scaling usually helps articulation follow the music: fast notes keep shorter physical tails, and slow notes keep longer ones. If a later effect needs a fixed number of milliseconds, treat it as an explicit exception instead of allowing beat and second values to blur together.
+Envelope times go through the same conversion. A release of half a beat lasts
+half a second at 60 BPM and under a fifth of a second at 152. That scaling
+usually helps, because fast notes get shorter physical tails and slow notes get
+longer ones. If some later effect genuinely needs a fixed number of
+milliseconds, make that an explicit exception. The moment beats and seconds
+start blurring together, every tempo change becomes a debugging session.
 
-The scheduler provides accurate musical timing, but it cannot rescue an invalid program or an event stream that demands impossible work. For ordinary phrases, keep the score in beats and let Sonic Pi handle the placement. Hand-measured second values would make every tempo change a rewrite.
-
-Part 3 will build rhythm from duration arrays and their sums. Before reaching that fuller treatment of time, Part 1 turns toward the sound inside each event and asks why the same pitch can take on different colours.
+Part 3 builds rhythm out of duration arrays and their sums. Before that fuller
+treatment of time, Part 1 turns inward and asks why the same pitch can arrive in
+so many different colours.
 
 ## Take it further
 
-Write an eight-event phrase whose durations add up to four beats. Include at least two different duration values so there is a rhythmic relationship to preserve. Play the same arrays at 60, 96, and 152 BPM. Before each pass, print the expected physical length with `durations.sum * 60.0 / bpm`.
+Write an eight-event phrase whose durations add to four beats, using at least
+two different duration values so there's a rhythmic relationship worth
+preserving. Play those arrays at 60, 96 and 152 BPM, and before each pass print
+the expected physical length with `durations.sum * 60.0 / bpm`.
 
-The duration sum establishes the score length; the calculation predicts how many seconds that length occupies at each tempo. Compare those printed values with the three performances in Sonic Pi 5. Record whether a tempo changes only the speed or also changes how you hear the material: a spacious melody may become a compact riff even when its internal proportions remain intact.
+The sum fixes the score length; the calculation predicts the seconds. Compare
+those printed numbers against the three performances in Sonic Pi 5, then write
+down whether tempo changed only the speed or changed what the material *is*. A
+spacious melody can become a compact riff with its internal proportions
+completely intact.

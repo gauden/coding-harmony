@@ -7,13 +7,22 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Before an interval has a name, it has a pattern of motion. Play 220 Hz together with 440, 330, and about 293.3 Hz. These pairs tend to settle into repeating compound waves quickly. Pair 220 with 311 Hz and the result is less regular, with more audible activity between the tones.
+## Before an interval has a name, it has a motion
 
-*Consonance* describes the relative smoothness or fusion a listener may hear when periodic sounds align frequently. Small whole-number frequency ratios produce short shared cycles: `2:1` for the octave, `3:2` for the fifth, and `4:3` for the fourth. The program holds the lower tone at 220 Hz and calculates the partner from a numerator and denominator, so the ratio remains visible beside the sound.
+Play 220 Hz together with 440, then with 330, then with about 293.3. Each pair
+settles quickly into a repeating compound wave. Now pair 220 with 311 and listen
+to what happens instead: the sound stops settling and starts churning.
 
-Listen for fusion and beating rather than ranking the pairs as pleasant or unpleasant. The question is how the sound moves while both tones are held.
+*Consonance* names the smoothness or fusion you hear when periodic sounds line
+up often. Small whole-number frequency ratios give you short shared cycles:
+`2:1` for the octave, `3:2` for the fifth, `4:3` for the fourth. The program
+holds the lower tone at 220 Hz and computes its partner from a numerator and a
+denominator, so the ratio stays visible right next to the sound it makes.
+
+Listen for fusion and beating, not for pleasant and unpleasant. The question
+here is how the sound *moves* while both tones are held.
 
 ## Run this
 
@@ -34,30 +43,73 @@ play_ratio 220, 4, 3
 play_ratio 220, 311, 220
 ```
 
-The 2:1 pair may fuse so strongly that the upper tone resembles brightness added to the lower one. The 3:2 and 4:3 pairs more readily retain two pitch identities while remaining comparatively steady. The final ratio has a longer, more complicated repetition pattern, so you may hear greater roughness or restless internal motion. Register, playback equipment, and listening level can change how exposed these differences are.
+Sine waves are the right choice here, and the reason matters. Each one carries a
+single frequency, so nothing you hear comes from partials interacting; it comes
+from the two tones themselves. (Lesson 6 needs the opposite, and says so.)
+
+The 2:1 pair fuses so completely that the upper tone stops sounding like a
+separate note and starts sounding like brightness added to the lower one. The
+3:2 and 4:3 pairs hold onto two pitch identities while staying steady. The last
+ratio has a long, awkward repetition pattern, and you'll hear that as roughness
+and restless internal motion. Register, speakers and listening level all change
+how exposed these differences are.
 
 ## Change one thing
 
-1. Change the final call to `play_ratio 220, 45, 32`. Compare it directly with `play_ratio 220, 3, 2`, keeping the base frequency and envelope fixed. Attend to the amount and speed of internal motion during the held sound.
+1. Change the final call to `play_ratio 220, 45, 32` and compare it directly
+   against `play_ratio 220, 3, 2`, holding the base and envelope fixed. How much
+   internal motion is there during the held sound, and how fast is it?
 
-2. Restore the original, then use `play_ratio 220, 333, 220` to move the upper tone from 330 to 333 Hz. The two passes differ by three hertz at the upper voice, but 330 and 333 do not sound together, so this is not a three-hertz beating demonstration. Listen instead for how the detuned relation changes the combined motion against 220 Hz.
+2. Restore the original, then use `play_ratio 220, 333, 220` to move the upper
+   tone from 330 to 333 Hz. Careful here: the two passes differ by three hertz,
+   but 330 and 333 never sound together, so this isn't a three-hertz beating
+   demonstration. You're listening for how the detuned relation changes the
+   combined motion against 220 Hz.
 
-3. Restore the ratios and lower the base to 110 Hz. Their proportions remain equal, but the lower register may make beating easier to separate and pitch fusion less immediate. This is a reminder that an invariant ratio does not guarantee an invariant listening experience.
+3. Restore the ratios and drop the base to 110 Hz. The proportions are
+   identical, but the lower register makes beating easier to separate and
+   fusion less immediate. An invariant ratio doesn't guarantee an invariant
+   listening experience.
 
-## Why it works
+## Why small integers matter
 
-A ratio acts as a compact frequency generator. Given `[3, 2]`, the expression `base * numerator / denominator` produces a tone one and a half times the base frequency. More important for hearing, the lower tone completes two cycles in the time the upper completes three. Both arrive at a shared boundary often enough for their compound pattern to remain short.
+A ratio is a compact frequency generator. Given `[3, 2]`, `base * numerator /
+denominator` produces a tone one and a half times the base. More importantly for
+your ears, the lower tone completes two cycles in the time the upper completes
+three. They keep arriving at a shared boundary often enough that the compound
+pattern stays short.
 
-Nearby frequencies demonstrate a related effect more directly. When two sine waves at 220 and 223 Hz sound together, their phases repeatedly reinforce and cancel. The resulting amplitude change occurs about three times per second, close to the absolute difference between their frequencies. This periodic swelling is called *beating*. It is easiest to hear with close sine tones; rougher intervals involve more complex interactions among their components.
+Nearby frequencies show a related effect much more directly. Sound 220 and 223
+Hz together and their phases repeatedly reinforce and cancel, so the amplitude
+swells about three times a second, which is just the difference between them.
+That's *beating*. It's easiest to hear with close sine tones; rougher intervals
+involve messier interactions among components.
 
-Small integers give a useful account of these controlled sounds, but they do not create a universal ladder from good to bad. Register, timbre, amplitude, duration, and musical setting all affect whether a pair fuses, beats, or demands attention. A distorted synth adds partials that interact differently from two sines. A short percussive sound may end before slow beating becomes apparent.
+Small integers give a good account of these controlled sounds without giving you
+a universal ladder from good to bad. Register, timbre, amplitude, duration and
+musical context all affect whether a pair fuses, beats, or demands attention. A
+distorted synth adds partials that interact quite differently from two sines. A
+short percussive sound can be over before slow beating has a chance to appear.
 
-Keep the claim close to what the program establishes: simple periodic tones at low-number ratios often produce short repeating patterns and relative smoothness. The log verifies the derived partner frequency, while listening reveals the character of the combined wave. If those disagree, check the ratio, the envelope, and playback level before reaching for a broader explanation.
+Keep the claim tied to what the program shows: simple periodic tones at
+low-number ratios produce short repeating patterns and relative smoothness. The
+log verifies the derived frequency. Your ears supply the character. When those
+two disagree, check the ratio, the envelope and the playback level before
+reaching for a bigger explanation.
 
-Pure ratios work beautifully when one root and a few intervals define the local world. The next lesson asks what happens when a keyboard must support the same interval pattern from every one of twelve starting notes. That requirement forces a different kind of consistency.
+Pure ratios work beautifully while you stay put. Tune a perfect fifth above C
+and it's exact. But the piece moves to D, then to E-flat, and a keyboard has
+only twelve keys to serve all of them. Something has to give. Lesson 6 is about
+what gives, and by how much.
 
 ## Take it further
 
-Extend `play_ratio` with a detune argument measured in hertz. Add that amount to the calculated partner, then play the `3:2` pair with detunes of 0, 1, 3, and 7 Hz. Keep every pair sounding for three beats and leave the envelope unchanged.
+Add a detune argument to `play_ratio`, measured in hertz, and add it to the
+calculated partner. Then play the `3:2` pair with detunes of 0, 1, 3 and 7 Hz.
+Hold every pair for three beats and leave the envelope alone.
 
-For each detune, record an observable cue: an approximate pulse speed, a loss of fusion, or a point where the upper pitch begins to seem displaced. Keep the combined amplitude moderate so loudness and distortion do not impersonate roughness. The exercise has no required threshold; it produces a listening record tied to your register, synth, speakers, and room.
+For each detune, write down something observable: an approximate pulse speed, a
+loss of fusion, a point where the upper pitch starts to seem displaced. Keep the
+combined amplitude moderate so that loudness and distortion don't impersonate
+roughness. There's no threshold to hit. What you're producing is a listening
+record tied to your register, your synth, your speakers and your room.

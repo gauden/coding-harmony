@@ -7,13 +7,24 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-A note can feel like one object even when its waveform contains several frequencies. That apparent contradiction is the beginning of timbre. Start with a sine wave at 220 Hz, then add sine waves at 440, 660, and 880 Hz. Because all four begin together and share a whole-number relationship, the ear tends to gather them into one pitched sound rather than a four-note melody.
+## Why four frequencies sound like one note
 
-Each component is a *partial*. When partial frequencies occur at `1f`, `2f`, `3f`, `4f`, and so on, they belong to the *harmonic series* above a fundamental frequency `f`. Their relative amplitudes help determine the sound's colour. The program represents that colour as a short profile of `[multiple, level]` pairs and builds it one component at a time.
+Play a sine wave at 220 Hz, then add sines at 440, 660 and 880 Hz. How many
+notes should you hear? You get one, with a different colour. All four start together and
+share a whole-number relationship, and your ear gathers them into a single
+pitched sound instead of a chord.
 
-Listen first to the bare 220 Hz sine. Keep that thin reference in mind as the upper components enter. Pitch should remain anchored near A3 while brightness and edge accumulate around it.
+Each component is a *partial*. When the partial frequencies land at `1f`, `2f`,
+`3f`, `4f` and so on, they belong to the *harmonic series* above a fundamental
+frequency `f`, and their relative amplitudes are most of what you hear as
+colour. This program stores that colour as a short profile of `[multiple, level]`
+pairs and builds it up one component at a time.
+
+Listen to the bare 220 Hz sine first, and hold that thin reference in your head
+as the upper components arrive. The pitch should stay anchored around A3 while
+brightness and edge accumulate on top of it.
 
 ## Run this
 
@@ -37,32 +48,73 @@ end
 end
 ```
 
-The first pass contains only the fundamental and should sound plain, with little internal colour. Each following pass retains everything heard before and adds one higher partial. You may hear a brighter or firmer edge rather than a separate new pitch. The last pass is also louder in total, so keep the level moderate and distinguish increased energy from the particular colour added by the upper frequencies.
+Pass one is the fundamental alone, and it sounds plain, almost characterless.
+Each pass after that keeps everything you've already heard and adds one higher
+partial, so what arrives is a brighter, firmer edge, not a new pitch. Watch out
+for one confound: the last pass is also louder in total. Keep the level moderate
+so you can tell added energy apart from added colour.
 
-## Change one thing
+## Three profiles worth hearing
 
-1. Make every amplitude `0.25`. The fundamental loses its dominance and the upper partials become unusually prominent. Listen for a harder, thinner compound tone as well as the change in total loudness.
+1. Set every amplitude to `0.25`. The fundamental loses its dominance and the
+   upper partials push forward, giving you a harder, thinner compound tone. Some
+   of what you hear is the change in total loudness, so allow for that.
 
-2. Restore the profile, then remove the second partial while retaining the third and fourth. The fundamental still identifies the pitch, but the missing octave component leaves a different balance above it. Describe the gap by comparing the altered profile directly with the original.
+2. Restore the profile, then delete the second partial and keep the third and
+   fourth. The fundamental still tells you the pitch, but the missing octave
+   leaves a hole in the balance above it. Compare directly against the original;
+   describing the gap from memory won't work.
 
-3. Restore the full profile and change the base from 220 to 165 Hz. Every component moves because it is derived from the same base. The harmonic relationships survive in a lower register, although the speaker and your hearing may make the balance seem different.
+3. Restore everything and change the base from 220 to 165 Hz. Every component
+   moves, since all of them derive from that base. The harmonic relationships
+   survive intact, though your speakers and your own hearing will make the
+   balance feel different down there.
 
-These comparisons isolate amplitude profile, missing components, and fundamental frequency. Restore the reference between them so one audible cause remains in view.
+Restore the reference between each edit. One audible cause at a time is the
+entire point.
 
-## Why it works
+## Why the components fuse
 
-Additive synthesis builds a complex waveform by summing simpler ones. In this profile, frequency multipliers choose the components and amplitude values act as their weights. The fundamental supplies the main repetition rate and a strong pitch cue. The upper components reshape the waveform within each cycle, which changes timbre without requiring a new fundamental.
+Additive synthesis builds a complex waveform by summing simple ones. In this
+profile, the frequency multipliers choose the components and the amplitudes
+weight them. The fundamental supplies the main repetition rate and a strong
+pitch cue. The upper components reshape the waveform *within* each cycle, which
+is how you change timbre without touching the fundamental.
 
-The components fuse partly because their cycles repeatedly align. At 220 Hz, the fundamental completes one cycle while 440 completes two, 660 completes three, and 880 completes four. After the fundamental's cycle, all four return to a shared boundary. That repeating compound pattern supports the impression of one note.
+They fuse partly because their cycles keep aligning. At 220 Hz, the fundamental
+finishes one cycle while 440 finishes two, 660 finishes three and 880 finishes
+four. At the end of the fundamental's cycle, all four arrive back at a shared
+boundary together. That short repeating compound pattern is what supports the
+impression of one note.
 
-This four-sine sound is a model, not a complete account of an acoustic instrument. Real tones often begin with noise, change spectral balance during the note, and contain components that do not sit at exact integer multiples. The small model is useful because it exposes one mechanism without hiding it inside a preset synth.
+This four-sine sound is a model, not a real instrument. Acoustic tones usually
+begin with noise, shift their spectral balance while they sound, and contain
+components that sit slightly off exact integer multiples. The small model earns
+its place by exposing one mechanism where a preset synth would bury it.
 
-Amplitude needs care whenever signals are added. Four components at `0.8` can produce a much larger combined peak than any one synth call suggests. The falling levels in the original profile provide headroom and resemble the declining upper spectrum of many sounds. If an edited profile distorts, lower all its levels before drawing a conclusion about timbre. Distortion introduces its own upper frequencies and can make loudness masquerade as brightness.
+Amplitude needs watching whenever you're adding signals. Four components at
+`0.8` can produce a combined peak far larger than any single synth call
+suggests. The falling levels in the original profile give you headroom and also
+resemble the declining upper spectrum of many real sounds. If an edited profile
+distorts, drop all the levels before concluding anything about timbre.
+Distortion generates its own upper frequencies, and loudness will happily
+impersonate brightness.
 
-The profile also shows why musical data is often more informative before playback. You can inspect the multiples, compare two amplitude curves, or calculate the highest frequency without rendering a note. Sound then gives those numbers perceptual meaning. Lesson 5 builds on the same alignment idea: when two fundamentals have a small whole-number ratio, some of the partials above them coincide.
+Notice how much you can learn before playback. You can inspect the multiples,
+compare two amplitude curves, or calculate the highest frequency without
+rendering a note. Sound then gives those numbers perceptual meaning. Lesson 5
+takes the same alignment idea further: when two fundamentals sit in a small
+whole-number ratio, some of the partials above them coincide.
 
 ## Take it further
 
-Build two four-partial profiles above the same 220 Hz fundamental. Give the first a steep amplitude decline. In the second, strengthen the third and fourth partials while keeping enough headroom to avoid distortion. Alternate the profiles four times without changing their base frequency or envelope.
+Build two four-partial profiles over the same 220 Hz fundamental. Give the first
+a steep amplitude decline. In the second, strengthen the third and fourth
+partials while keeping enough headroom to stay clean. Alternate them four times
+without changing the base frequency or the envelope.
 
-Print both profiles and identify the partial whose amplitude differs most. Then audition the alternation in Sonic Pi 5 at a moderate level. Describe the change using a feature you can point to, such as a harder edge, a more hollow middle, or stronger brightness. The unchanged pitch is part of the result: the exercise succeeds when the colour changes while A3 remains the centre you hear.
+Print both profiles and find the partial whose amplitude differs most. Then
+listen to the alternation in Sonic Pi 5 at a moderate level, and describe the
+change using a feature you can point at: a harder edge, a more hollow middle,
+more brightness. The unchanged pitch is part of the result. You've succeeded when
+the colour moves and A3 stays exactly where it was.
