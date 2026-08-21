@@ -7,15 +7,27 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-A melody's interval pattern can remain correct while its placement makes it ineffective. Put close notes very low and they may blur into a heavy mass. Move the same shape very high and it may become thin, exposed, or sharp. Pitch class identifies the notes' recurring family, but a performing part also needs a physical band in which to live.
+## The same six notes, three neighbourhoods
 
-*Register* is that band. The program treats each root as a base address and adds the same six offsets at C2, C4, and C6. Because the offsets do not change, you can follow one contour through three regions. The synths differ in the first run, so regard it as a survey of three plausible roles rather than a pure register test; the first edit will isolate register by giving all three the same sound.
+A melody can have every interval right and still fail, because nobody told it
+where to live. Pack close notes down at the bottom of the piano and they smear
+into one heavy mass. Take the identical shape up four octaves and it turns
+thin and wiry. Pitch class tells you which family each note belongs to.
+A playable part also needs a band of frequency to occupy.
 
-Listen for note separation, apparent weight, and the prominence of each attack. Register changes all three even before a second musical line competes for space.
+*Register* is that band. The program treats each root as a base address and
+adds the same six offsets at C2, C4 and C6. Nothing about the contour changes,
+so you can follow one shape through three regions of the instrument. Each root
+gets its own synth in the first run, which makes it a survey of three plausible
+roles; the first edit strips that away and leaves register on its own.
 
-## Run this
+Listen for three specific things: how easily you can separate one note from the
+next, how much weight the phrase carries, and how sharp each attack is. All
+three move with register before any second part is competing for room.
+
+## Hear one contour move house
 
 ```{.ruby audio=""}
 use_bpm 92
@@ -37,32 +49,70 @@ parts.each do |part|
 end
 ```
 
-The low `:fm` phrase may have considerable mass while its neighbouring pitches remain hard to separate. The middle `:pluck` line presents the contour clearly through its attack. The high `:blade` phrase exposes more edge and can make the same numerical leaps feel wider. These are expected tendencies, not fixed verdicts; synth design and playback equipment influence every register.
+The low `:fm` phrase arrives with mass, and its neighbouring pitches fight each
+other for room. In the middle, `:pluck` puts the contour right in front of you,
+one attack at a time. Up at C6, `:blade` shows you edge, and the same numeric
+leaps read as wider gaps. Your speakers have a say in all of this, especially
+at the bottom.
 
-## Change one thing
+## Hold the timbre still
 
-1. Give all three entries the `:pluck` synth and the same safe amplitude. With timbre held fixed, differences in weight, clarity, and attack now come mainly from register.
+1. Give all three entries `:pluck` and one shared amplitude. Now timbre is
+   fixed, so whatever remains of the weight, clarity and attack differences
+   belongs to register alone. Run it before you read the next variation: how
+   much of what you heard the first time survives?
 
-2. Restore the original synths, then move the low phrase up one octave while leaving its sound unchanged. Compare C2 and C3 directly and note where the individual pitches become easier to trace.
+2. Restore the original synths, then move the low phrase up one octave with its
+   sound untouched. Compare C2 against C3 directly and mark the point where
+   individual pitches become traceable again.
 
-3. Restore the three roots and play the lines concurrently. Reduce their amplitudes before listening. Identify which line disappears first and whether moving it by an octave restores separation without changing its offsets.
+3. Restore the three roots and play the lines at the same time, amplitudes
+   pulled down first. One line goes missing before the others. Try moving that
+   line by an octave and see whether separation comes back without a single
+   offset changing.
 
-## Why it works
+## Offsets are relative addresses
 
-The offsets act like relative addresses and each root supplies a base pointer. Adding `[0, 3, 5, 7, 5, 2]` to a new root relocates the phrase without altering its internal steps. This is why score data benefits from remaining relative until a part receives its range.
+The offsets behave like relative addresses and each root supplies the base
+pointer. Add `[0, 3, 5, 7, 5, 2]` to a new root and the phrase relocates with
+its internal steps intact. That's the argument for keeping score data relative
+until a part is handed its range.
 
-Octave transposition makes the connection to pitch class exact. Adding twelve changes the MIDI address but leaves the remainder modulo twelve unchanged. The phrase at C2 and the phrase at C6 therefore use the same class pattern while occupying frequency bands four octaves apart. One representation proves identity; the other preserves location.
+Octave transposition connects this back to Lesson 8 exactly. Adding twelve
+changes the MIDI address and leaves the remainder modulo twelve alone. The C2
+phrase and the C6 phrase run the same class pattern in frequency bands four
+octaves apart. One representation proves they're the same thing; the other
+remembers where each one sits.
 
-Location affects more than height. Low notes often carry energy across a broad region and can mask nearby material. High notes may reveal transients or noise that blended into a lower sound. Close intervals require more spectral room in a low register, while wider spacing can allow each pitch to remain legible. These tendencies explain why copying a chord shape downward by several octaves can turn clarity into rumble.
+Location does more than raise or lower a line. Low notes spread energy across a
+wide band and mask whatever is near them, which is why a close-spaced chord
+transplanted downward turns from clarity into rumble. High notes expose
+transients and noise that blended away lower down. Wide spacing buys legibility
+in the bass; close spacing survives easily up top.
 
-A synth has a practical range even if Sonic Pi accepts note numbers far outside it. Samples, filters, and envelopes respond differently across frequency. Treat the useful range as an observed property of the sound in an arrangement, not a fixed declaration in its name.
+Every synth has a working range, whatever note numbers Sonic Pi will accept.
+Samples, filters and envelopes all respond differently across the spectrum.
+Treat that range as something you observed in an arrangement, not as a fact
+declared by the synth's name.
 
-The three-entry `parts` array keeps root, synth, and amplitude together. That makes the initial role assignment inspectable and allows one field to change across all entries. If concurrent playback becomes muddy, inspect the register addresses before adding volume. Raising amplitude often increases masking; relocating one line may solve the actual conflict.
+Keeping root, synth and amplitude together in one hash makes the whole role
+assignment inspectable, and lets you change one field across all three entries
+at once. Here's the habit worth forming: when a texture goes muddy, read the
+register addresses before you touch the faders. Turning a line up usually
+increases the masking. Moving it often solves the real conflict.
 
-Lesson 10 introduces another reason a MIDI integer may be insufficient. Register lives in the full address, but harmonic intent can live in a note's spelling even when two spellings produce the same address.
+Lesson 10 finds another reason a MIDI integer isn't the whole story. Register
+lives in the full address. Harmonic intent can live in a note's spelling, and
+two spellings share one address.
 
-## Take it further
+## Chart where each synth actually lives
 
-Choose three Sonic Pi synths and test every one at C2, C4, and C6 with the same offsets, envelope, and moderate amplitude. For each synth, record the lowest and highest root at which the complete contour remains traceable. Add one concrete observation, such as “attacks merge below C3” or “upper notes expose filter noise.”
+Pick three synths and run each one at C2, C4 and C6 with the same offsets,
+envelope and a moderate amplitude. For each synth, write down the lowest and
+highest root where you can still trace the whole contour, plus one concrete
+observation: "attacks merge below C3", or "upper notes expose filter noise".
 
-Use those observations to make a three-part arrangement with a bass, middle, and high phrase. When all parts sound together, follow each line in turn. If one vanishes, change its octave before changing its notes or raising its level. The completed table and audition should explain why each part received its final register.
+Then use your own chart to build a three-part arrangement with a bass, a middle
+and a high phrase. Play them together and follow each line in turn. When one
+vanishes, change its octave before you change its notes or its level. By the
+end you should be able to say why every part sits where it sits.

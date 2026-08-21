@@ -7,15 +7,27 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-A random pitch generator knows nothing about melodic direction, repetition, or arrival. Giving it a scale removes some choices, but a useful line needs further constraints. The program below shows how a small amount of state can turn unrelated selections into connected motion.
+## Five notes and a short memory
 
-The *minor pentatonic scale* contains five pitch classes per octave. It omits the semitone pairs that often create the sharpest local friction, which makes it forgiving above a stable tonic drone. That familiar description as a scale with “no wrong notes” needs a boundary: membership can reduce clashes, but it cannot supply rhythm, contour, register, or a convincing ending.
+Hand a random number generator a scale and it still knows nothing about
+direction, repetition or arrival. It just picks. Sixteen independent picks
+sound like sixteen independent picks, however carefully you chose the pitches
+they came from. What turns them into a line is memory, and memory costs one
+variable.
 
-Instead of choosing a fresh scale note on every event, the program keeps an index and moves it by minus one, zero, or one. Each choice begins from the previous result. Repeated notes and adjacent steps give the generated line a short memory.
+The *minor pentatonic scale* gives you five pitch classes per octave. It leaves
+out the semitone pairs that create the sharpest local friction, which is why it
+stays forgiving over a steady tonic drone. The old claim that it's a scale with
+"no wrong notes" needs a limit drawn around it. Membership keeps clashes down.
+It supplies no rhythm, no contour, no register and no ending.
 
-## Run this
+So the program below keeps an index into the scale and nudges it by minus one,
+zero or one on each event. Every choice starts from where the last one landed.
+Repeated notes and single steps give the generated line its short memory.
+
+## Sixteen steps over a drone
 
 ```{.ruby audio=""}
 use_random_seed 42
@@ -38,32 +50,71 @@ end
 end
 ```
 
-The long E drone establishes a centre before the first upper note has time to define one. Above it, the seeded walk repeats some notes and usually changes by one scale step, so its direction evolves gradually. The line is still generated, but its local continuity makes it easier to hear as one phrase rather than sixteen independent guesses.
+That long E establishes a centre before the first upper note gets a chance to
+propose one. Above it the seeded walk repeats some notes and mostly moves by
+one scale step, so its direction turns gradually. You're still listening to
+generated material. Local continuity is what lets you hear it as one phrase.
 
-## Change one thing
+## Change the step pool
 
-1. Replace the step choices with `[-2, -1, 1, 2]`. The walk now skips more often and cannot repeat its current note. Listen for a more angular contour and count how frequently direction changes.
+1. Swap the steps for `[-2, -1, 1, 2]`. The walk skips more and can no longer
+   stand still. Count how often the direction changes and listen for the more
+   angular contour.
 
-2. Restore the original, then add more zero entries to the step array. Repetition becomes more probable. Notice when a repeated pitch begins to act like a rhythmic anchor rather than a stalled decision.
+2. Restore the original, then pack extra zeros into the step array. Repetition
+   gets likelier. At what point does a repeated pitch stop sounding like a
+   stalled decision and start sounding like a deliberate anchor?
 
-3. Restore the original step pool and remove the drone. Every generated note remains in the same scale, but E may no longer feel like a stable home. The edit separates pitch collection from tonal centre.
+3. Restore the original step pool and delete the drone. Every note is still in
+   the scale, and E stops feeling like home. That edit pulls the pitch
+   collection apart from the tonal centre.
 
-The random seed fixes the underlying pseudo-random stream, but changing the step array changes how those draws map to values. Adding zeros therefore does not preserve the same realised choices; it makes the altered policy reproducible. Restore the original step pool when comparing the drone so that pitch generation stays fixed for that edit.
+One caution before you run those. `use_random_seed 42` fixes the underlying
+stream of draws, and changing the step array changes how those draws map onto
+values. Adding zeros doesn't preserve the realised choices; it makes the new
+policy reproducible. Put the original pool back before you test the drone, so
+that pitch generation holds still while you listen.
 
-## Why it works
+## Where a random walk gets its continuity
 
-A random walk is stateful. The index after each event depends on the index before it, so neighbouring outputs are related even though the chosen step is random. `use_random_seed 42` makes a given program reproducible. When the step pool changes, the same random stream is interpreted through a different collection, so the resulting steps need not match the reference run.
+A random walk is stateful, and that's the whole trick. The index after each
+event depends on the index before it, so neighbouring outputs are related even
+though every individual step was drawn at random. Nothing else in the program
+knows what a melody is.
 
-The scale, walk, and drone each solve a different part of the musical problem. The scale limits available pitches and avoids its own semitone pairs. The walk supplies continuity from one note to the next. The drone makes E persist as a reference beneath the changing line. None of these guarantees a phrase, but their combined constraints create material that can be judged and revised.
+Three mechanisms are doing three different jobs here. The scale restricts which
+pitches exist and dodges its own semitone friction. The walk supplies
+continuity from one note to the next. The drone keeps E present as a reference
+underneath the movement. No combination of the three guarantees you a phrase.
+Together they produce material you can judge and revise.
 
-Boundary handling also shapes the melody. `clamp` prevents the index from leaving the scale array by pinning an out-of-range result to the nearest end. An outward step at the top or bottom therefore repeats the boundary note. With enough trials, the extremes may receive extra visits. Reflection would send the walk back inward; wraparound would jump from one end of the array to the other. Those policies produce audible contours, so they belong to composition rather than hidden error handling.
+Boundary handling shapes the melody more than you'd expect. `clamp` pins an
+out-of-range index to the nearest end, so a step outward at the top or bottom
+repeats the boundary note and the extremes collect extra visits. Reflection
+would send the walk back inward. Wraparound would jump it to the far end of the
+array and produce a large leap. Each of those is audible, so each belongs in
+your composition, not buried in error handling.
 
-The fixed seed does not make the music non-random in method. It makes a particular run repeatable for debugging and comparison. Once the program behaves as intended, a new seed can produce another walk under the same policy. Keep the seed while learning what an edit does.
+Keeping the seed doesn't make the method less random. It makes one run
+repeatable, which is what you need while you're learning what an edit does.
+Once the program behaves, change the seed and hear another walk under the same
+policy.
 
-Part 3 now holds most pitch decisions steady and makes onset and duration the data under examination. The same principle carries over: a useful generator needs a representation, boundaries, and a way to hear whether its constraints produce the intended result.
+Part 3 now holds pitch nearly still and puts onset and duration under the
+microscope. The principle carries straight over: a generator needs a
+representation, boundaries, and some way to hear whether its constraints did
+what you wanted.
 
-## Take it further
+## A pitch-matching drill
 
-Create a ten-trial pitch-matching drill within one octave of the E minor pentatonic scale. On each trial, choose and play one seeded random target, leave time to hum it, then let an index move up or down through the scale until the played guess matches what you intend. Reveal the target only after the final guess.
+Build yourself a ten-trial ear-training drill inside one octave of E minor
+pentatonic. Each trial plays one seeded random target, leaves you time to hum
+it back, then lets an index climb or descend through the scale until the played
+guess matches what you're hearing. Reveal the target only after your final
+guess.
 
-Log the target, final guess, and absolute semitone error for all ten trials. Keep `use_random_seed 42` while debugging so the same targets expose changes in control flow and pacing. Audition the complete exercise in Sonic Pi 5 before using it: the pause must allow a considered response, and the reveal must remain separate from the prompt.
+Log the target, your guess and the absolute semitone error for all ten trials.
+Keep `use_random_seed 42` while you debug, so identical targets expose changes
+in control flow and pacing. Then audition the whole thing in Sonic Pi 5 before
+you use it on yourself. The pause has to be long enough for a considered
+answer, and the reveal has to stay clear of the prompt.

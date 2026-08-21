@@ -7,15 +7,30 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Two layers can share a beginning and ending without agreeing about the divisions between them. Divide a two-beat span into two equal parts and each event lasts one beat. Divide the same span into three equal parts and each event lasts `2.0 / 3` of a beat. Played together, the layers meet at the cycle boundary and disagree everywhere inside it.
+## Two layers that agree only at the edges
 
-A *tuplet* fits one number of equal events into a span normally associated with another number. Three events across the time of two create triplet divisions. When the three-part layer sounds concurrently with the two-part layer, the result is a 3-against-2 polyrhythm.
+Two rhythmic layers can share a beginning and an ending and argue about
+everything in between. Cut a two-beat span in half and each event lasts one
+beat. Cut the same span in three and each event lasts `2.0 / 3` of a beat. Run
+both at once and they meet at the cycle boundary, then disagree until the next
+one.
 
-The decimal should come from the fraction rather than a typed approximation. Over sixteen cycles, a small rounding error accumulates until a boundary that should be shared no longer is.
+A *tuplet* fits one number of equal events into a span that normally holds
+another number. Three events in the time of two gives you triplet divisions.
+Sound the three-part layer against the two-part layer and what you have is a
+3-against-2 polyrhythm.
 
-## Run this
+One thing to get right before you run it: that decimal has to come from the
+fraction. Type an approximation and the error compounds. Over sixteen cycles a
+boundary that should be shared drifts far enough to hear, and the third
+variation makes you listen to exactly that.
+
+Play the program once and count the attacks inside a single two-beat cycle.
+Four? Five? Six? Write your number down before you read the explanation.
+
+## Sixteen cycles of three against two
 
 ```{.ruby audio=""}
 use_bpm 72
@@ -41,32 +56,71 @@ end
 sleep 32
 ```
 
-The low drum marks the beginning and midpoint of every two-beat cycle. The higher tick divides the same span into thirds. At 72 BPM, try following one layer for several cycles before moving attention to the other. When you hear them together, their combined onsets form a repeating composite pattern, with both sounds coinciding at each new cycle.
+The low drum marks the start and the midpoint of every two-beat cycle. The tick
+cuts the same span into thirds. At 72 BPM you have room to follow one layer for
+several cycles before switching your attention to the other, which is the way
+to learn this texture. Heard together, the two layers form one repeating
+composite, and both sounds land together at the top of every cycle.
 
-## Change one thing
+## Slow it down, speed it up, break the fraction
 
-1. Lower the tempo to 48 and tap one hand with each layer. Keep both hands moving through the shared two-beat span; the slower rate gives each internal attack more space.
+1. Drop the tempo to 48 and tap one hand with each layer. Keep both hands
+   moving through the shared two-beat span. The slower rate gives every
+   internal attack room to be placed rather than guessed.
 
-2. Restore the code, then raise the tempo to 132. Notice whether you still follow two concurrent streams or begin to hear one composite rhythm. The arithmetic does not change when perception reorganises the texture.
+2. Restore the code and push the tempo to 132. Are you still following two
+   streams, or has your ear collapsed them into one rhythm? The arithmetic is
+   untouched, so anything that changed happened in you.
 
-3. Restore 72 BPM and replace `2.0 / 3` with `0.67`. Let the full run continue and compare late boundary attacks with the beginning. The error is tiny per event but repeated addition makes it audible.
+3. Back to 72 BPM, and replace `2.0 / 3` with `0.67`. Let the whole run play
+   out and compare a late boundary against the first one. Per event the error
+   is nothing. Repeated addition is what makes it audible.
 
-## Why it works
+## Alignment by shared invariant
 
-Each thread maintains its own local musical clock. The two-part thread sleeps `1.0 + 1.0`, while the three-part thread sleeps `2.0 / 3` three times. Both sums equal two beats, so the scheduler brings them back to the same boundary without either thread sending a message to the other.
+Each thread runs its own local musical clock. The two-part thread sleeps `1.0`
+twice; the three-part thread sleeps `2.0 / 3` three times. Both sums come to
+two beats, so the scheduler returns them to the same boundary without either
+thread sending the other a single message.
 
-This is concurrency coordinated by a shared invariant. In programming, independent workers can remain aligned when they agree on the duration of a cycle. In music, the internal subdivisions can conflict while the boundary supplies stability. A quiet marker at every two beats makes that invariant audible.
+That's concurrency coordinated by a shared invariant, and you've built the
+pattern before in other work. Independent workers stay aligned when they agree
+on the length of a cycle and nothing else. Here the internal subdivisions are
+free to conflict while the boundary holds everything together. Put a quiet
+marker on every two beats and the invariant stops being an argument and becomes
+something you can hear.
 
-Within one cycle, the combined attacks occur at beat 0, two-thirds, 1, and four-thirds, followed by the shared return at beat 2. Write those positions as fractions if the texture becomes hard to separate. Then mute the tick and follow the two-part layer, mute the drum and follow the three-part layer, and restore both. Isolation trains attention; the complete texture is still the subject.
+Inside one cycle the combined attacks land at beat 0, at two-thirds, at 1, and
+at four-thirds, then both layers return together at beat 2. Four distinct
+attack points, with the first one struck twice. Write those fractions down if
+the texture blurs. Then mute the tick and follow the drum, mute the drum and
+follow the tick, and put both back. Isolation trains your attention, and the
+full texture is still what you came for.
 
-Replacing the fraction with `0.67` gives each three-part cycle a length of `2.01` beats. That hundredth-beat surplus seems negligible once, but sixteen cycles produce a displacement of `0.16` beats. Rounded display values are suitable for labels; repeated scheduling needs the more accurate expression.
+Swapping in `0.67` gives each three-part cycle a length of `2.01` beats. A
+hundredth of a beat sounds like nothing once. Sixteen cycles turn it into a
+displacement of `0.16` beats, which at 72 BPM is around 133 milliseconds of
+slippage between two layers that were supposed to coincide. Rounded values are
+fine on a label. Repeated scheduling needs the exact expression.
 
-Sonic Pi ultimately represents the division with finite floating-point precision, yet `2.0 / 3` is far closer to the intended ratio than a two-decimal literal. The program also runs for a bounded duration, so the remaining numerical error is below the scale of this exercise.
+Sonic Pi represents the division in finite floating-point precision too, and
+`2.0 / 3` still sits far closer to the intended ratio than any two-decimal
+literal you could type. The run is bounded at sixteen cycles, which keeps the
+remaining numerical error well below anything this exercise asks you to hear.
 
-Part 4 returns from temporal distance to pitch distance. Lesson 18 combines the semitone arithmetic introduced in Lesson 2 with the spelling metadata preserved in Lesson 10, because an interval name depends on both.
+Part 4 turns from distance in time to distance in pitch. Lesson 18 puts the
+semitone arithmetic from Lesson 2 together with the spelling metadata you
+preserved in Lesson 10, because naming an interval takes both at once.
 
-## Take it further
+## Sixteen cycles with a marker
 
-Render sixteen cycles of 3 against 2 and add a quiet, distinct marker at the beginning of every two-beat cycle. Print the expected total of 32 beats before playback. Do not add a corrective sleep inside either layer; their own duration sums must produce the alignment.
+Render sixteen cycles of 3 against 2 and add a quiet, distinct marker at the
+top of every two-beat cycle. Print the expected total of 32 beats before
+anything sounds. Add no corrective sleep to either layer. Their own duration
+sums have to produce the alignment on their own.
 
-Inspect the arithmetic first, including the total for each thread. Then audition the complete run in Sonic Pi 5 and listen to early and late markers. The final cycle should begin with both rhythmic layers and the marker together. If the marker hides either pattern, reduce its amplitude: a boundary reference should expose drift without replacing the texture it measures.
+Check the arithmetic first, including each thread's total. Then audition the
+full run in Sonic Pi 5 and compare an early marker with a late one. The last
+cycle should open with both layers and the marker together. If the marker
+covers either pattern, turn it down: a boundary reference exposes drift, and it
+shouldn't replace the texture it's measuring.

@@ -7,61 +7,125 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Straight eighth notes divide each beat into two equal halves. *Swing* keeps the beat boundary fixed but moves the internal division: the first span grows longer and the second grows shorter. The result is a recurring long–short pair rather than a new bar length.
+## The beat stays put; the note inside it moves
 
-The `amount` parameter below controls that displacement. At zero, the two sleeps are `0.5` and `0.5`. At `0.16`, they become `0.66` and `0.34`, close to a two-thirds/one-third division. At `0.33`, they become an exaggerated `0.83` and `0.17`; that final pass tests the point where the long-short relation may stop reading as ordinary swing.
+Straight eighth notes cut each beat into two equal halves. *Swing* leaves the
+beat boundary where it was and moves the cut: the first span grows, the second
+shrinks to match. Bar length never changes. You get a recurring long-short
+pair.
 
-*Microtiming* describes smaller onset deviations beneath the written grid. The program adds bounded, seeded jitter to both timing and amplitude. Swing remains the systematic displacement; jitter introduces small variations around it. The seed reproduces a comparison only while the order and mapping of random calls remain unchanged.
+The `amount` parameter below controls that displacement. At zero the two sleeps
+are `0.5` and `0.5`. At `0.16` they become `0.66` and `0.34`, near a
+two-thirds/one-third split. At `0.33` they reach `0.83` and `0.17`. Listen to
+that last pass twice. Does it still read to you as swing, or has it turned into
+a plain dotted rhythm?
 
-## Run this
+*Microtiming* covers the smaller onset deviations underneath the written grid.
+This program adds bounded, seeded jitter to timing and to amplitude. Swing is
+the systematic displacement; jitter is the wobble around it. Every random draw
+happens at the top of the pair, before anything uses it, and the reason for
+that turns out to matter.
+
+## Three amounts over one bar
 
 ```{.ruby audio=""}
 use_random_seed 42
 use_bpm 96
 use_synth :piano
 
-define :swing_bar do |amount, jitter|
+define :swing_bar do |amount, jitter, amp_spread|
   4.times do
-    late = amount + rrand(-jitter, jitter)
-    play :c4, amp: 0.85 + rrand(-0.05, 0.05), release: 0.15
+    # Draw everything here, in a fixed order, used or not.
+    timing_offset = rrand(-jitter, jitter)
+    first_amp_offset = rrand(-0.05, 0.05)
+    second_amp_offset = rrand(-0.05, 0.05)
+
+    late = amount + timing_offset
+    play :c4, amp: 0.85 + first_amp_offset * amp_spread, release: 0.15
     sleep 0.5 + late
-    play :g4, amp: 0.7 + rrand(-0.05, 0.05), release: 0.15
+    play :g4, amp: 0.7 + second_amp_offset * amp_spread, release: 0.15
     sleep 0.5 - late
   end
   sleep 1
 end
 
-[0.0, 0.16, 0.33].each { |amount| swing_bar amount, 0.01 }
+[0.0, 0.16, 0.33].each { |amount| swing_bar amount, 0.01, 1.0 }
 ```
 
-The first pass keeps each C–G pair close to even, apart from its very small jitter. In the later passes, G arrives progressively later within each beat. Because the same `late` value is added to one sleep and subtracted from the next, the following C lands exactly on the next scheduled boundary. Whether the amount reads as mild swing or exaggerated displacement remains a listening judgement.
+The first pass keeps every C-G pair close to even. Through the later passes G
+slides progressively later inside its beat. One `late` value gets added to the
+first sleep and subtracted from the second, so the C that follows still lands
+on the next quarter-note boundary. Tap the beat and you'll feel it stay put.
 
-## Change one thing
+## Sweep the amount, then the jitter
 
-1. Compare only `0.16` and `0.33`. Tap the quarter-note beat rather than following every note. The first amount gives a moderate lilt; the second makes the long–short proportions explicit.
+1. Compare `0.16` against `0.33` on their own. Tap the quarter note and ignore
+   the individual notes. The first gives you a moderate lilt; the second states
+   the long-short proportion outright.
 
-2. Restore the three amounts and raise jitter from `0.01` to `0.08`. Listen for the quarter-note boundaries. Record the point where they cease to feel stable rather than assigning the variation a human cause.
+2. Restore all three amounts and raise jitter from `0.01` to `0.08`. Watch the
+   quarter-note boundaries and mark where they stop feeling solid. Describe
+   what you heard without deciding it sounds human.
 
-3. Restore the original jitter and set amplitude variation to zero while leaving timing variation intact. The attacks now vary only in placement. Compare that result with the original, where changing level can draw attention to a timing deviation.
+3. Restore the jitter and change the final argument from `1.0` to `0`. The
+   attacks now vary only in placement. Compare that with the original, where a
+   louder note pulls attention onto a timing deviation you'd otherwise skate
+   past.
 
-## Why it works
+## Why hoisting the draws makes variation 3 honest
 
-Swing is a deterministic transformation of paired durations. Adding `late` to the first half and subtracting the same value from the second guarantees that their sum remains one beat. The internal onset moves, but every following pair begins at the original quarter-note boundary.
+That third variation is the reason the random values are drawn into named
+variables at the top of the loop. `use_random_seed 42` reproduces one stream of
+numbers in one order. Delete an `rrand` call and every later draw in the stream
+slides up to fill the gap, so a comparison meant to isolate amplitude quietly
+changes the timing too. Two things move, and you learn nothing from either.
 
-The small random offset complicates that guarantee. In this function, one `late` value still appears with opposite signs, so each jittered pair also sums to one. Bounds remain important because a sufficiently negative or positive value could collapse one duration or place the inner attack implausibly close to a boundary. Keep the perturbation far smaller than the shortest intended subdivision.
+Multiplying by `amp_spread` keeps all three draws in the stream and stops the
+last two from reaching the output. Same numbers, same order, same timing
+jitter, and only amplitude has changed. Make it a habit in seeded programs:
+draw first into names, decide afterwards what to use. Three extra lines buy you
+a controlled comparison.
 
-Swing has no single correct percentage. Performers and styles use different proportions, and those proportions can change with tempo. The sweep is a listening map, not a ranking. Describe where the second onset falls and how firmly the beat boundary survives.
+## Why the sum of a swung pair is still one beat
 
-Timing and amplitude variation also need separate interpretations. A louder event can seem earlier or more important even when its scheduled onset has not moved. Removing amplitude jitter helps locate the timing effect; removing timing jitter would expose dynamic variation on an exact grid. Data that stores both fields allows either comparison.
+Swing is a deterministic transformation of paired durations. Add `late` to the
+first half, subtract it from the second, and their sum is one beat whatever
+`late` was. The inner onset moves freely; every following pair starts where it
+always did.
 
-Beat values convert to milliseconds through tempo. At 120 BPM, `0.01` beats lasts 5 milliseconds; at 60 BPM it lasts 10. This program expresses jitter in beats, so the physical deviation grows at slower tempos. If you need a fixed physical delay, convert it explicitly with `milliseconds * bpm / 60000.0` and document why it should ignore musical rate.
+The jitter could have broken that and doesn't, for the same reason. One
+`timing_offset` feeds one `late`, which appears with opposite signs, so each
+jittered pair still sums to one. Bounds still matter. A large enough value
+collapses one of the two durations or shoves the inner attack against a
+boundary. Keep the perturbation far under your shortest subdivision.
 
-Lesson 17 replaces displaced pairs with two exact subdivisions running concurrently. The shared cycle boundary will again prevent drift, but each layer will divide the span by a different count.
+There's no correct swing percentage. Players and styles use different
+proportions, and one player changes them with tempo. The sweep is a listening
+map, with no ranking in it.
 
-## Take it further
+Read timing and amplitude separately. A louder event seems earlier and more
+important even when its onset never moved, so zeroing the amplitude spread is
+what leaves the timing effect standing alone.
 
-Program a hidden four-beat pattern whose durations use only `0.5` and `1.0`. Generate and validate the complete array before playback, play it once, leave four beats for a clap-back response, and print the array only after that response window.
+Beat values become milliseconds only through tempo. At 120 BPM, `0.01` beats is
+5 milliseconds; at 60 BPM it's 10. Jitter here is written in beats, so the
+physical deviation grows as you slow down. For a fixed physical delay, convert
+with `milliseconds * bpm / 60000.0` and say in a comment why.
 
-Keep the straight version until the prompt, response pause, and reveal are reproducible. Then apply swing to paired eighths without changing the four-beat total. Use one seed for direct comparisons and audition both versions in Sonic Pi 5. The code can verify sums and repeatability; your listening notes should describe onset placement without claiming that randomized variation reproduces a human performer.
+Lesson 17 swaps displaced pairs for two exact subdivisions running at once. The
+shared cycle boundary again prevents drift, and each layer divides the span by
+a different count.
+
+## A clap-back drill
+
+Build a hidden four-beat pattern from `0.5` and `1.0` durations. Validate the
+array before anything sounds, play it once, leave four beats for a clap-back,
+and print the array only after that window closes.
+
+Keep it straight until the prompt, the pause and the reveal are reproducible.
+Then swing the paired eighths without changing the four-beat total, hoisting
+your draws so one seed serves both versions. Audition both in Sonic Pi 5. Your
+code proves the sums; your notes should describe onset placement and stop short
+of claiming that randomised variation reproduces a human player.

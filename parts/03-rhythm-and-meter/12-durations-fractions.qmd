@@ -7,15 +7,36 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Rhythm can be represented before a melody has any pitches. A sequence of durations already tells you where attacks occur, how long the pattern lasts, and which spans feel long or short in relation to the beat. Sonic Pi makes this representation direct because `sleep` accepts fractional beat values.
+## Rhythm before there are any pitches
 
-The historical names need one clear convention. In the system used throughout this book, a *quarter note* lasts 1 beat, an eighth note lasts `0.5`, and a sixteenth note lasts `0.25`. The fractions describe divisions of the quarter-note beat rather than fractions of a minute or second.
+You can write down a rhythm before you have chosen a single note. A list of
+durations already tells you where the attacks fall, how long the whole phrase
+runs, and which spans feel stretched or hurried against the beat underneath.
+Take the tune away and the rhythm is still recognisable. Tap out the opening of
+anything you know well, with no pitches at all, and somebody in the room will
+name it.
 
-The renderer below accepts a duration array and a percussion sample. Since every attack has the same colour, the changing gaps carry the pattern. Clap along and keep the whole beat moving underneath the smaller values. If your clap loses its place, identify whether the half-beat or quarter-beat subdivision caused the break.
+Sonic Pi makes that list executable, because `sleep` accepts fractional beats.
+One number per event, and the program is a rhythm.
 
-## Run this
+Before the code, one convention has to be nailed down, since the traditional
+names carry a division in them that has nothing to do with clock time. In this
+book a *quarter note* lasts 1 beat. An eighth note lasts `0.5`. A sixteenth
+note lasts `0.25`. Those fractions divide the quarter-note beat, and they say
+nothing at all about seconds. Change `use_bpm` and every one of them changes
+duration in milliseconds while the written rhythm stays exactly as it was. That
+separation is worth holding on to. Notation describes proportion; tempo turns
+proportion into time.
+
+The renderer below takes a duration array and one percussion sample. Every
+attack has the identical colour, so nothing distinguishes the events except
+where they land. Clap the whole beat along with it and keep that beat moving
+underneath the smaller values. When your clap loses its place, note which
+subdivision broke it, the half-beat or the quarter-beat.
+
+## Seven attacks, one drum
 
 ```{.ruby audio=""}
 use_bpm 96
@@ -33,32 +54,93 @@ puts "#{durations.sum} beats"
 play_rhythm durations, :drum_tom_mid_soft
 ```
 
-One drum colour marks seven attacks. The first occupies a full beat; two half-beat gaps divide the next beat; the two quarter-beat values compress the centre before another half beat and a final full beat. The printed sum gives the complete span. Because pitch, sample, and amplitude remain fixed, changes in density come from the duration array.
+One drum colour, seven attacks. The first takes a whole beat on its own. Two
+half-beat gaps split the beat that follows. Then the pair of quarter-beat
+values compresses the middle, another half beat opens it back out, and a final
+whole beat closes the phrase. The log prints the total span. Pitch, sample and
+amplitude never move, so every change in density comes from the array.
 
-## Change one thing
+## Predict the sum before you run it
 
-1. Replace every `0.5` with `0.25`. More attacks now fit into less musical time, so the phrase shortens and its centre becomes denser. Count the new total before running it.
+1. Replace every `0.5` with `0.25`. More attacks now fit into less musical
+   time, so the phrase gets shorter and its centre gets busier. Work out the
+   new total on paper first, then check yourself against the log.
 
-2. Restore the durations and change only the sample. Choose one with a longer tail and compare how clearly you can locate the same seven onsets. The score remains fixed even if articulation blurs its surface.
+2. Restore the durations and change only the sample. Pick one with a long tail
+   and try to locate the same seven onsets. How much harder did that get, and
+   did the score change at all?
 
-3. Return to the original sample. The program already prints `durations.sum`; alter one duration and predict the new result before pressing Run. Confirm that the printed total and the final onset pattern move together.
+3. Back to the original sample. Alter one duration and predict the new printed
+   total before you press Run. Confirm that the total and the onset pattern
+   moved together, because they're two views of one edit.
 
-## Why it works
+## Onsets are prefix sums
 
-Durations form a timeline through addition. Their sum gives the phrase length. The sum of all values before a particular event gives that event's onset, often called a prefix sum in programming. For the array `[1, 0.5, 0.5]`, the attacks occur at beats 0, 1, and 1.5, and the complete span is 2 beats.
+Durations build a timeline by addition, and two sums matter. Add all of them
+and you have the phrase length. Add everything before a given event and you
+have that event's onset, which programmers know as a prefix sum. Take `[1, 0.5,
+0.5]`: the attacks land at beats 0, 1 and 1.5, and the span is 2 beats. That
+arithmetic is the entire scheduling model of this renderer.
 
-Those relationships explain the familiar subdivisions. Two eighth-note values of `0.5` occupy the same beat as one quarter-note value of `1`; four sixteenth-note values of `0.25` do the same. When clapping becomes uncertain, count the smallest subdivision long enough to place the attacks, then hear those smaller units inside the larger beat rather than allowing them to replace it.
+The familiar subdivisions fall straight out of it. Two eighth-note values of
+`0.5` fill the same beat as one quarter-note value of `1`, and four
+sixteenth-note values of `0.25` fill it too. Which means the array is
+self-checking in a way notation is not: if a bar is supposed to be four beats
+and the numbers sum to 3.75, you have a bug you can see before you hear it.
 
-The array is easy to validate and transform before playback. You can reject a bar with the wrong sum, double every value to augment the rhythm, or calculate all onset positions. The renderer does not need to know why a value is present. It advances by the supplied duration.
+When your clapping goes uncertain, count the smallest subdivision out loud for
+long enough to place every attack, then work back up. The goal is hearing those
+small units inside the beat while the beat keeps running. A common failure is
+letting the subdivision replace the beat: you count sixteen fast pulses,
+perfectly evenly, and lose all sense of which one was the downbeat.
 
-This small format carries a limitation. Each value acts both as the time until the next onset and, indirectly through `finish`, as part of the sounding articulation. It cannot describe two notes that overlap while a third begins in the gap. Later event scores will separate `:start` from `:duration` for that reason. Here, sequential prefix sums are enough and keep the arithmetic audible.
+Tempo enters only at the last moment, and it enters as a single multiplication.
+At 96 BPM one beat lasts 625 milliseconds, so the `0.25` values in this array
+occupy about 156 milliseconds each. Halve the tempo and every one of those
+numbers doubles in duration while the array on screen sits unchanged. This is
+why the durations are stored as beats and never as seconds. A rhythm written in
+seconds stops being a rhythm the moment somebody wants it faster.
 
-Sample length is not rhythmic duration. `finish` chooses how much of the recorded sample plays, while `sleep duration` schedules the following onset. A short source may end before a one-beat value has elapsed; a long tail may continue toward the next attack. Listen to the attack positions when checking rhythm and treat the tail as articulation, as you did with release in Lesson 7.
+## What an array of durations can and cannot say
 
-Lesson 13 uses equal subdivisions and adds recurring accents. The duration sum will establish the bar's extent, while the accents tell the ear how that span is grouped.
+Because a rhythm is now data, you can check it and transform it before any
+sound happens. Reject a bar whose sum is wrong. Double every value to augment
+the rhythm, or halve them all to diminish it. Compute all the onsets and ask
+whether anything lands on a beat. The renderer needs to know none of this. It
+advances by whatever duration it's handed.
 
-## Take it further
+The format buys that simplicity by giving up something real. Each value serves
+as the time until the next onset and, through `finish`, as part of the
+articulation of the current sound. One number is doing two jobs. So this format
+can't describe two notes that overlap while a third starts in the gap between
+them. Later event scores split `:start` from `:duration` for exactly that
+reason, and Lesson 14 takes the first step by giving every event an explicit
+`:start` field. Here, sequential prefix sums are enough, and they keep the
+arithmetic audible.
 
-Write a rhythm interpreter that accepts a duration array and a sample symbol. Construct two patterns from quarter-, eighth-, and sixteenth-note values, with each pattern adding up to four beats. Print the sum before playback and reject any other total.
+Keep sample length and rhythmic duration apart in your head. `finish` decides
+how much of the recording you hear; `sleep duration` decides when the next
+event fires. A short source can finish well before a one-beat value has
+elapsed, leaving a hole. A long tail can still be ringing when the next attack
+arrives, gluing two events together. Neither one moved an onset. When you're
+checking rhythm, listen to the attack positions and treat the tail as
+articulation, the same distinction you drew between `release` and `sleep` in
+Lesson 7.
 
-Add a quiet click on every whole beat in a separate thread, then clap each pattern against it. The same renderer should accept at least two sample symbols without changing its loop. During Sonic Pi 5 playback, note the first fractional value at which your clap drifts from the click. That observation tells you which subdivision needs to be counted more explicitly.
+Lesson 13 fixes the subdivisions at equal length and adds recurring accents on
+top of them. The duration sum will define how much time a bar occupies; the
+accents will tell your ear how that time is grouped.
+
+## Write a rhythm interpreter
+
+Write an interpreter that takes a duration array and a sample symbol. Build two
+patterns out of quarter-, eighth- and sixteenth-note values, each adding up to
+four beats, and have the program print the sum and refuse anything that isn't
+four.
+
+Then start a quiet click on every whole beat in a separate thread and clap each
+pattern against it. Your renderer should swallow at least two different sample
+symbols without a line changing inside its loop. While you audition in Sonic Pi
+5, write down the first fractional value where your clap drifts away from the
+click. That single observation tells you which subdivision you need to count
+out loud rather than feel.

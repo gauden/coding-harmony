@@ -7,15 +7,22 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-A score needs to account for time even when no new sound begins. Rests, dots, and ties all change the relationship between attacks and elapsed beats, which makes them more than marks attached to notes.
+## Time keeps running when nothing is struck
 
-A *rest* is a timed event with no attack. Representing it explicitly allows the clock and bar totals to advance without inventing a pitch. A *dot* adds half of a duration to itself, so 1 beat becomes 1.5 and 2 beats become 3. A *tie* joins a note across a boundary without a second attack. Two written segments may therefore behave as one sounding event.
+A score accounts for every beat, including the beats where nothing starts.
+Rests, dots and ties pull attacks and elapsed time apart.
 
-The array below uses `nil` to mark a rest and ordinary beat numbers for every duration. Follow the attacks first. On a second run, keep counting through the silent event and the long final sound. The clock continues through both.
+A *rest* is a timed event with no attack, so your clock advances without you
+inventing a pitch to fill the hole. A *dot* adds half of a duration to itself:
+1 beat becomes 1.5, 2 becomes 3. A *tie* carries a note across a boundary with
+no second attack, so two written segments sound as one event.
 
-## Run this
+Below, `nil` marks the rest. Follow the attacks on your first run. On the
+second, count straight through the silent event and the long final sound.
+
+## Follow the attacks, then the clock
 
 ```{.ruby audio=""}
 use_bpm 84
@@ -40,32 +47,53 @@ puts events.sum { |event| event[:duration] }
 play_events events
 ```
 
-The opening C sounds for one event slot, followed by a full beat with no new attack. G then occupies a dotted 1.5-beat span, delaying the final E until beat 3.5. That E continues for 2.5 beats as one event. If you imagine a boundary inside its span, the sound crosses it without being struck again.
+C fills its slot, then a whole beat passes with no attack. G takes a dotted
+1.5-beat span, holding the final E off until beat 3.5. That E runs 2.5 beats as
+one event. Put an imaginary bar line inside it and you hear the sound cross it
+unstruck.
 
-## Change one thing
+## Fill the gap, split the tie
 
-1. Replace `nil` with `:e4`. The total remains six beats and every later onset keeps its place, but the former gap now contains an attack. Listen for changed phrasing without changed arithmetic.
+1. Replace `nil` with `:e4`. Six beats, same onsets, an attack in the former
+   gap. You changed the phrasing and left the arithmetic alone.
 
-2. Restore the rest, then split the final `2.5` duration into repeated E notes lasting `1.5` and `1.0`. Preserve the total. The new attack makes the boundary audible even though pitch and elapsed time remain unchanged.
+2. Restore the rest, then split the final `2.5` into repeated E notes of `1.5`
+   and `1.0`. Same total, same pitch. The extra attack makes an internal
+   boundary audible.
 
-3. Restore the original event and change the dotted value from `1.5` to `1`. Predict the new onset of E and the new phrase sum. Playback should confirm that the final attack arrives half a beat earlier.
+3. Restore the original and change the dotted value from `1.5` to `1`. Where
+   does E land now, and what does the phrase sum to? Predict both, then check.
 
-## Why it works
+## Normalise notation before it reaches the renderer
 
-Each event separates sound presence from elapsed time. When `event[:note]` is `nil`, the conditional skips `play`, but `sleep event[:duration]` still advances the clock. The rest therefore remains in the score as an inspectable event instead of disappearing into an unexplained offset.
+Sound presence and elapsed time live in separate fields. When `event[:note]` is
+`nil` the conditional skips `play` and `sleep` still advances the clock. Your
+rest stays an inspectable event.
 
-Dots need no special playback instruction. Multiplication by 1.5 produces the ordinary duration value before the event reaches the renderer: a dotted eighth is `0.75` beats in this convention, a dotted quarter is `1.5`, and a dotted half is `3`. Normalizing notation into beat values keeps the renderer concerned with sound and scheduling rather than notation history.
+Dots don't need handling at playback time. Multiply by 1.5 as you build the
+data: a dotted eighth is `0.75`, a dotted quarter `1.5`, a dotted half `3`.
+Ties normalise the same way, with tied segments of one pitch collapsing into a
+single event whose duration is their sum. Get that wrong and the second attack
+contradicts the tie.
 
-Ties benefit from the same normalization. Adjacent tied segments of the same pitch become one event whose duration is their sum. The ear then receives one onset and one continuous body. If the renderer instead plays both segments, the second attack contradicts the tie even when the total time remains correct.
+Notice what `play_events` doesn't do. It never reads `:start`. It trusts array
+order and steps by each duration, so those start values are documentation you
+check against the prefix sums. A later renderer schedules from `:start`.
 
-The `:start` fields document intended positions, but this first `play_events` function does not schedule from them. It trusts array order and advances sequentially by each duration. That limitation should remain visible. You can manually verify that the listed starts match the prefix sums; a later general renderer will use starts to allow gaps and overlaps that a sequential loop cannot express.
+One last distinction catches people. A rest guarantees no new attack.
+It doesn't guarantee silence, because the previous note's release keeps fading
+into it. For a real hole, shorten the envelope before it too.
 
-Envelope tails add one further distinction. A rest guarantees no new attack, but a previous note's release may continue fading into that span. Silence in the event data and acoustic silence at the speakers are therefore related but not identical. If you need an empty gap, shorten the preceding envelope as well as preserving the rest.
+Lesson 15 returns to a fixed grid and asks what happens when attacks dodge its
+strongest positions. An unplayed slot shapes a rhythm as hard as a played one.
 
-Lesson 15 returns to a fixed subdivision grid and asks what happens when attacks avoid its strongest positions. The explicit rest here prepares that idea: an unplayed location can shape the rhythm as strongly as a played one.
+## Two bars, eight beats
 
-## Take it further
+Write a two-bar phrase whose durations sum to eight. Include a one-beat rest, a
+dotted quarter, and one note that starts before beat 4 and sounds past it.
+Write it as one tied event, then build a comparison version that splits it into
+two attacks at the same pitch.
 
-Write a two-bar phrase whose event durations add up to eight beats. Include a one-beat rest, a dotted-quarter duration of 1.5 beats, and one note that begins before beat 4 and continues beyond it. Represent that tied note as one event, then make a comparison version that splits it into two attacks without changing its pitch or total span.
-
-Print both duration sums and verify that each equals eight. Check that every `:start` matches the accumulated durations before it. Then audition both forms in Sonic Pi 5, listening for the added attack at the bar boundary. The time and pitch should agree; articulation should supply the difference.
+Check both sums against eight, and every `:start` against the durations before
+it. Audition both in Sonic Pi 5 and listen for the added attack at the bar
+line. Time and pitch agree. Articulation is your whole difference.

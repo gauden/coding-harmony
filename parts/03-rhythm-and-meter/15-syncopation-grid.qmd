@@ -7,15 +7,33 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-A sixteen-slot bar turns rhythmic placement into an array you can inspect. Slots 0, 4, 8, and 12 coincide with the four quarter-note beats. Attacks there confirm the grid. Moving an attack into the slots between them does not change the bar's length, but it changes the relation between what sounds and what the pulse predicts.
+## Sixteen slots, and the ones you leave empty
 
-*Syncopation* gives weight to a normally weak position or sustains sound across a stronger one. An *anticipation* is a particular case: an event arrives shortly before the beat to which it seems to point. Both effects depend on an underlying pulse. Without the expected strong positions, an off-grid attack has nothing to resist.
+Cut a bar into sixteen equal slots and rhythmic placement becomes an array you
+can read. Slots 0, 4, 8 and 12 land on the four quarter-note beats. Put attacks
+there and you confirm the pulse; everyone agrees where they are. Move an attack
+into one of the slots between them and the bar is exactly as long as it was,
+while the relationship between what sounds and what your ear predicted has
+changed completely.
 
-The program renders three masks against one pitch sequence. A `1` triggers and consumes a pitch; a `0` advances one sixteenth without an attack. Hear the first mask as the reference grid, the second as regular offbeats, and the third as an asymmetric, clave-derived cycle.
+*Syncopation* puts weight on a position the meter treats as weak, or holds a
+sound across a position the meter treats as strong. An *anticipation* is one
+particular case of it: an event arrives shortly before the beat it seems to be
+pointing at, and the beat then goes by unstruck. Both effects live on the
+pulse. Take away the expected strong positions and an off-grid attack has
+nothing left to push against, which is why a syncopated pattern played entirely
+alone can sound merely lopsided.
 
-## Run this
+The program renders three masks over one pitch sequence. A `1` fires a note and
+consumes the next pitch; a `0` moves the clock forward one sixteenth and does
+nothing else. Hear the first mask as the plain grid, the second as regular
+offbeats, and the third as an asymmetric cycle. Before you press Run, count the
+1s in that third mask and work out how many of them land on a quarter-note
+beat.
+
+## Three masks over one melody
 
 ```{.ruby audio=""}
 use_bpm 100
@@ -41,35 +59,86 @@ patterns.each do |grid|
 end
 ```
 
-The first bar attacks on every quarter-note beat and states the pulse directly. The second waits one eighth note beyond each beat, placing its attacks in the intervening gaps. The final mask distributes attacks unevenly across the same sixteen slots. Some arrive near a strong position and may seem to pull toward it; others establish the cyclic identity of the pattern.
+The first bar attacks on all four beats and states the pulse without argument.
+The second waits an eighth note past each beat and drops its attacks into the
+gaps, so you get a pulse you never hear struck. The third spreads six attacks
+unevenly across the same sixteen slots. Two of them, at slot 0 and slot 12, sit
+on a beat. Slot 3 arrives one sixteenth before beat two and leaves that beat
+empty. Slots 6, 9 and 14 are what give the cycle its own identity.
 
-## Change one thing
+## Move one attack off the beat
 
-1. In the first mask, move the attack at slot 8 to slot 7. One quarter-note anchor now arrives a sixteenth early. Listen for the following beat to remain perceptually present even though no attack lands on it.
+1. In the first mask, move the attack from slot 8 to slot 7. One anchor now
+   arrives a sixteenth early. Listen to what happens at slot 8: nothing is
+   played there, and the beat is still perceptually present. That absence is
+   doing the work.
 
-2. Restore the first mask and keep only the asymmetric final mask. Replace every pitch with C4. With melodic contour removed, decide which attack positions still define the rhythm's forward pull.
+2. Restore the first mask, keep only the asymmetric one, and set every pitch to
+   C4. With the contour gone, decide which attack positions are still carrying
+   the forward pull. Write down two slot numbers before you move on.
 
-3. Restore the pitch sequence and rotate the offbeat mask by one slot. The spacing among its attacks remains regular, but their alignment with the bar changes. Decide whether slot 0 regains the feeling of a beginning.
+3. Restore the pitch sequence and rotate the offbeat mask by one slot. Spacing
+   between its attacks is unchanged, and its alignment with the bar is not. Does
+   slot 0 feel like a beginning again?
 
-## Why it works
+## A Boolean mask over discrete time
 
-A rhythm grid is a Boolean mask over discrete time. The loop advances by `0.25` beats for every slot, whether that slot contains 0 or 1. A hit triggers sound and advances the pitch index; an empty slot advances only time. The mask therefore controls onset placement without forcing the melody array to contain rest symbols.
+The grid is a Boolean mask over discrete time, and the loop treats both symbols
+identically in one respect: it advances `0.25` beats for every slot, full or
+empty. A hit also triggers sound and moves the pitch index forward. So onset
+placement is controlled entirely by the mask, and the melody array never has to
+carry rest symbols to keep its alignment.
 
-Separating those structures makes two useful invariants visible. Every sixteen-slot mask lasts four beats, and masks with the same number of hits consume the same number of pitches. You can rotate, compare, or mutate rhythm without rewriting the contour. If a pitch unexpectedly disappears, count the 1s before blaming the pitch array.
+Splitting rhythm from pitch this way exposes two invariants you can assert on.
+Every sixteen-slot mask lasts four beats, whatever it contains. And two masks
+with the same number of hits consume the same number of pitches, which means
+you can rotate, mutate or swap the rhythm and still compare like with like.
+When a note you expected goes missing, count the 1s before you go looking at
+the pitch array.
 
-Syncopation depends on absence as well as attack. Moving the event from slot 8 to 7 gives slot 7 weight partly because the expected attack on slot 8 is missing. Filling every sixteenth at equal strength would create density, not the same tension. A quiet quarter-note click in another thread can make the absent strong positions audible, provided it remains a reference rather than the dominant part.
+Syncopation depends on absence as much as on attack, and this is the part that
+takes programmers by surprise. Moving the event from slot 8 to slot 7 gives
+slot 7 its weight partly because slot 8 is now empty. The tension isn't in the
+early note by itself. It's in the early note plus the beat that arrives with
+nothing on it, held in place by everything that came before. Fill all sixteen
+slots at equal strength and you get density and no tension at all, because
+there's no longer an expectation left to disappoint.
 
-The final distribution is an invented asymmetric mask for studying cyclic weight;
-it does not claim the identity or performance practice of a named traditional
-timeline. What transfers directly is the computational mechanism: attacks occupy
-selected positions in a repeating grid.
+You can make that machinery audible. Run a quiet quarter-note click in a
+separate thread and the empty strong positions stop being theoretical, since
+you now hear the beat that the mask declined to strike. Keep the click well
+under the level of the pattern. Once the reference becomes the loudest thing in
+the texture, it starts supplying the meter that the syncopated part was
+supposed to imply, and you're no longer testing what you thought you were.
 
-The printed mask can verify length, hit count, and rotation, while playback reveals phase and pull. A correct array may still begin at an unconvincing point if its musical downbeat lies elsewhere. Treat rotation as a compositional decision, not an implementation detail.
+The final distribution here is an invented asymmetric mask for studying cyclic
+weight. It doesn't claim the identity or the performance practice of any named
+traditional timeline. What transfers is the mechanism: attacks occupy selected
+positions in a repeating grid, and the pattern's character comes from which
+positions those are.
 
-Lesson 16 preserves pairs of eighth notes but moves their internal onset by less than a beat. The representation shifts from choosing grid slots to adjusting timing within a stable boundary.
+Printing the mask verifies its length, its hit count and its rotation. None of
+that tells you where the pattern begins. A perfectly correct array can start at
+an unconvincing point because its musical downbeat sits three slots later,
+and you'll only find that out by listening to it cycle. Treat rotation as a
+compositional decision you make with your ears, not as an implementation
+detail.
 
-## Take it further
+Lesson 16 keeps pairs of eighth notes intact and moves the onset inside each
+pair by less than a beat. The question changes from which grid slot an attack
+occupies to where it sits between two boundaries that never move.
 
-Create three sixteen-slot masks for one eight-note pitch array: a reference pattern tied to quarter-note beats, a pattern on eighth-note offbeats, and a syncopated version with one anticipated downbeat. Each mask must contain eight attacks, so every pass consumes the complete pitch sequence and comparisons retain the same melodic material.
+## Three masks of your own
 
-Assert both invariants before playback: sixteen slots produce four beats, and eight hits consume eight pitches. Audition the three masks in Sonic Pi 5 against a quiet beat reference. Then mark the one moved slot that produces the clearest change in forward pull and explain which expected strong position gives that movement its meaning.
+Build three sixteen-slot masks for one eight-note pitch array: a reference
+pattern locked to the quarter-note beats, a pattern on the eighth-note
+offbeats, and a syncopated version with one anticipated downbeat. Give every
+mask exactly eight attacks, so each pass consumes the whole pitch sequence and
+your three versions carry identical melodic material.
+
+Assert both invariants before anything plays: sixteen slots make four beats,
+and eight hits consume eight pitches. Then audition all three in Sonic Pi 5
+against a quiet beat reference. Mark the single moved slot that produces the
+clearest change in forward pull, and write down which expected strong position
+gives that move its meaning. If you can name the empty slot as confidently as
+the filled one, you've understood syncopation.

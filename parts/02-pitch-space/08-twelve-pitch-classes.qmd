@@ -7,15 +7,30 @@ sonic-pi: []
 status: draft
 ---
 
-## The idea
+{{< include ../../_not-yet-auditioned.qmd >}}
 
-Pitch has two kinds of location. MIDI note 60 identifies one particular C, while the label C also connects that note to all the other Cs above and below it. One representation keeps register; the other treats octave-related pitches as members of the same family.
+## Where the ladder turns into a circle
 
-Walk from MIDI 60 to 72 in semitone steps and the distinction becomes audible. The program triggers thirteen notes across twelve rises, and the final sound resembles the first in a higher register. A *pitch class* keeps position within this repeating twelve-step cycle and discards octave information. In code, `pitch % 12` performs that reduction. MIDI notes 36, 60, and 84 are different addresses, yet all produce pitch class 0.
+Timbre steps aside now. Pitch is the only thing moving in this lesson, and it
+carries two locations at once. MIDI note 60 is one particular C at one
+particular height. The letter C also ties that note to every other C on the
+instrument, above and below it. Keep the height and you have an address. Drop
+the height and you have a family.
 
-The keyboard makes the cycle navigable through its uneven groups of black keys. Those visual landmarks do not change the equal semitone spacing, but they help you locate a class inside the recurring pattern.
+Walk from 60 up to 72 one semitone at a time and you'll hear both at once.
+Thirteen notes, twelve rises, and the last one is recognisably the first again
+in a higher place. A *pitch class* is your position in that repeating
+twelve-step cycle once the octave has been thrown away. In code it's `pitch %
+12`. Notes 36, 60 and 84 are three separate addresses and a single pitch class:
+0.
 
-## Run this
+Your keyboard already draws the cycle. Black keys come in a group of two and a
+group of three, and those groups change nothing about the spacing, since every
+step is still one semitone. What they give you is a place marker. Before you
+press Run, look at the second half of the program and predict this: which of
+the two passes covers more musical distance, and which one plays more notes?
+
+## Climb twelve, then filter for one
 
 ```{.ruby audio=""}
 use_bpm 120
@@ -38,32 +53,66 @@ sleep 1
 end
 ```
 
-The first pass rises through all twelve chromatic classes and reaches the starting class again at 72. Watch the printed class values run from 0 through 11 and wrap to 0 while the MIDI address continues upward. The second pass filters a much wider range for class 0. You hear separated Cs rather than adjacent notes, each twelve semitones from the next.
+The first pass climbs through all twelve classes and lands back on class 0 at
+note 72. Keep the log in view while it runs. Class counts 0 to 11, wraps to 0,
+and starts again, while the MIDI address underneath it climbs without a break.
+The second pass sweeps four octaves and keeps only class 0, so you get widely
+separated Cs, each one twelve semitones above the last.
 
-## Change one thing
+## Rotate the cycle
 
-1. Change the selected class from `0` to `7`. The second pass now finds every G. Its MIDI values differ from the Cs, but the twelve-semitone spacing between successive results remains unchanged.
+1. Change the selected class from `0` to `7` and the second pass finds every G
+   in range. New addresses, identical spacing: twelve semitones from each
+   result to the next.
 
-2. Restore class 0, then start the chromatic walk at 61. The class sequence now begins at 1 and returns there at 73. You have rotated the cycle without changing its length or direction.
+2. Restore class 0, then start the chromatic walk at 61. The printed classes
+   now begin at 1 and return to 1 at note 73. You rotated the cycle without
+   changing its length or its direction.
 
-3. Restore the original range and increase each chromatic sleep to `0.5`. Trace the notes on a keyboard diagram or controller as they sound. The slower rate gives the black-key landmarks time to register.
+3. Restore the original range and stretch each chromatic sleep to `0.5`. Trace
+   the notes on a keyboard diagram or a controller as they sound. At the slower
+   rate the black-key groups have time to register as landmarks.
 
-## Why it works
+## What modulo keeps and what it throws away
 
-Modulo maps an integer address onto a repeating range. Dividing a MIDI note by twelve leaves a remainder from 0 through 11, and notes separated by twelve share that remainder. The operation is familiar from a circular buffer or clock face: the full count continues, while the position within the cycle repeats.
+Modulo folds an integer address onto a repeating range. Divide a MIDI note by
+twelve and the remainder lands somewhere from 0 to 11; any two notes twelve
+apart share it. You already know the shape from a ring buffer or a clock face.
+The count keeps rising, the position keeps coming round.
 
-This reduction is useful because many musical operations care about note identity apart from register. A chord analyser may want to know that several notes include class 0, regardless of which C each instrument plays. Transposition can add a fixed amount and reduce modulo twelve to remain within the class set.
+That reduction earns its place because plenty of musical questions ignore
+height entirely. A chord analyser wants to know that some voice is supplying
+class 0, whichever C the player reached for. Transposition adds a fixed amount
+and takes the remainder to stay inside the class set.
 
-The lost information is equally important. Once 48, 60, and 72 have all become 0, no calculation can recover which octave supplied the original. A renderer cannot play “pitch class 0” until you choose a register. Keep the full MIDI address whenever height, range, voicing, or physical frequency remains part of the question.
+The loss matters just as much. Once 48, 60 and 72 have all become 0, nothing
+downstream can recover which one you started from. You can't play a pitch
+class. Somebody has to choose a register first. So keep the full address
+whenever range, voicing, or actual frequency is still part of the question.
 
-The conventional numeric mapping places C at class 0 because C4 has MIDI address 60 and `60 % 12` is 0. Other interfaces may display names instead of integers or begin their lists elsewhere. The underlying cycle still contains twelve positions. State the convention at a program boundary, compare numeric classes internally, and attach a display name when a person needs one.
+C sits at class 0 because C4 is MIDI 60, and `60 % 12` is 0. Other systems
+display names instead of integers, or start counting somewhere else entirely.
+Twelve positions either way. Fix the convention at the boundary of your
+program, compare plain integers inside it, and attach a display name at the
+point where a person reads the output.
 
-The printed output lets you inspect both coordinate systems at once. If the sound reaches an octave but the class does not wrap, the modulo operation is wrong. If the class wraps correctly but playback lands in the wrong register, the lost octave information was used where a full address belonged.
+Printing both coordinates together separates two failures that sound alike. If
+the notes reach an octave but the class never wraps, your modulo is wrong. If
+the class wraps correctly but playback lands in the wrong octave, you used a
+class somewhere an address belonged.
 
-Lesson 9 makes register the variable and therefore retains the complete MIDI addresses. Lesson 10 adds another layer that modulo also erases: two different spellings can refer to the same sounding class while describing different musical motion.
+Lesson 9 makes register the variable under study, so it holds on to complete
+MIDI addresses. Lesson 10 adds a second thing modulo erases: two spellings that
+share one sounding class while describing different musical motion.
 
-## Take it further
+## Build yourself a chromatic browser
 
-Write a chromatic browser with variables named `start` and `offset`. For offsets 0 through 12, play `start + offset` and print both its full MIDI address and its pitch class. The thirteen printed rows should show a complete cycle whose first and last entries share a class.
+Write a browser with variables named `start` and `offset`. For offsets 0
+through 12, play `start + offset` and print the full MIDI address next to its
+pitch class. Thirteen rows, one complete cycle, first and last sharing a class.
 
-Add a second pass that searches MIDI 36 through 84 for one chosen class. Print each matching address before playing it. Check the arithmetic in the log, then audition both passes in Sonic Pi 5: the chromatic browser should move by semitone, while the filtered notes should move by octaves. Those different sounds arise from two views of the same integer space.
+Then add a second pass that searches MIDI 36 through 84 for one class you
+choose, printing each address before it plays. Check the arithmetic in the log,
+then audition both passes in Sonic Pi 5. The browser should move by semitone
+and the filtered notes by octave. Two sounds that different, from two views of
+the same integers.
