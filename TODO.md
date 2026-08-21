@@ -1,68 +1,67 @@
-# Book First Draft
+# Third draft: the approachable voice
 
-This file is the durable checklist for the first complete manuscript pass. A new
-session should read this file and `DEVELOPMENT.md` before editing prose.
+The first draft built the manuscript. The second gave it an expository register
+that turned out to be correct and cold. This one fixes the voice at its source
+and rewrites the book against it.
 
-## Phase 1: Baseline and acceptance tests
+Read this file and `DEVELOPMENT.md` before editing. Earlier phases are archived
+at the bottom.
 
-- [x] Inventory the 58 lesson files, front matter, appendices, build scripts, and style rules.
-- [x] Establish a resumable Codex goal for the complete first draft.
-- [x] Define automated first-draft acceptance tests before manuscript changes.
-- [x] Run the tests once and record the expected red baseline.
-- [x] Build the repository knowledge graph and record the curriculum dependencies.
+## Phase 1: Fix the specification
 
-## Phase 2: Draft the manuscript
+- [x] Diagnose the voice problem with measurements over the lesson corpus, and
+      record the findings in `plan.html`.
+- [x] Rewrite `STYLE.md` from a ban list into a positive specification: a worked
+      model of the target voice, six mandates, and before/after pairs.
+- [x] Move the draft's uncertainty out of the prose and into one shared status
+      callout, `_not-yet-auditioned.qmd`.
+- [x] Replace the form-pinning tests with voice tests. Confirm a red baseline on
+      the nine voice checks and green on the structural invariants.
+- [x] Restore the em dash at one per file; drop the bans that only redirected a
+      reflex into "rather than".
+- [x] Update `WRITING_BRIEF.md` to the new lesson contract.
+- [x] Credit Claude Opus 5 alongside GPT 5.6 Sol in the global attribution.
 
-- [x] Draft Lessons 1-20 (Parts 0-4) from top to bottom.
-- [x] Draft Lessons 21-41 (Parts 5-8) from top to bottom.
-- [x] Draft Lessons 42-58 (Parts 9-12) from top to bottom.
-- [x] Revise the preface and setup chapter to match the completed manuscript.
-- [x] Complete the Ruby guide, cheatsheet, solutions, glossary, and sources appendices.
+## Phase 2: Write the reference corpus by hand
 
-## Phase 3: Integration and editing
+- [x] Rewrite the preface and setup chapter.
+- [x] Rewrite Lessons 1-7 as the exemplars every later lesson is written against.
+- [x] Fix Lesson 6, which demonstrated tuning with the one synth that removes the
+      phenomenon it was demonstrating.
 
-- [x] Run a dedicated continuity edit across all lesson boundaries.
-- [x] Check term introductions, data representations, helper names, and cross-references.
-- [x] Apply the house voice in `STYLE.md` across all prose.
-- [x] Confirm every optional exercise has a useful solution or an explicit open-ended note.
+## Phase 3: Rewrite the rest against those exemplars
 
-## Phase 4: Verification
+- [ ] Lessons 8-17 (Parts 2-3), including the Lesson 16 seeded-randomness defect.
+- [ ] Lessons 18-25 (Parts 4-5).
+- [ ] Lessons 26-37 (Parts 6-7), including the Lesson 29 parallel-motion cadences
+      and the Lesson 31 bass-tenor unison.
+- [ ] Lessons 38-46 (Parts 8-9), including text staff diagrams and four actual
+      printed bars for Lesson 41.
+- [ ] Lessons 47-58 (Parts 10-12), including wiring the three capstones onto the
+      phrase from `setup.qmd`.
+- [ ] The five appendices, preserving all ten tested solution contracts.
 
-- [x] Pass `uv run pytest`.
-- [x] Pass `scripts/lint-prose.sh`.
-- [x] Pass `scripts/check-code.sh` with zero Ruby syntax failures.
-- [x] Render the Quarto HTML book and inspect the build for broken links or markup.
-- [x] Record any checks requiring Sonic Pi or external tooling as deferred manual QA.
+## Phase 4: Integration
 
-## Phase 5: Handoff
+- [ ] Turn the 47 bare "Lesson N" mentions into working links.
+- [ ] Pass `uv run pytest` on all nineteen checks.
+- [ ] Pass `scripts/lint-prose.sh`.
+- [ ] Pass `scripts/check-code.sh` with zero Ruby syntax failures.
+- [ ] Render the HTML book and inspect early, middle, late and appendix pages.
+- [ ] Update `README.md`, `CHANGELOG.md` and `DEVELOPMENT.md`.
 
-- [x] Update `README.md` status from scaffold to complete first draft.
-- [x] Update `DEVELOPMENT.md` with final word counts, checks, and remaining second-draft work.
-- [x] Mark every phase above complete.
+## Still owed, and not part of this draft
 
-## Follow-up: front-page AI disclosure
+- [ ] Engraved staff figures for Part 8. The text diagrams added in Lessons 38,
+      39 and 41 are a stopgap, not notation.
+- [ ] Reference recordings. 60 `audio=""` attributes are still empty, which
+      leaves every listening claim unfalsifiable for the reader.
+- [ ] A human audition of every lesson in Sonic Pi 5.0.0, which is the only
+      thing that can move a lesson from `draft` to `tested`.
+- [ ] Part openers. Thirteen short bridges would give the book a sense of
+      movement that 58 separate lessons cannot.
 
-- [x] Add a regression test for a prominent disclosure before the first preface section.
-- [x] Add the AI-generated draft, hand-rewrite, and testing warning to the front page.
-- [x] Invite pull requests while setting the limited-response expectation.
-- [x] Pass tests and prose lint, then render and inspect the revised front page.
+## Archived
 
-## Follow-up: transparent AI authorship milestone
-
-- [x] Add regression coverage for global GPT authorship and no book-level licence.
-- [x] Set every rendered page author to `GPT 5.6 Sol at High Reasoning`.
-- [x] Remove the book licence file, footer, README claims, and draft licence rows.
-- [x] Preserve third-party source and rights provenance guidance.
-- [x] Rebuild, inspect, commit, and push the transparent draft.
-
-## Second draft: expository rewrite
-
-- [x] Add acceptance coverage for the revised expository voice before changing the manuscript.
-- [x] Rewrite `STYLE.md` around clarity, humanity, rhythm, unity, and reader guidance.
-- [x] Rewrite the preface, setup chapter, and all 58 lessons without changing the curriculum or code contract.
-- [x] Rewrite the five appendices and align exercise solutions with the revised lessons.
-- [x] Run an independent continuity and tone audit across every reader-facing chapter.
-- [x] Pass pytest, prose lint, Ruby extraction and syntax checks, and `git diff --check`.
-- [x] Render the complete HTML book and inspect representative early, middle, late, and appendix pages.
-- [x] Update the README, changelog, and development record.
-- [x] Commit and push the completed rewrite.
+Phases from the first draft and the second-draft expository pass are recorded in
+the session log in `DEVELOPMENT.md`. Every item in both was completed.
